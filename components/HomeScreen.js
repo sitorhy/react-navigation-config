@@ -1,5 +1,12 @@
 import React from "react";
-import { StyleSheet, View, Text, FlatList, Image } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  FlatList,
+  Image,
+  TouchableOpacity,
+} from "react-native";
 
 import imgTask from "../images/task.png";
 import toDoList from "./todo.json";
@@ -37,14 +44,16 @@ export default class extends React.Component {
 
   renderItem = ({ item }) => {
     return (
-      <View key={item.key} style={styles.listItem}>
-        <View style={styles.itemLeft}>
-          <Image style={styles.iconTask} source={imgTask} />
+      <TouchableOpacity>
+        <View key={item.key} style={styles.listItem}>
+          <View style={styles.itemLeft}>
+            <Image style={styles.iconTask} source={imgTask} />
+          </View>
+          <View style={styles.itemRight}>
+            <Text>{item.title}</Text>
+          </View>
         </View>
-        <View style={styles.itemRight}>
-          <Text>{item.title}</Text>
-        </View>
-      </View>
+      </TouchableOpacity>
     );
   };
 

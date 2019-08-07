@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     padding: 20,
-    backgroundColor: "grey"
+    backgroundColor: "#a6cdff"
   },
   section: {
     flex: 1,
@@ -24,6 +24,9 @@ const styles = StyleSheet.create({
     textAlign: "left",
     borderBottomColor: "lightgrey",
     borderBottomWidth: 1
+  },
+  mine: {
+    backgroundColor: "yellow"
   }
 });
 
@@ -34,8 +37,8 @@ export default class extends React.Component {
         key: "session",
         data: [
           {
-            title: "Login",
-            action: "login"
+            key: "login",
+            title: "Login"
           }
         ]
       }
@@ -43,7 +46,7 @@ export default class extends React.Component {
   };
 
   onCellAction = item => {
-    switch (item.action) {
+    switch (item.key) {
       case "login": {
       }
     }
@@ -67,7 +70,7 @@ export default class extends React.Component {
     const { sections } = this.state;
 
     return (
-      <View>
+      <View style={styles.mine}>
         <View style={styles.header}>
           <Image style={{ width: 128, height: 128 }} source={imgAvatar} />
         </View>
