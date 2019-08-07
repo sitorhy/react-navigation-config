@@ -43,7 +43,7 @@ under props can only choose one of them:
 + `Array<Route>` all - create **BottomTabNavigator** default
 + `Array<Route>` oneOf - create as **SwitchNavigator**
 
-#API
+# API
 ### **filterNavigation(routes, allows)**
 remove route config where allows array not include.
 ##### Parameters
