@@ -1,38 +1,20 @@
 import HomeScreen from "../components/HomeScreen";
 import MineScreen from "../components/MineScreen";
-import LoginScreen from "../components/LoginScreen";
-import RegisterScreen from "../components/RegisterScreen";
-import { filterRoutes } from "../react-navigation-config";
+
+import { renderNavigation } from "../react-navigation-config";
 
 const routes = {
-  oneOf: [
+  app: true,
+  all: [
     {
-      name: "App",
-      all: [
-        {
-          name: "Home",
-          component: HomeScreen
-        },
-        {
-          name: "Mine",
-          component: MineScreen
-        }
-      ]
+      name: "home",
+      component: HomeScreen
     },
     {
-      name: "Auth",
-      children: [
-        {
-          name: "Login",
-          component: LoginScreen
-        },
-        {
-          name: "Register",
-          component: RegisterScreen
-        }
-      ]
+      name: "mine",
+      component: MineScreen
     }
   ]
 };
 
-console.log(filterRoutes(routes.oneOf, ["Mine", "Register"]));
+export default renderNavigation(routes);

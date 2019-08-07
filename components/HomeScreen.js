@@ -1,17 +1,77 @@
 import React from "react";
-import { Text, View, Button } from "react-native";
+import { StyleSheet, View, Text, FlatList, Image } from "react-native";
+
+import imgTask from "../images/task.png";
+import toDoList from "./todo.json";
+
+const styles = StyleSheet.create({
+  todo: {},
+  listItem: {
+    flexDirection: "row",
+    paddingTop: 15,
+    paddingBottom: 15,
+    paddingLeft: 10,
+    paddingRight: 10
+  },
+  itemLeft: {
+    width: 48,
+    alignItems: "center",
+    justifyContent: "space-between"
+  },
+  itemRight: {
+    flexGrow: 1,
+    alignItems: "center",
+    justifyContent: "flex-start",
+    flexDirection: "row"
+  },
+  iconTask: {
+    width: 32,
+    height: 32
+  }
+});
 
 export default class extends React.Component {
-  toMine = () => {
-    const { navigation } = this.props;
-    navigation.navigate("Mine");
+  state = {
+    data: toDoList
+  };
+
+  renderItem = ({ item }) => {
+    return (
+      <View key={item.key} style={styles.listItem}>
+        <View style={styles.itemLeft}>
+          <Image style={styles.iconTask} source={imgTask} />
+        </View>
+        <View style={styles.itemRight}>
+          <Text>{item.title}</Text>
+        </View>
+      </View>
+    );
+  };
+
+  renderSeparator = () => {
+    return (
+      <View
+        style={{
+          height: 1,
+          width: "86%",
+          borderBottomWidth: 1,
+          borderBottomColor: "lightgrey",
+          marginLeft: "14%"
+        }}
+      />
+    );
   };
 
   render() {
+    const { data } = this.state;
+
     return (
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <Text>自由平等公正法治</Text>
-        <Button onPress={this.toMine} title="切换到右边→" />
+      <View style={styles.todo}>
+        <FlatList
+          data={data}
+          renderItem={this.renderItem}
+          ItemSeparatorComponent={this.renderSeparator}
+        />
       </View>
     );
   }
