@@ -44,13 +44,13 @@ under props can only choose one of them:
 + `Array<Route>` oneOf - create as **SwitchNavigator**
 
 #API
-###**filterNavigation(routes, allows)**
+### **filterNavigation(routes, allows)**
 remove route config where allows array not include.
-#####Parameters
+##### Parameters
 + `Array<Route>` routes - the route configuration
 + `Array<String>` allows - route names that will be retain
 
-###**renderNavigation(routes)**
+### **renderNavigation(routes)**
 create navigation components with config.
-#####Parameters
+##### Parameters
 + `Array<Route>` routes - the route configuration
