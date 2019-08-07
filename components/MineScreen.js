@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1
   },
   mine: {
-    backgroundColor: "yellow"
+    backgroundColor: "#eeeeee"
   }
 });
 
@@ -48,6 +48,8 @@ export default class extends React.Component {
   onCellAction = item => {
     switch (item.key) {
       case "login": {
+        const { navigation } = this.props;
+        navigation.navigate("start");
       }
     }
   };

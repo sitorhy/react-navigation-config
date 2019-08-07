@@ -1,8 +1,10 @@
 #React Navigation Config
+
 --------------------------------------
 Static route configuration helpers for React Navigation 3.x.
 
 #Basic Usage
+
 ----------------------
 navigation example, project created by `react-native-cli`.
 + App.js
@@ -36,6 +38,7 @@ import { name as appName } from "./app.json";
 AppRegistry.registerComponent(appName, () => App);
 ```
 #Configuration
+
 ------
 **Route** objects with the properties.
 

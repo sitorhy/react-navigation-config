@@ -5,7 +5,9 @@ import {
     createStackNavigator,
     createSwitchNavigator,
     createBottomTabNavigator,
-} from "react-navigation";
+} from 'react-navigation';
+
+import {navigationOptions as injectNavigationOptions} from './decorators';
 
 export default function (config)
 {
@@ -13,17 +15,23 @@ export default function (config)
         children: createStackNavigator,
         all: createBottomTabNavigator,
         oneOf: createSwitchNavigator,
-        app: createAppContainer
+        app: createAppContainer,
     };
 
     const map = function (route)
     {
-        const {name, children, all, oneOf, component, app, ...others} = route;
-        const prop = ["children", "all", "oneOf", "app"].find(j => !!route[j]);
+        const {
+            name,
+            component,
+            app,
+            config = {},
+        } = route;
+        const {navigationOptions} = config;
+        const prop = ['children', 'all', 'oneOf', 'app'].find(j => !!route[j]);
 
         if (!name && app !== true)
         {
-            throw new Error("navigation config missing name.");
+            throw new Error('navigation config missing name.');
         }
 
         if (prop && Array.isArray(route[prop]) && route[prop].length)
@@ -33,27 +41,32 @@ export default function (config)
             {
                 Object.assign(routeConfigs, map(i, creator[prop]));
             }
-            Object.assign(routeConfigs, others);
-            return app === true ? creator["app"]((creator[prop])(routeConfigs)) : {
+            return app === true ? creator['app']((creator[prop])(routeConfigs, config)) : {
                 [name]: {
-                    screen: (creator[prop])(routeConfigs)
-                }
+                    screen: (creator[prop])(routeConfigs, config),
+                },
             };
         }
         else
         {
             if (!component)
             {
-                throw new Error("navigation config missing component.");
+                throw new Error('navigation config missing component.');
+            }
+
+            let screen = component;
+
+            if (navigationOptions)
+            {
+                screen = injectNavigationOptions(navigationOptions)(component);
             }
             return {
                 [name]: {
-                    screen: component,
-                    ...others
-                }
-            }
+                    screen
+                },
+            };
         }
-    }
+    };
 
     return map(config);
 }
