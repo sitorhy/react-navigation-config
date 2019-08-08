@@ -5,10 +5,10 @@ import {
     createStackNavigator,
     createSwitchNavigator,
     createBottomTabNavigator,
-} from "react-navigation";
+} from 'react-navigation';
 
-import * as decorators from "./decorators";
-import {removeEmpty} from "./common";
+import * as decorators from './decorators';
+import {removeEmpty} from './common';
 
 export default function (config)
 {
@@ -25,16 +25,16 @@ export default function (config)
             name,
             component,
             app,
-            injectNavigationOptions,
+            injectNavigationOptions = false,
             navigationOptions,
-            routerConfig
+            routerConfig,
         } = route;
 
-        const prop = ["children", "all", "oneOf", "app"].find(j => !!route[j]);
+        const prop = ['children', 'all', 'oneOf', 'app'].find(j => !!route[j]);
 
         if (!name && app !== true)
         {
-            throw new Error("navigation config missing name.");
+            throw new Error('navigation config missing name.');
         }
 
         if (prop && Array.isArray(route[prop]) && route[prop].length)
@@ -44,10 +44,29 @@ export default function (config)
             {
                 Object.assign(routeConfigs, map(i, creator[prop]));
             }
-            return app === true ? creator["app"]((creator[prop])(routeConfigs, routerConfig)) : {
-                [name]: {
-                    screen: (creator[prop])(routeConfigs, routerConfig),
-                },
+
+            let navigation = (creator[prop])(routeConfigs, routerConfig);
+
+            if (injectNavigationOptions)
+            {
+                if (injectNavigationOptions === 'extend')
+                {
+                    navigation = decorators.navigationOptions(navigationOptions)(navigation);
+                }
+                else
+                {
+                    if (injectNavigationOptions === true)
+                    {
+                        navigation.navigationOptions = navigationOptions;
+                    }
+                }
+            }
+
+            return app === true ? creator['app'](navigation) : {
+                [name]: removeEmpty({
+                    screen: navigation,
+                    navigationOptions: injectNavigationOptions ? null : navigationOptions,
+                })
             };
         }
         else
@@ -55,27 +74,30 @@ export default function (config)
 
             if (!component)
             {
-                throw new Error("navigation config missing component.");
+                throw new Error('navigation config missing component.');
             }
 
             let screen = component;
 
-            if (injectNavigationOptions === true)
+            if (injectNavigationOptions)
             {
-                screen.navigationOptions = navigationOptions;
-            }
-            else
-            {
-                if (injectNavigationOptions === "extend")
+                if (injectNavigationOptions === 'extend')
                 {
                     screen = decorators.navigationOptions(navigationOptions)(component);
+                }
+                else
+                {
+                    if (injectNavigationOptions === true)
+                    {
+                        screen.navigationOptions = navigationOptions;
+                    }
                 }
             }
 
             return {
                 [name]: removeEmpty({
                     screen,
-                    navigationOptions: injectNavigationOptions === true ? null : navigationOptions
+                    navigationOptions: injectNavigationOptions ? {header: null} : navigationOptions,
                 })
             };
         }

@@ -39,6 +39,10 @@ export default class extends React.Component {
           {
             key: "login",
             title: "Login"
+          },
+          {
+            key: "setting",
+            title: "Setting"
           }
         ]
       }
@@ -47,9 +51,15 @@ export default class extends React.Component {
 
   onCellAction = item => {
     switch (item.key) {
-      case "login": {
+      case "login":
+        {
+          const { navigation } = this.props;
+          navigation.navigate("start");
+        }
+        break;
+      case "setting": {
         const { navigation } = this.props;
-        navigation.navigate("start");
+        navigation.navigate("setting");
       }
     }
   };

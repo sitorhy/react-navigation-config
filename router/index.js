@@ -4,13 +4,13 @@ import HomeScreen from "../components/HomeScreen";
 import MineScreen from "../components/MineScreen";
 import LoginScreen from "../components/LoginScreen";
 import RegisterScreen from "../components/RegisterScreen";
+import SettingScreen from "../components/SettingScreen";
 
 import { Image } from "react-native";
 import { renderNavigation } from "../react-navigation-config";
 
 import iconTodo from "../images/todo.png";
 import iconMine from "../images/mine.png";
-import filterNavigation from "../react-navigation-config/filterNavigation";
 
 const routes = {
   app: true,
@@ -20,40 +20,57 @@ const routes = {
   oneOf: [
     {
       name: "main",
-      all: [
+      children: [
         {
-          name: "home",
-          component: HomeScreen,
-          injectNavigationOptions: true,
+          name: "tab",
           navigationOptions: {
-            title: "Home",
-            tabBarLabel: "Home",
-            tabBarIcon: ({ focused, tintColor }) => (
-              <Image
-                style={[
-                  { width: 24, height: 24 },
-                  { tintColor: focused ? tintColor : "gray" }
-                ]}
-                source={iconTodo}
-              />
-            )
-          }
+            header: null
+          },
+          all: [
+            {
+              name: "home",
+              component: HomeScreen,
+              injectNavigationOptions: true,
+              navigationOptions: {
+                title: "Home",
+                tabBarLabel: "Home",
+                header: null,
+                tabBarIcon: ({ focused, tintColor }) => (
+                  <Image
+                    style={[
+                      { width: 24, height: 24 },
+                      { tintColor: focused ? tintColor : "gray" }
+                    ]}
+                    source={iconTodo}
+                  />
+                )
+              }
+            },
+            {
+              name: "mine",
+              component: MineScreen,
+              navigationOptions: {
+                title: "Mine",
+                tabBarLabel: "Mine",
+                header: null,
+                tabBarIcon: ({ focused, tintColor }) => (
+                  <Image
+                    style={[
+                      { width: 24, height: 24 },
+                      { tintColor: focused ? tintColor : "gray" }
+                    ]}
+                    source={iconMine}
+                  />
+                )
+              }
+            }
+          ]
         },
         {
-          name: "mine",
-          component: MineScreen,
+          name: "setting",
+          component: SettingScreen,
           navigationOptions: {
-            title: "Mine",
-            tabBarLabel: "Mine",
-            tabBarIcon: ({ focused, tintColor }) => (
-              <Image
-                style={[
-                  { width: 24, height: 24 },
-                  { tintColor: focused ? tintColor : "gray" }
-                ]}
-                source={iconMine}
-              />
-            )
+            headerTitle: "设置"
           }
         }
       ]
@@ -76,14 +93,14 @@ const routes = {
           name: "login",
           component: LoginScreen,
           navigationOptions: {
-            title: "登录"
+            headerTitle: "登录"
           }
         },
         {
           name: "register",
           component: RegisterScreen,
           navigationOptions: {
-            title: "注册"
+            headerTitle: "注册"
           }
         }
       ]
