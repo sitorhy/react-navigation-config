@@ -10,6 +10,26 @@ import {
 import * as decorators from './decorators';
 import {removeEmpty} from './common';
 
+function inject(injectNavigationOptions, navigationOptions, component)
+{
+    if (injectNavigationOptions)
+    {
+        if (injectNavigationOptions === 'extend')
+        {
+            return decorators.navigationOptions(navigationOptions)(component);
+        }
+        else
+        {
+            if (injectNavigationOptions === true)
+            {
+                component.navigationOptions = navigationOptions;
+            }
+        }
+    }
+
+    return component;
+}
+
 export default function (config)
 {
     const creator = {
@@ -47,25 +67,10 @@ export default function (config)
 
             let navigation = (creator[prop])(routeConfigs, routerConfig);
 
-            if (injectNavigationOptions)
-            {
-                if (injectNavigationOptions === 'extend')
-                {
-                    navigation = decorators.navigationOptions(navigationOptions)(navigation);
-                }
-                else
-                {
-                    if (injectNavigationOptions === true)
-                    {
-                        navigation.navigationOptions = navigationOptions;
-                    }
-                }
-            }
-
-            return app === true ? creator['app'](navigation) : {
+            return app === true ? creator['app'](inject(injectNavigationOptions, navigationOptions, navigation)) : {
                 [name]: removeEmpty({
-                    screen: navigation,
-                    navigationOptions: injectNavigationOptions ? null : navigationOptions,
+                    screen: inject(injectNavigationOptions, navigationOptions, navigation),
+                    navigationOptions: injectNavigationOptions ? null : navigationOptions
                 })
             };
         }
@@ -77,27 +82,10 @@ export default function (config)
                 throw new Error('navigation config missing component.');
             }
 
-            let screen = component;
-
-            if (injectNavigationOptions)
-            {
-                if (injectNavigationOptions === 'extend')
-                {
-                    screen = decorators.navigationOptions(navigationOptions)(component);
-                }
-                else
-                {
-                    if (injectNavigationOptions === true)
-                    {
-                        screen.navigationOptions = navigationOptions;
-                    }
-                }
-            }
-
             return {
                 [name]: removeEmpty({
-                    screen,
-                    navigationOptions: injectNavigationOptions ? {header: null} : navigationOptions,
+                    screen: inject(injectNavigationOptions, navigationOptions, component),
+                    navigationOptions: injectNavigationOptions ? {header: null} : navigationOptions
                 })
             };
         }
