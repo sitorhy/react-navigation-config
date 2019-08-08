@@ -10,9 +10,13 @@ import { renderNavigation } from "../react-navigation-config";
 
 import iconTodo from "../images/todo.png";
 import iconMine from "../images/mine.png";
+import filterNavigation from "../react-navigation-config/filterNavigation";
 
 const routes = {
   app: true,
+  routerConfig: {
+    initialRouteName: "start"
+  },
   oneOf: [
     {
       name: "main",
@@ -20,62 +24,66 @@ const routes = {
         {
           name: "home",
           component: HomeScreen,
-          config: {
-            navigationOptions: {
-              title: "Home",
-              tabBarLabel: "Home",
-              tabBarIcon: ({ focused, tintColor }) => (
-                <Image
-                  style={[
-                    { width: 24, height: 24 },
-                    { tintColor: focused ? tintColor : "gray" }
-                  ]}
-                  source={iconTodo}
-                />
-              )
-            }
+          injectNavigationOptions: true,
+          navigationOptions: {
+            title: "Home",
+            tabBarLabel: "Home",
+            tabBarIcon: ({ focused, tintColor }) => (
+              <Image
+                style={[
+                  { width: 24, height: 24 },
+                  { tintColor: focused ? tintColor : "gray" }
+                ]}
+                source={iconTodo}
+              />
+            )
           }
         },
         {
           name: "mine",
           component: MineScreen,
-          config: {
-            navigationOptions: {
-              title: "Mine",
-              tabBarLabel: "Mine",
-              tabBarIcon: ({ focused, tintColor }) => (
-                <Image
-                  style={[
-                    { width: 24, height: 24 },
-                    { tintColor: focused ? tintColor : "gray" }
-                  ]}
-                  source={iconMine}
-                />
-              )
-            }
+          navigationOptions: {
+            title: "Mine",
+            tabBarLabel: "Mine",
+            tabBarIcon: ({ focused, tintColor }) => (
+              <Image
+                style={[
+                  { width: 24, height: 24 },
+                  { tintColor: focused ? tintColor : "gray" }
+                ]}
+                source={iconMine}
+              />
+            )
           }
         }
       ]
     },
     {
       name: "start",
+      routerConfig: {
+        defaultNavigationOptions: {
+          headerStyle: {
+            backgroundColor: "#f4511e"
+          },
+          headerTintColor: "#fff",
+          headerTitleStyle: {
+            fontWeight: "bold"
+          }
+        }
+      },
       children: [
         {
           name: "login",
           component: LoginScreen,
-          config: {
-            navigationOptions: {
-              title: "登录"
-            }
+          navigationOptions: {
+            title: "登录"
           }
         },
         {
           name: "register",
           component: RegisterScreen,
-          config: {
-            navigationOptions: {
-              title: "注册"
-            }
+          navigationOptions: {
+            title: "注册"
           }
         }
       ]

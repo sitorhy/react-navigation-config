@@ -5,9 +5,10 @@ import {
     createStackNavigator,
     createSwitchNavigator,
     createBottomTabNavigator,
-} from 'react-navigation';
+} from "react-navigation";
 
-import {navigationOptions as injectNavigationOptions} from './decorators';
+import * as decorators from "./decorators";
+import {removeEmpty} from "./common";
 
 export default function (config)
 {
@@ -24,14 +25,16 @@ export default function (config)
             name,
             component,
             app,
-            config = {},
+            injectNavigationOptions,
+            navigationOptions,
+            routerConfig
         } = route;
-        const {navigationOptions} = config;
-        const prop = ['children', 'all', 'oneOf', 'app'].find(j => !!route[j]);
+
+        const prop = ["children", "all", "oneOf", "app"].find(j => !!route[j]);
 
         if (!name && app !== true)
         {
-            throw new Error('navigation config missing name.');
+            throw new Error("navigation config missing name.");
         }
 
         if (prop && Array.isArray(route[prop]) && route[prop].length)
@@ -41,29 +44,39 @@ export default function (config)
             {
                 Object.assign(routeConfigs, map(i, creator[prop]));
             }
-            return app === true ? creator['app']((creator[prop])(routeConfigs, config)) : {
+            return app === true ? creator["app"]((creator[prop])(routeConfigs, routerConfig)) : {
                 [name]: {
-                    screen: (creator[prop])(routeConfigs, config),
+                    screen: (creator[prop])(routeConfigs, routerConfig),
                 },
             };
         }
         else
         {
+
             if (!component)
             {
-                throw new Error('navigation config missing component.');
+                throw new Error("navigation config missing component.");
             }
 
             let screen = component;
 
-            if (navigationOptions)
+            if (injectNavigationOptions === true)
             {
-                screen = injectNavigationOptions(navigationOptions)(component);
+                screen.navigationOptions = navigationOptions;
             }
+            else
+            {
+                if (injectNavigationOptions === "extend")
+                {
+                    screen = decorators.navigationOptions(navigationOptions)(component);
+                }
+            }
+
             return {
-                [name]: {
-                    screen
-                },
+                [name]: removeEmpty({
+                    screen,
+                    navigationOptions: injectNavigationOptions === true ? null : navigationOptions
+                })
             };
         }
     };
