@@ -5,16 +5,16 @@ import {
     createStackNavigator,
     createSwitchNavigator,
     createBottomTabNavigator,
-} from 'react-navigation';
+} from "react-navigation";
 
-import * as decorators from './decorators';
-import {removeEmpty} from './common';
+import * as decorators from "./decorators";
+import {removeEmpty} from "./common";
 
 function inject(injectNavigationOptions, navigationOptions, component)
 {
     if (injectNavigationOptions)
     {
-        if (injectNavigationOptions === 'extend')
+        if (injectNavigationOptions === "extend")
         {
             return decorators.navigationOptions(navigationOptions)(component);
         }
@@ -50,11 +50,11 @@ export default function (config)
             routerConfig,
         } = route;
 
-        const prop = ['children', 'all', 'oneOf', 'app'].find(j => !!route[j]);
+        const prop = ["children", "all", "oneOf", "app"].find(j => !!route[j]);
 
         if (!name && app !== true)
         {
-            throw new Error('navigation config missing name.');
+            throw new Error("navigation config missing name.");
         }
 
         if (prop && Array.isArray(route[prop]) && route[prop].length)
@@ -67,7 +67,7 @@ export default function (config)
 
             let navigation = (creator[prop])(routeConfigs, routerConfig);
 
-            return app === true ? creator['app'](inject(injectNavigationOptions, navigationOptions, navigation)) : {
+            return app === true ? creator["app"](inject(injectNavigationOptions, navigationOptions, navigation)) : {
                 [name]: removeEmpty({
                     screen: inject(injectNavigationOptions, navigationOptions, navigation),
                     navigationOptions: injectNavigationOptions ? null : navigationOptions
@@ -79,7 +79,7 @@ export default function (config)
 
             if (!component)
             {
-                throw new Error('navigation config missing component.');
+                throw new Error("navigation config missing component.");
             }
 
             return {
