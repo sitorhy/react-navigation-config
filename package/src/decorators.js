@@ -1,5 +1,3 @@
-/* eslint-disable*/
-
 export function navigationOptions(navigationOptions = {})
 {
     return (Component) =>

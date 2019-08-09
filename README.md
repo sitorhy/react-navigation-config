@@ -1,5 +1,5 @@
 # React Navigation Config
-Static route configuration helpers for React Navigation 3.x.
+configuration helpers for react-navigation 3.x.
 
 # Basic Usage
 navigation example, project created by `react-native-cli`.
@@ -87,5 +87,5 @@ create navigation components with config.
 ### **navigationOptions(options)**
 set static navigationOptions variable in subclass.
 ##### Parameters
-+ `Object` options - see **createStackNavigator** or other
++ `Object` options - see **createStackNavigator** or others
 

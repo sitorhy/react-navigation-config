@@ -1,5 +1,3 @@
-/* eslint-disable*/
-
 export function removeEmpty(obj, options = {})
 {
     if (!obj)

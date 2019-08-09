@@ -1,0 +1,35 @@
+{
+  "name": "react-navigation-config",
+  "version": "0.0.1",
+  "description": "Static route configuration helpers for React Navigation 3.x.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "gulp",
+    "dev": "gulp dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sitorhy/react-navigation-config.git"
+  },
+  "keywords": [
+    "react-navigation",
+    "react-native"
+  ],
+  "author": "sitorhy",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sitorhy/react-navigation-config/issues"
+  },
+  "homepage": "https://github.com/sitorhy/react-navigation-config#readme",
+  "devDependencies": {
+    "@babel/core": "^7.5.5",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/plugin-proposal-export-default-from": "^7.5.2",
+    "@babel/plugin-transform-modules-commonjs": "^7.5.0",
+    "@babel/preset-env": "^7.5.5",
+    "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
+    "react-navigation": "^3.11.1"
+  }
+}

@@ -70,7 +70,7 @@ const routes = {
           name: "setting",
           component: SettingScreen,
           navigationOptions: {
-            headerTitle: "设置"
+            headerTitle: "Setting"
           }
         }
       ]
@@ -93,14 +93,14 @@ const routes = {
           name: "login",
           component: LoginScreen,
           navigationOptions: {
-            headerTitle: "登录"
+            headerTitle: "Login"
           }
         },
         {
           name: "register",
           component: RegisterScreen,
           navigationOptions: {
-            headerTitle: "注册"
+            headerTitle: "Register"
           }
         }
       ]

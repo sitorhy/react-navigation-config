@@ -1,5 +1,3 @@
-/* eslint-disable*/
-
 export default function (routes = [], allows = [])
 {
     if (allows === true)
