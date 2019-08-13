@@ -1,5 +1,6 @@
 import React from "react";
 import { StyleSheet, View, TextInput, Text, Button } from "react-native";
+import { getRouter } from "../router";
 
 const styles = StyleSheet.create({
   login: {
@@ -47,8 +48,11 @@ export default class extends React.Component {
   onPasswordTextChange = () => {};
 
   toMain = () => {
-    const { navigation } = this.props;
-    navigation.navigate("main");
+    getRouter()
+      .navigateTo("main", { xyz: 100 })
+      .then(() => {
+
+      });
   };
 
   toRegister = () => {

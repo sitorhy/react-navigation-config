@@ -9,6 +9,7 @@ import {
 } from "react-native";
 
 import imgAvatar from "../images/avatar.png";
+import {getRouter} from "../router";
 
 const styles = StyleSheet.create({
   header: {
@@ -58,8 +59,7 @@ export default class extends React.Component {
         }
         break;
       case "setting": {
-        const { navigation } = this.props;
-        navigation.navigate("setting");
+        getRouter().navigateTo("setting");
       }
     }
   };

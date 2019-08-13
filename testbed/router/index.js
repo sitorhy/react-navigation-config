@@ -7,7 +7,11 @@ import RegisterScreen from "../components/RegisterScreen";
 import SettingScreen from "../components/SettingScreen";
 
 import { Image } from "react-native";
-import { renderNavigation, wrappedSimpleNavigator } from "../react-navigation-config";
+import {
+  renderNavigation,
+  wrappedNavigatorRef,
+  Navigator
+} from "../react-navigation-config";
 
 import iconTodo from "../images/todo.png";
 import iconMine from "../images/mine.png";
@@ -108,4 +112,12 @@ const routes = {
   ]
 };
 
-export default wrappedSimpleNavigator(renderNavigation(routes));
+let router = new Navigator();
+
+export function getRouter() {
+  return router;
+}
+
+export default wrappedNavigatorRef(renderNavigation(routes), nav => {
+  router = nav;
+});
