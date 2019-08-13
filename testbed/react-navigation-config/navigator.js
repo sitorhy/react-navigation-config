@@ -25,7 +25,33 @@ class Navigator {
 
   switchTab() {}
 
-  reLaunch() {}
+  reLaunch(name, params) {
+    return new Promise((resolve, reject) => {
+      var id = (0, _common.uuid)();
+      var observer = {
+        id,
+        callback: () => {
+          if (name) {
+            this.navigateTo(name, params).then(() => {
+              resolve();
+            }).catch(() => {
+              resolve();
+            });
+          } else {
+            resolve();
+          }
+        }
+      };
+
+      this.container._listen(observer);
+
+      if (!this.navigator.dispatch(_reactNavigation.StackActions.popToTop())) {
+        this.container._remove(id);
+
+        reject();
+      }
+    });
+  }
 
   redirectTo(name, params) {
     return new Promise((resolve, reject) => {
@@ -77,7 +103,27 @@ class Navigator {
     });
   }
 
-  navigateBack() {}
+  navigateBack() {
+    return new Promise((resolve, reject) => {
+      var id = (0, _common.uuid)();
+      var observer = {
+        id,
+
+        callback() {
+          resolve();
+        }
+
+      };
+
+      this.container._listen(observer);
+
+      if (!this.navigator.dispatch(_reactNavigation.NavigationActions.back({}))) {
+        this.container._remove(id);
+
+        reject();
+      }
+    });
+  }
 
 }
 
@@ -117,12 +163,17 @@ function _default(AppContainer, onNavigatorCreate, onNavigatorDestroy) {
         console.log(newState);
         console.log(action);
 
-        this._observers.splice(0, this._observers.length).forEach((_ref) => {
-          var {
-            callback
-          } = _ref;
-          callback();
-        });
+        switch (action.type) {
+          default:
+            {
+              this._observers.splice(0, this._observers.length).forEach((_ref) => {
+                var {
+                  callback
+                } = _ref;
+                callback();
+              });
+            }
+        }
 
         if (typeof onNavigationStateChange === "function") {
           onNavigationStateChange(prevState, newState, action);

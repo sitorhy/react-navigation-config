@@ -25,7 +25,33 @@ class Navigator {
 
   switchTab() {}
 
-  reLaunch() {}
+  reLaunch(name, params) {
+    return new Promise((resolve, reject) => {
+      var id = (0, _common.uuid)();
+      var observer = {
+        id,
+        callback: () => {
+          if (name) {
+            this.navigateTo(name, params).then(() => {
+              resolve();
+            }).catch(() => {
+              resolve();
+            });
+          } else {
+            resolve();
+          }
+        }
+      };
+
+      this.container._listen(observer);
+
+      if (!this.navigator.dispatch(_reactNavigation.StackActions.popToTop())) {
+        this.container._remove(id);
+
+        reject();
+      }
+    });
+  }
 
   redirectTo(name, params) {
     return new Promise((resolve, reject) => {

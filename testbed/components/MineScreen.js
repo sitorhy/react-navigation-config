@@ -9,7 +9,7 @@ import {
 } from "react-native";
 
 import imgAvatar from "../images/avatar.png";
-import {getRouter} from "../router";
+import { getRouter } from "../router";
 
 const styles = StyleSheet.create({
   header: {
@@ -44,6 +44,10 @@ export default class extends React.Component {
           {
             key: "setting",
             title: "Setting"
+          },
+          {
+            key: "count",
+            title: "Counting"
           }
         ]
       }
@@ -58,8 +62,13 @@ export default class extends React.Component {
           navigation.navigate("start");
         }
         break;
-      case "setting": {
-        getRouter().navigateTo("setting");
+      case "setting":
+        {
+          getRouter().navigateTo("setting");
+        }
+        break;
+      case "count": {
+        getRouter().navigateTo("count");
       }
     }
   };

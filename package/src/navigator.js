@@ -1,5 +1,5 @@
 import React from "react";
-import {NavigationActions, StackActions} from "react-navigation";
+import {NavigationActions, StackActions,SwitchActions } from "react-navigation";
 import {uuid} from "./common";
 
 export class Navigator
@@ -19,9 +19,35 @@ export class Navigator
 
     }
 
-    reLaunch()
+    reLaunch(name,params)
     {
-
+        return new Promise((resolve, reject)=>{
+            const id = uuid();
+            const observer = {
+                id,
+                callback:()=>
+                {
+                    if(name)
+                    {
+                        this.navigateTo(name,params).then(()=>{
+                            resolve();
+                        }).catch(()=>{
+                            resolve();
+                        });
+                    }
+                    else
+                    {
+                        resolve();
+                    }
+                }
+            };
+            this.container._listen(observer);
+            if (!this.navigator.dispatch(StackActions.popToTop()))
+            {
+                this.container._remove(id);
+                reject();
+            }
+        });
     }
 
     redirectTo(name, params)

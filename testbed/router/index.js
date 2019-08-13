@@ -5,6 +5,8 @@ import MineScreen from "../components/MineScreen";
 import LoginScreen from "../components/LoginScreen";
 import RegisterScreen from "../components/RegisterScreen";
 import SettingScreen from "../components/SettingScreen";
+import CountScreen from "../components/CountScreen";
+import CountControlScreen from "../components/CountControlScreen";
 
 import { Image } from "react-native";
 import {
@@ -75,6 +77,20 @@ const routes = {
           component: SettingScreen,
           navigationOptions: {
             headerTitle: "Setting"
+          }
+        },
+        {
+          name: "count",
+          component: CountScreen,
+          navigationOptions: {
+            headerTitle: "Count"
+          }
+        },
+        {
+          name: "count-control",
+          component: CountControlScreen,
+          navigationOptions: {
+            headerTitle: "Count-Control"
           }
         }
       ]
