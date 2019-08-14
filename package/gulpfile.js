@@ -36,14 +36,14 @@ gulp.task("default", async () =>
 });
 
 gulp.task("dev", () => gulp.watch("src/**/*.js")
-    .on("change", () =>
+    .on("change", async () =>
     {
-        build();
-        deploy();
+        await build();
+        await deploy();
     })
-    .on("add", () =>
+    .on("add", async () =>
     {
-        build();
-        deploy();
+        await build();
+        await deploy();
     })
 );

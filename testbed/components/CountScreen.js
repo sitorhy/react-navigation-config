@@ -16,7 +16,13 @@ export default class extends React.Component {
 
     return (
       <View>
-        <Text>{count}</Text>
+        <View style={{ marginTop: 10, marginBottom: 10 }}>
+          <Text
+            style={{ fontSize: 20, fontWeight: "bold", textAlign: "center" }}
+          >
+            {count}
+          </Text>
+        </View>
         <Button title="control" onPress={this.toCountControl} />
       </View>
     );

@@ -14,115 +14,82 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+function getNavState(nav) {
+  var {
+    routes,
+    index
+  } = nav;
+}
+
 class Navigator {
-  setNavigator(navigator) {
+  _setNavigator(navigator) {
     this.navigator = navigator;
   }
 
-  setContainer(container) {
+  _setContainer(container) {
     this.container = container;
   }
 
-  switchTab() {}
-
-  reLaunch(name, params) {
+  _asyncNavigate(doTask) {
     return new Promise((resolve, reject) => {
       var id = (0, _common.uuid)();
       var observer = {
         id,
-        callback: () => {
-          if (name) {
-            this.navigateTo(name, params).then(() => {
-              resolve();
-            }).catch(() => {
-              resolve();
-            });
-          } else {
-            resolve();
-          }
+
+        callback(obj) {
+          resolve(obj);
         }
+
       };
 
       this.container._listen(observer);
 
-      if (!this.navigator.dispatch(_reactNavigation.StackActions.popToTop())) {
+      if (!doTask()) {
         this.container._remove(id);
 
         reject();
       }
+    });
+  }
+
+  getParams() {
+    console.log(this.navigator);
+  }
+
+  reLaunch(name, params) {
+    return new Promise((resolve, reject) => {
+      this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.StackActions.popToTop())).then(obj => {
+        if (name) {
+          this.navigateTo(name, params).then(obj => {
+            resolve(obj);
+          }).catch(() => {
+            reject();
+          });
+        } else {
+          resolve(obj);
+        }
+      }).catch(() => {
+        reject();
+      });
     });
   }
 
   redirectTo(name, params) {
-    return new Promise((resolve, reject) => {
-      var id = (0, _common.uuid)();
-      var observer = {
-        id,
-
-        callback() {
-          resolve();
-        }
-
-      };
-
-      this.container._listen(observer);
-
-      if (!this.navigator.dispatch(_reactNavigation.StackActions.replace({
-        routeName: name,
-        params: params
-      }))) {
-        this.container._remove(id);
-
-        reject();
-      }
-    });
+    return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.StackActions.replace({
+      routeName: name,
+      params: params
+    })));
   }
 
   navigateTo(name, params) {
-    return new Promise((resolve, reject) => {
-      var id = (0, _common.uuid)();
-      var observer = {
-        id,
-
-        callback() {
-          resolve();
-        }
-
-      };
-
-      this.container._listen(observer);
-
-      if (!this.navigator.dispatch(_reactNavigation.NavigationActions.navigate({
-        routeName: name,
-        params: params
-      }))) {
-        this.container._remove(id);
-
-        reject();
-      }
-    });
+    return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.NavigationActions.navigate({
+      routeName: name,
+      params: params
+    })));
   }
 
   navigateBack() {
-    return new Promise((resolve, reject) => {
-      var id = (0, _common.uuid)();
-      var observer = {
-        id,
-
-        callback() {
-          resolve();
-        }
-
-      };
-
-      this.container._listen(observer);
-
-      if (!this.navigator.dispatch(_reactNavigation.NavigationActions.back({}))) {
-        this.container._remove(id);
-
-        reject();
-      }
-    });
+    return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.NavigationActions.back({})));
   }
 
 }
@@ -145,7 +112,8 @@ function _default(AppContainer, onNavigatorCreate, onNavigatorDestroy) {
     constructor() {
       super(...arguments);
       onNavigatorCreate(navigator);
-      navigator.setNavigator(this);
+
+      navigator._setNavigator(this);
     }
 
   };
@@ -157,11 +125,18 @@ function _default(AppContainer, onNavigatorCreate, onNavigatorDestroy) {
 
       _defineProperty(this, "onNavigationStateChange", (prevState, newState, action) => {
         var {
-          onNavigationStateChange
+          onNavigationStateChange,
+          navigation
         } = this.props;
-        console.log(prevState);
-        console.log(newState);
-        console.log(action);
+        /*  console.log(prevState);
+          console.log(newState);
+          console.log(action);
+          console.log(this);*/
+
+        var {
+          params,
+          routeName
+        } = action;
 
         switch (action.type) {
           default:
@@ -170,7 +145,10 @@ function _default(AppContainer, onNavigatorCreate, onNavigatorDestroy) {
                 var {
                   callback
                 } = _ref;
-                callback();
+                callback({
+                  params,
+                  routeName
+                });
               });
             }
         }
@@ -180,7 +158,7 @@ function _default(AppContainer, onNavigatorCreate, onNavigatorDestroy) {
         }
       });
 
-      navigator.setContainer(this);
+      navigator._setContainer(this);
     }
 
     _listen(observer) {
@@ -197,8 +175,10 @@ function _default(AppContainer, onNavigatorCreate, onNavigatorDestroy) {
 
     componentWillUnmount() {
       onNavigatorDestroy();
-      navigator.setContainer(null);
-      navigator.setNavigator(null);
+
+      navigator._setContainer(null);
+
+      navigator._setNavigator(null);
     }
 
     render() {

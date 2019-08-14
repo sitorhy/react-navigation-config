@@ -50,9 +50,15 @@ export default class extends React.Component {
   toMain = () => {
     getRouter()
       .navigateTo("main", { xyz: 100 })
-      .then(() => {
-
+      .then(params => {
+        console.log(params);
       });
+  };
+
+  toCount = () => {
+    getRouter()
+      .navigateTo("count")
+      .then(() => {});
   };
 
   toRegister = () => {
@@ -96,6 +102,10 @@ export default class extends React.Component {
 
           <View style={styles.actionBtn}>
             <Button title="Register" onPress={this.toRegister} />
+          </View>
+
+          <View style={styles.actionBtn}>
+            <Button title="To Count" onPress={this.toCount} />
           </View>
         </View>
       </View>

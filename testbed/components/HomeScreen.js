@@ -10,6 +10,7 @@ import {
 
 import imgTask from "../images/task.png";
 import toDoList from "./todo.json";
+import {getRouter} from "../router";
 
 const styles = StyleSheet.create({
   todo: {},
@@ -70,6 +71,11 @@ export default class extends React.Component {
       />
     );
   };
+
+  componentDidMount() {
+    console.log(this.props);
+    console.log(getRouter().getParams());
+  }
 
   render() {
     const { data } = this.state;

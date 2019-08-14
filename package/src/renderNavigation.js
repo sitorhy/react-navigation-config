@@ -2,7 +2,7 @@ import {
     createAppContainer,
     createStackNavigator,
     createSwitchNavigator,
-    createBottomTabNavigator,
+    createBottomTabNavigator
 } from "react-navigation";
 
 import * as decorators from "./decorators";

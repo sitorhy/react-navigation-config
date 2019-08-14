@@ -46,8 +46,12 @@ export default class extends React.Component {
             title: "Setting"
           },
           {
-            key: "count",
-            title: "Counting"
+            key: "navigate",
+            title: "Navigate Test"
+          },
+          {
+            key: "toHome",
+            title: "Switch To Home"
           }
         ]
       }
@@ -67,9 +71,16 @@ export default class extends React.Component {
           getRouter().navigateTo("setting");
         }
         break;
-      case "count": {
-        getRouter().navigateTo("count");
-      }
+      case "navigate":
+        {
+          getRouter().navigateTo("count");
+        }
+        break;
+      case "toHome":
+        {
+          getRouter().navigateTo("start");
+        }
+        break;
     }
   };
 

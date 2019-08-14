@@ -1,122 +1,102 @@
 import React from "react";
-import {NavigationActions, StackActions,SwitchActions } from "react-navigation";
+import {NavigationActions, StackActions, SwitchActions} from "react-navigation";
 import {uuid} from "./common";
+
+function getNavState(nav)
+{
+    const {routes, index} = nav;
+}
 
 export class Navigator
 {
-    setNavigator(navigator)
+    _setNavigator(navigator)
     {
         this.navigator = navigator;
     }
 
-    setContainer(container)
+    _setContainer(container)
     {
         this.container = container;
     }
 
-    switchTab()
+    _asyncNavigate(doTask)
     {
-
-    }
-
-    reLaunch(name,params)
-    {
-        return new Promise((resolve, reject)=>{
+        return new Promise((resolve, reject) =>
+        {
             const id = uuid();
             const observer = {
                 id,
-                callback:()=>
+                callback(obj)
                 {
-                    if(name)
-                    {
-                        this.navigateTo(name,params).then(()=>{
-                            resolve();
-                        }).catch(()=>{
-                            resolve();
-                        });
-                    }
-                    else
-                    {
-                        resolve();
-                    }
+                    resolve(obj);
                 }
             };
             this.container._listen(observer);
-            if (!this.navigator.dispatch(StackActions.popToTop()))
+            if (!doTask())
             {
                 this.container._remove(id);
                 reject();
             }
+        });
+    }
+
+    getParams()
+    {
+        console.log(this.navigator)
+    }
+
+    reLaunch(name, params)
+    {
+        return new Promise((resolve, reject) =>
+        {
+            this._asyncNavigate(
+                () => this.navigator.dispatch(StackActions.popToTop())
+            ).then((obj) =>
+            {
+                if (name)
+                {
+                    this.navigateTo(name, params).then((obj) =>
+                    {
+                        resolve(obj);
+                    }).catch(() =>
+                    {
+                        reject();
+                    });
+                }
+                else
+                {
+                    resolve(obj);
+                }
+            }).catch(() =>
+            {
+                reject();
+            });
         });
     }
 
     redirectTo(name, params)
     {
-        return new Promise((resolve, reject) =>
-        {
-            const id = uuid();
-            const observer = {
-                id,
-                callback()
-                {
-                    resolve();
-                }
-            };
-            this.container._listen(observer);
-            if (!this.navigator.dispatch(StackActions.replace({
+        return this._asyncNavigate(() => this.navigator.dispatch(StackActions.replace({
                 routeName: name,
                 params: params
-            })))
-            {
-                this.container._remove(id);
-                reject();
-            }
-        });
+            }))
+        );
     }
 
     navigateTo(name, params)
     {
-        return new Promise((resolve, reject) =>
-        {
-            const id = uuid();
-            const observer = {
-                id,
-                callback()
-                {
-                    resolve();
-                }
-            };
-            this.container._listen(observer);
-            if (!this.navigator.dispatch(NavigationActions.navigate({
+        return this._asyncNavigate(() => this.navigator.dispatch(NavigationActions.navigate({
                 routeName: name,
                 params: params
-            })))
-            {
-                this.container._remove(id);
-                reject();
-            }
-        });
+            }))
+        );
     }
 
     navigateBack()
     {
-        return new Promise((resolve, reject) =>
-        {
-            const id = uuid();
-            const observer = {
-                id,
-                callback()
-                {
-                    resolve();
-                }
-            };
-            this.container._listen(observer);
-            if (!this.navigator.dispatch(NavigationActions.back({})))
-            {
-                this.container._remove(id);
-                reject();
-            }
-        });
+        return this._asyncNavigate(
+            () => this.navigator.dispatch(NavigationActions.back({}))
+        );
     }
 }
 
@@ -134,7 +114,7 @@ export default function (AppContainer, onNavigatorCreate = () =>
         {
             super(...args);
             onNavigatorCreate(navigator);
-            navigator.setNavigator(this);
+            navigator._setNavigator(this);
         }
     }
 
@@ -145,7 +125,7 @@ export default function (AppContainer, onNavigatorCreate = () =>
         constructor(...args)
         {
             super(...args);
-            navigator.setContainer(this);
+            navigator._setContainer(this);
         }
 
         _listen(observer)
@@ -164,11 +144,14 @@ export default function (AppContainer, onNavigatorCreate = () =>
 
         onNavigationStateChange = (prevState, newState, action) =>
         {
-            const {onNavigationStateChange} = this.props;
+            const {onNavigationStateChange, navigation} = this.props;
 
-            console.log(prevState);
+          /*  console.log(prevState);
             console.log(newState);
             console.log(action);
+            console.log(this);*/
+
+            const {params, routeName} = action;
 
             switch (action.type)
             {
@@ -176,7 +159,7 @@ export default function (AppContainer, onNavigatorCreate = () =>
                 {
                     this._observers.splice(0, this._observers.length).forEach(({callback}) =>
                     {
-                        callback();
+                        callback({params, routeName});
                     });
                 }
             }
@@ -190,8 +173,8 @@ export default function (AppContainer, onNavigatorCreate = () =>
         componentWillUnmount()
         {
             onNavigatorDestroy();
-            navigator.setContainer(null);
-            navigator.setNavigator(null);
+            navigator._setContainer(null);
+            navigator._setNavigator(null);
         }
 
         render()
