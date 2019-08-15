@@ -52,6 +52,10 @@ export default class extends React.Component {
           {
             key: "toHome",
             title: "Switch To Home"
+          },
+          {
+            key: "native",
+            title: "Native Test"
           }
         ]
       }
@@ -68,12 +72,21 @@ export default class extends React.Component {
         break;
       case "setting":
         {
-          getRouter().navigateTo("setting");
+          getRouter()
+            .navigateTo("setting", { acb: 200 })
+            .then(() => {
+              getRouter().getParams();
+            });
         }
         break;
       case "navigate":
         {
           getRouter().navigateTo("count");
+        }
+        break;
+      case "native":
+        {
+          getRouter().navigateTo("native");
         }
         break;
       case "toHome":

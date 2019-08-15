@@ -48,11 +48,7 @@ export default class extends React.Component {
   onPasswordTextChange = () => {};
 
   toMain = () => {
-    getRouter()
-      .navigateTo("main", { xyz: 100 })
-      .then(params => {
-        console.log(params);
-      });
+    getRouter().navigateTo("main", { xyz: 100 });
   };
 
   toCount = () => {

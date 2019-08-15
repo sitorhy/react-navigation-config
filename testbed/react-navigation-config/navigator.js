@@ -4,13 +4,13 @@ exports.__esModule = true;
 exports.default = _default;
 exports.Navigator = void 0;
 
-var _react = _interopRequireDefault(require("react"));
+var _react = _interopRequireWildcard(require("react"));
 
 var _reactNavigation = require("react-navigation");
 
 var _common = require("./common");
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -125,14 +125,12 @@ function _default(AppContainer, onNavigatorCreate, onNavigatorDestroy) {
 
       _defineProperty(this, "onNavigationStateChange", (prevState, newState, action) => {
         var {
-          onNavigationStateChange,
-          navigation
+          onNavigationStateChange
         } = this.props;
-        /*  console.log(prevState);
-          console.log(newState);
-          console.log(action);
-          console.log(this);*/
-
+        console.log(prevState);
+        console.log(newState);
+        console.log(action);
+        console.log(this);
         var {
           params,
           routeName
@@ -185,10 +183,10 @@ function _default(AppContainer, onNavigatorCreate, onNavigatorDestroy) {
       var {
         uriPrefix
       } = this.props;
-      return _react.default.createElement(WrappedAppContainer, {
+      return _react.default.createElement(_react.Fragment, null, _react.default.createElement(WrappedAppContainer, {
         uriPrefix: uriPrefix,
         onNavigationStateChange: this.onNavigationStateChange
-      });
+      }));
     }
 
   }, _temp;

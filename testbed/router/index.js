@@ -7,6 +7,7 @@ import RegisterScreen from "../components/RegisterScreen";
 import SettingScreen from "../components/SettingScreen";
 import CountScreen from "../components/CountScreen";
 import CountControlScreen from "../components/CountControlScreen";
+import NativeTestScreen from "../components/NativeTestScreen";
 
 import { Image } from "react-native";
 import {
@@ -91,6 +92,13 @@ const routes = {
           component: CountControlScreen,
           navigationOptions: {
             headerTitle: "Count-Control"
+          }
+        },
+        {
+          name: "native",
+          component: NativeTestScreen,
+          navigationOptions: {
+            headerTitle: "Native-Test"
           }
         }
       ]

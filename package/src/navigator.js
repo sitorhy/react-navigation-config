@@ -1,5 +1,5 @@
-import React from "react";
-import {NavigationActions, StackActions, SwitchActions} from "react-navigation";
+import React,{Fragment} from "react";
+import {NavigationActions, StackActions, NavigationEvents} from "react-navigation";
 import {uuid} from "./common";
 
 function getNavState(nav)
@@ -144,12 +144,12 @@ export default function (AppContainer, onNavigatorCreate = () =>
 
         onNavigationStateChange = (prevState, newState, action) =>
         {
-            const {onNavigationStateChange, navigation} = this.props;
+            const {onNavigationStateChange} = this.props;
 
-          /*  console.log(prevState);
+            console.log(prevState);
             console.log(newState);
             console.log(action);
-            console.log(this);*/
+            console.log(this);
 
             const {params, routeName} = action;
 
@@ -181,7 +181,9 @@ export default function (AppContainer, onNavigatorCreate = () =>
         {
             const {uriPrefix} = this.props;
             return (
-                <WrappedAppContainer uriPrefix={uriPrefix} onNavigationStateChange={this.onNavigationStateChange}/>
+                <Fragment>
+                    <WrappedAppContainer uriPrefix={uriPrefix} onNavigationStateChange={this.onNavigationStateChange}/>
+                </Fragment>
             );
         }
     }

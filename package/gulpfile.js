@@ -15,11 +15,6 @@ function build()
         .pipe(gulp.dest("./dist"));
 }
 
-function deploy()
-{
-    return gulp.src("./dist/**/*.js").pipe(gulp.dest(path.join(testbed_dir, "react-navigation-config")));
-}
-
 gulp.task("default", async () =>
 {
     const json = require("./package.json");
@@ -32,18 +27,25 @@ gulp.task("default", async () =>
     fs.writeFileSync("./dist/package.json", JSON.stringify(json, null, 2));
     await gulp.src(path.join(path.resolve("../"), "*.md")).pipe(gulp.dest("./dist"));
     await build();
-    await deploy();
 });
 
 gulp.task("dev", () => gulp.watch("src/**/*.js")
     .on("change", async () =>
     {
-        await build();
-        await deploy();
+        return gulp
+            .src(["src/**/*.js"])
+            .pipe(
+                babel()
+            )
+            .pipe(gulp.dest(path.join(testbed_dir, "react-navigation-config")));
     })
     .on("add", async () =>
     {
-        await build();
-        await deploy();
+        return gulp
+            .src(["src/**/*.js"])
+            .pipe(
+                babel()
+            )
+            .pipe(gulp.dest(path.join(testbed_dir, "react-navigation-config")));
     })
 );
