@@ -139,7 +139,7 @@ create navigation components with config.
 ##### Parameters
 + `Array<Route>` routes - the route configuration
 
-###**wrappedNavigatorRef**
+### **wrappedNavigatorRef**
 receive a navigator that can navigate to specified route anywhere.
 ##### Parameters
 + `Array<Route>` AppContainer, from call **renderNavigation**
@@ -191,7 +191,7 @@ export default class extends React.Component {
 
 ```
 ### API
-###**reLaunch**
+### **reLaunch**
 take back to the first screen in the stack.
 ##### Parameters
 + `<String> name` optional, the next navigation route name that will replace first screen.
@@ -199,7 +199,7 @@ take back to the first screen in the stack.
 ##### Return Value
 + `<Promise>`
 
-###**redirectTo**
+### **redirectTo**
 replace the route at the given name with another.
 ##### Parameters
 + `<String> name` required
@@ -207,7 +207,7 @@ replace the route at the given name with another.
 ##### Return Value
 + `<Promise>`
 
-###**navigateTo**
+### **navigateTo**
 update the current state with the given name and params.
 ##### Parameters
 + `<String> name` required
@@ -230,7 +230,7 @@ navigator.navigateTo("Profile",{}).then(()=>{
 });
 ```
 
-###**navigateBack**
+### **navigateBack**
 Go back to previous screen and close current screen.
 ##### Parameters
 + `void`
