@@ -88,7 +88,6 @@ class Navigator {
   }
 
   getParams() {
-    console.log(this.navigator);
     return getNavState(this.navigator.state.nav);
   }
 
@@ -96,7 +95,7 @@ class Navigator {
     return new Promise((resolve, reject) => {
       this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.StackActions.popToTop())).then(obj => {
         if (name) {
-          this.navigateTo(name, params).then(obj => {
+          this.redirectTo(name, params).then(obj => {
             resolve(obj);
           }).catch(() => {
             reject();
@@ -154,11 +153,7 @@ function _default(AppContainer, navigator) {
       _defineProperty(this, "onNavigationStateChange", (prevState, newState, action) => {
         var {
           onNavigationStateChange
-        } = this.props; // console.log(prevState);
-        //  console.log(newState);
-        //  console.log(action);
-        //  console.log(this);
-
+        } = this.props;
         var {
           params,
           routeName

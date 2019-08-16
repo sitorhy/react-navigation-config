@@ -88,7 +88,6 @@ class Navigator {
   }
 
   getParams() {
-    console.log(this.navigator);
     return getNavState(this.navigator.state.nav);
   }
 
@@ -154,11 +153,7 @@ function _default(AppContainer, navigator) {
       _defineProperty(this, "onNavigationStateChange", (prevState, newState, action) => {
         var {
           onNavigationStateChange
-        } = this.props; // console.log(prevState);
-        //  console.log(newState);
-        //  console.log(action);
-        //  console.log(this);
-
+        } = this.props;
         var {
           params,
           routeName

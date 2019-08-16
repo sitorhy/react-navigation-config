@@ -75,7 +75,6 @@ export class Navigator
 
     getParams()
     {
-        console.log(this.navigator);
         return getNavState(this.navigator.state.nav);
     }
 
@@ -178,11 +177,6 @@ export default function (AppContainer, navigator)
         onNavigationStateChange = (prevState, newState, action) =>
         {
             const {onNavigationStateChange} = this.props;
-
-            // console.log(prevState);
-            //  console.log(newState);
-            //  console.log(action);
-            //  console.log(this);
 
             const {params, routeName} = action;
 
