@@ -1,10 +1,43 @@
-import React,{Fragment} from "react";
-import {NavigationActions, StackActions, NavigationEvents} from "react-navigation";
+import React, {Fragment} from "react";
+import {NavigationActions, StackActions} from "react-navigation";
 import {uuid} from "./common";
 
-function getNavState(nav)
+export function getNavState(nav)
 {
-    const {routes, index} = nav;
+    function _get(nav, mergeParams, scopeParams)
+    {
+        const {routes, index, params} = nav;
+        let state = null;
+        if (routes && routes.length && index !== undefined && index !== null)
+        {
+            state = _get(routes[index], mergeParams, scopeParams) || routes[index];
+            if (state.params)
+            {
+                if (scopeParams[state.routeName])
+                {
+                    scopeParams[state.routeName] = {
+                        ...scopeParams[state.routeName],
+                        [state.key]: state.params
+                    };
+                }
+                else
+                {
+                    scopeParams[state.routeName] = {[state.key]: state.params};
+                }
+                scopeParams[state.routeName].common = {
+                    ...scopeParams[state.routeName].common,
+                    ...state.params
+                };
+            }
+        }
+        Object.assign(mergeParams, params);
+        return state;
+    }
+
+    const params = {};
+    const scopeParams = {};
+    _get(nav, params, scopeParams);
+    return [params, scopeParams];
 }
 
 export class Navigator
@@ -42,7 +75,8 @@ export class Navigator
 
     getParams()
     {
-        console.log(this.navigator)
+        console.log(this.navigator);
+        return getNavState(this.navigator.state.nav);
     }
 
     reLaunch(name, params)
@@ -55,7 +89,7 @@ export class Navigator
             {
                 if (name)
                 {
-                    this.navigateTo(name, params).then((obj) =>
+                    this.redirectTo(name, params).then((obj) =>
                     {
                         resolve(obj);
                     }).catch(() =>
@@ -100,21 +134,17 @@ export class Navigator
     }
 }
 
-export default function (AppContainer, onNavigatorCreate = () =>
+export default function (AppContainer, navigator)
 {
-}, onNavigatorDestroy = () =>
-{
-})
-{
-    const navigator = new Navigator();
-
     const WrappedAppContainer = class extends AppContainer
     {
         constructor(...args)
         {
             super(...args);
-            onNavigatorCreate(navigator);
-            navigator._setNavigator(this);
+            if (navigator)
+            {
+                navigator._setNavigator(this);
+            }
         }
     }
 
@@ -125,7 +155,10 @@ export default function (AppContainer, onNavigatorCreate = () =>
         constructor(...args)
         {
             super(...args);
-            navigator._setContainer(this);
+            if (navigator)
+            {
+                navigator._setContainer(this);
+            }
         }
 
         _listen(observer)
@@ -146,10 +179,10 @@ export default function (AppContainer, onNavigatorCreate = () =>
         {
             const {onNavigationStateChange} = this.props;
 
-            console.log(prevState);
-            console.log(newState);
-            console.log(action);
-            console.log(this);
+            // console.log(prevState);
+            //  console.log(newState);
+            //  console.log(action);
+            //  console.log(this);
 
             const {params, routeName} = action;
 
@@ -172,7 +205,6 @@ export default function (AppContainer, onNavigatorCreate = () =>
 
         componentWillUnmount()
         {
-            onNavigatorDestroy();
             navigator._setContainer(null);
             navigator._setNavigator(null);
         }

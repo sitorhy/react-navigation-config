@@ -1,6 +1,7 @@
 "use strict";
 
 exports.__esModule = true;
+exports.getNavState = getNavState;
 exports.default = _default;
 exports.Navigator = void 0;
 
@@ -14,11 +15,45 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
+
 function getNavState(nav) {
-  var {
-    routes,
-    index
-  } = nav;
+  function _get(nav, mergeParams, scopeParams) {
+    var {
+      routes,
+      index,
+      params
+    } = nav;
+    var state = null;
+
+    if (routes && routes.length && index !== undefined && index !== null) {
+      state = _get(routes[index], mergeParams, scopeParams) || routes[index];
+
+      if (state.params) {
+        if (scopeParams[state.routeName]) {
+          scopeParams[state.routeName] = _extends({}, scopeParams[state.routeName], {
+            [state.key]: state.params
+          });
+        } else {
+          scopeParams[state.routeName] = {
+            [state.key]: state.params
+          };
+        }
+
+        scopeParams[state.routeName].common = _extends({}, scopeParams[state.routeName].common, {}, state.params);
+      }
+    }
+
+    Object.assign(mergeParams, params);
+    return state;
+  }
+
+  var params = {};
+  var scopeParams = {};
+
+  _get(nav, params, scopeParams);
+
+  return [params, scopeParams];
 }
 
 class Navigator {
@@ -54,13 +89,14 @@ class Navigator {
 
   getParams() {
     console.log(this.navigator);
+    return getNavState(this.navigator.state.nav);
   }
 
   reLaunch(name, params) {
     return new Promise((resolve, reject) => {
       this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.StackActions.popToTop())).then(obj => {
         if (name) {
-          this.navigateTo(name, params).then(obj => {
+          this.redirectTo(name, params).then(obj => {
             resolve(obj);
           }).catch(() => {
             reject();
@@ -96,24 +132,16 @@ class Navigator {
 
 exports.Navigator = Navigator;
 
-function _default(AppContainer, onNavigatorCreate, onNavigatorDestroy) {
+function _default(AppContainer, navigator) {
   var _temp;
 
-  if (onNavigatorCreate === void 0) {
-    onNavigatorCreate = () => {};
-  }
-
-  if (onNavigatorDestroy === void 0) {
-    onNavigatorDestroy = () => {};
-  }
-
-  var navigator = new Navigator();
   var WrappedAppContainer = class extends AppContainer {
     constructor() {
       super(...arguments);
-      onNavigatorCreate(navigator);
 
-      navigator._setNavigator(this);
+      if (navigator) {
+        navigator._setNavigator(this);
+      }
     }
 
   };
@@ -126,11 +154,11 @@ function _default(AppContainer, onNavigatorCreate, onNavigatorDestroy) {
       _defineProperty(this, "onNavigationStateChange", (prevState, newState, action) => {
         var {
           onNavigationStateChange
-        } = this.props;
-        console.log(prevState);
-        console.log(newState);
-        console.log(action);
-        console.log(this);
+        } = this.props; // console.log(prevState);
+        //  console.log(newState);
+        //  console.log(action);
+        //  console.log(this);
+
         var {
           params,
           routeName
@@ -156,7 +184,9 @@ function _default(AppContainer, onNavigatorCreate, onNavigatorDestroy) {
         }
       });
 
-      navigator._setContainer(this);
+      if (navigator) {
+        navigator._setContainer(this);
+      }
     }
 
     _listen(observer) {
@@ -172,8 +202,6 @@ function _default(AppContainer, onNavigatorCreate, onNavigatorDestroy) {
     }
 
     componentWillUnmount() {
-      onNavigatorDestroy();
-
       navigator._setContainer(null);
 
       navigator._setNavigator(null);

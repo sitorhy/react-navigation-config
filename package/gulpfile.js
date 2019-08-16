@@ -5,15 +5,23 @@ const babel = require("gulp-babel");
 
 const testbed_dir = path.join(path.resolve("../"), "testbed");
 
-function build()
-{
+gulp.task("build",()=>{
     return gulp
         .src(["src/**/*.js"])
         .pipe(
             babel()
         )
         .pipe(gulp.dest("./dist"));
-}
+})
+
+gulp.task("deploy",()=>{
+    return gulp
+        .src(["src/**/*.js"])
+        .pipe(
+            babel()
+        )
+        .pipe(gulp.dest(path.join(testbed_dir, "react-navigation-config")));
+})
 
 gulp.task("default", async () =>
 {
@@ -25,8 +33,8 @@ gulp.task("default", async () =>
         fs.mkdirSync("./dist");
     }
     fs.writeFileSync("./dist/package.json", JSON.stringify(json, null, 2));
-    await gulp.src(path.join(path.resolve("../"), "*.md")).pipe(gulp.dest("./dist"));
-    await build();
+    gulp.src(path.join(path.resolve("../"), "*.md")).pipe(gulp.dest("./dist"));
+    return gulp.series("build","deploy");
 });
 
 gulp.task("dev", () => gulp.watch("src/**/*.js")

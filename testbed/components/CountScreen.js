@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, View, Text } from "react-native";
-import { getRouter } from "../router";
+import navigator from "../router/navigator";
 
 export default class extends React.Component {
   state = {
@@ -8,7 +8,7 @@ export default class extends React.Component {
   };
 
   toCountControl = () => {
-    getRouter().navigateTo("count-control");
+    navigator.navigateTo("count-control");
   };
 
   render() {

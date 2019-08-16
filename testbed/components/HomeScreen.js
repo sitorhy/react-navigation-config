@@ -10,7 +10,7 @@ import {
 
 import imgTask from "../images/task.png";
 import toDoList from "./todo.json";
-import {getRouter} from "../router";
+import navigator from "../router/navigator";
 
 const styles = StyleSheet.create({
   todo: {},
@@ -74,7 +74,7 @@ export default class extends React.Component {
 
   componentDidMount() {
     console.log(this.props);
-    console.log(getRouter().getParams());
+    console.log(navigator.getParams());
   }
 
   render() {

@@ -7,9 +7,9 @@ import {
   Image,
   TouchableOpacity
 } from "react-native";
+import navigator from "../router/navigator";
 
 import imgAvatar from "../images/avatar.png";
-import { getRouter } from "../router";
 
 const styles = StyleSheet.create({
   header: {
@@ -72,26 +72,22 @@ export default class extends React.Component {
         break;
       case "setting":
         {
-          getRouter()
-            .navigateTo("setting", { acb: 200 })
-            .then(() => {
-              getRouter().getParams();
-            });
+          navigator.navigateTo("setting", { acb: 200 });
         }
         break;
       case "navigate":
         {
-          getRouter().navigateTo("count");
+          navigator.navigateTo("count");
         }
         break;
       case "native":
         {
-          getRouter().navigateTo("native");
+          navigator.navigateTo("native");
         }
         break;
       case "toHome":
         {
-          getRouter().navigateTo("start");
+          navigator.navigateTo("start");
         }
         break;
     }

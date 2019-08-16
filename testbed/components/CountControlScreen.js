@@ -1,6 +1,6 @@
 import React from "react";
-import { Button, View, Text } from "react-native";
-import { getRouter } from "../router";
+import { Button, View } from "react-native";
+import navigator from "../router/navigator";
 
 export default class extends React.Component {
   startCount = () => {};
@@ -8,11 +8,9 @@ export default class extends React.Component {
   endCount = () => {};
 
   chainNavigate = () => {
-    getRouter()
-      .navigateTo("home")
-      .then(() => {
-        getRouter().navigateTo("register");
-      });
+    navigator.navigateTo("home").then(() => {
+      navigator.navigateTo("register");
+    });
   };
 
   render() {

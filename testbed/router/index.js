@@ -8,12 +8,12 @@ import SettingScreen from "../components/SettingScreen";
 import CountScreen from "../components/CountScreen";
 import CountControlScreen from "../components/CountControlScreen";
 import NativeTestScreen from "../components/NativeTestScreen";
+import navigator from "./navigator";
 
 import { Image } from "react-native";
 import {
   renderNavigation,
-  wrappedNavigatorRef,
-  Navigator
+  wrappedNavigatorRef
 } from "../react-navigation-config";
 
 import iconTodo from "../images/todo.png";
@@ -136,12 +136,4 @@ const routes = {
   ]
 };
 
-let router = new Navigator();
-
-export function getRouter() {
-  return router;
-}
-
-export default wrappedNavigatorRef(renderNavigation(routes), nav => {
-  router = nav;
-});
+export default wrappedNavigatorRef(renderNavigation(routes), navigator);
