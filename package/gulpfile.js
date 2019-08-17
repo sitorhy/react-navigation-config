@@ -6,6 +6,7 @@ const babel = require("gulp-babel");
 const testbed_dir = path.join(path.resolve("../"), "testbed");
 
 gulp.task("build",()=>{
+    gulp.src(["src/**/*.d.ts"]).pipe(gulp.dest("./dist"));
     return gulp
         .src(["src/**/*.js"])
         .pipe(
@@ -15,6 +16,7 @@ gulp.task("build",()=>{
 })
 
 gulp.task("deploy",()=>{
+    gulp.src(["src/**/*.d.ts"]).pipe(gulp.dest(path.join(testbed_dir, "react-navigation-config")));
     return gulp
         .src(["src/**/*.js"])
         .pipe(
@@ -40,6 +42,7 @@ gulp.task("default", async () =>
 gulp.task("dev", () => gulp.watch("src/**/*.js")
     .on("change", async () =>
     {
+        gulp.src(["src/**/*.d.ts"]).pipe(gulp.dest(path.join(testbed_dir, "react-navigation-config")));
         return gulp
             .src(["src/**/*.js"])
             .pipe(
@@ -49,6 +52,7 @@ gulp.task("dev", () => gulp.watch("src/**/*.js")
     })
     .on("add", async () =>
     {
+        gulp.src(["src/**/*.d.ts"]).pipe(gulp.dest(path.join(testbed_dir, "react-navigation-config")));
         return gulp
             .src(["src/**/*.js"])
             .pipe(

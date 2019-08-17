@@ -1,6 +1,7 @@
 import React, {Fragment} from "react";
 import {NavigationActions, StackActions} from "react-navigation";
 import {uuid} from "./common";
+import defaultNavigator from "./router";
 
 export function getNavState(nav)
 {
@@ -133,7 +134,7 @@ export class Navigator
     }
 }
 
-export default function (AppContainer, navigator)
+export default function (AppContainer, navigator = defaultNavigator)
 {
     const WrappedAppContainer = class extends AppContainer
     {

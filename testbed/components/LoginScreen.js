@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, View, TextInput, Text, Button } from "react-native";
-import navigator from "../router/navigator";
+import navigator from "../react-navigation-config/router";
 
 const styles = StyleSheet.create({
   login: {

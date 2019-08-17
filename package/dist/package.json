@@ -16,5 +16,6 @@
   "bugs": {
     "url": "https://github.com/sitorhy/react-navigation-config/issues"
   },
-  "homepage": "https://github.com/sitorhy/react-navigation-config#readme"
+  "homepage": "https://github.com/sitorhy/react-navigation-config#readme",
+  "dependencies": {}
 }

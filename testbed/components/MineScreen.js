@@ -7,7 +7,7 @@ import {
   Image,
   TouchableOpacity
 } from "react-native";
-import navigator from "../router/navigator";
+import navigator from "../react-navigation-config/router";
 
 import imgAvatar from "../images/avatar.png";
 

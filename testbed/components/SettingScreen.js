@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text } from "react-native";
-import navigator from "../router/navigator";
+import navigator from "../react-navigation-config/router";
 
 export default class extends React.Component {
   componentDidMount() {

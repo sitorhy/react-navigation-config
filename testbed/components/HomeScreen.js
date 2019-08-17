@@ -10,7 +10,7 @@ import {
 
 import imgTask from "../images/task.png";
 import toDoList from "./todo.json";
-import navigator from "../router/navigator";
+import navigator from "../react-navigation-config/router";
 
 const styles = StyleSheet.create({
   todo: {},

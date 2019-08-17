@@ -8,7 +8,6 @@ import SettingScreen from "../components/SettingScreen";
 import CountScreen from "../components/CountScreen";
 import CountControlScreen from "../components/CountControlScreen";
 import NativeTestScreen from "../components/NativeTestScreen";
-import navigator from "./navigator";
 
 import { Image } from "react-native";
 import {
@@ -136,4 +135,4 @@ const routes = {
   ]
 };
 
-export default wrappedNavigatorRef(renderNavigation(routes), navigator);
+export default wrappedNavigatorRef(renderNavigation(routes));

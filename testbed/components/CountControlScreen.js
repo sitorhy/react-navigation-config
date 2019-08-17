@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, View } from "react-native";
-import navigator from "../router/navigator";
+import navigator from "../react-navigation-config/router";
 
 export default class extends React.Component {
   startCount = () => {};
