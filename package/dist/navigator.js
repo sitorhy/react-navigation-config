@@ -1,15 +1,9 @@
 "use strict";
 
 exports.__esModule = true;
-exports.getNavState = getNavState;
 exports.default = _default;
-exports.Navigator = void 0;
 
 var _react = _interopRequireWildcard(require("react"));
-
-var _reactNavigation = require("react-navigation");
-
-var _common = require("./common");
 
 var _router = _interopRequireDefault(require("./router"));
 
@@ -19,122 +13,6 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
-
-function getNavState(nav) {
-  function _get(nav, mergeParams, scopeParams) {
-    var {
-      routes,
-      index,
-      params
-    } = nav;
-    var state = null;
-
-    if (routes && routes.length && index !== undefined && index !== null) {
-      state = _get(routes[index], mergeParams, scopeParams) || routes[index];
-
-      if (state.params) {
-        if (scopeParams[state.routeName]) {
-          scopeParams[state.routeName] = _extends({}, scopeParams[state.routeName], {
-            [state.key]: state.params
-          });
-        } else {
-          scopeParams[state.routeName] = {
-            [state.key]: state.params
-          };
-        }
-
-        scopeParams[state.routeName].common = _extends({}, scopeParams[state.routeName].common, {}, state.params);
-      }
-    }
-
-    Object.assign(mergeParams, params);
-    return state;
-  }
-
-  var params = {};
-  var scopeParams = {};
-
-  _get(nav, params, scopeParams);
-
-  return [params, scopeParams];
-}
-
-class Navigator {
-  _setNavigator(navigator) {
-    this.navigator = navigator;
-  }
-
-  _setContainer(container) {
-    this.container = container;
-  }
-
-  _asyncNavigate(doTask) {
-    return new Promise((resolve, reject) => {
-      var id = (0, _common.uuid)();
-      var observer = {
-        id,
-
-        callback(obj) {
-          resolve(obj);
-        }
-
-      };
-
-      this.container._listen(observer);
-
-      if (!doTask()) {
-        this.container._remove(id);
-
-        reject();
-      }
-    });
-  }
-
-  getParams() {
-    return getNavState(this.navigator.state.nav);
-  }
-
-  reLaunch(name, params) {
-    return new Promise((resolve, reject) => {
-      this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.StackActions.popToTop())).then(obj => {
-        if (name) {
-          this.redirectTo(name, params).then(obj => {
-            resolve(obj);
-          }).catch(() => {
-            reject();
-          });
-        } else {
-          resolve(obj);
-        }
-      }).catch(() => {
-        reject();
-      });
-    });
-  }
-
-  redirectTo(name, params) {
-    return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.StackActions.replace({
-      routeName: name,
-      params: params
-    })));
-  }
-
-  navigateTo(name, params) {
-    return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.NavigationActions.navigate({
-      routeName: name,
-      params: params
-    })));
-  }
-
-  navigateBack() {
-    return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.NavigationActions.back({})));
-  }
-
-}
-
-exports.Navigator = Navigator;
-
 function _default(AppContainer, navigator) {
   var _temp;
 
@@ -142,7 +20,7 @@ function _default(AppContainer, navigator) {
     navigator = _router.default;
   }
 
-  var WrappedAppContainer = class extends AppContainer {
+  class WrappedAppContainer extends AppContainer {
     constructor() {
       super(...arguments);
 
@@ -151,7 +29,52 @@ function _default(AppContainer, navigator) {
       }
     }
 
-  };
+  }
+
+  if (navigator) {
+    WrappedAppContainer.router = {
+      getActionCreators: AppContainer.router.getActionCreators,
+      getActionForPathAndParams: AppContainer.router.getActionForPathAndParams,
+      getComponentForRouteName: AppContainer.router.getComponentForRouteName,
+      getComponentForState: AppContainer.router.getComponentForState,
+      getPathAndParamsForState: AppContainer.router.getPathAndParamsForState,
+      getScreenOptions: AppContainer.router.getScreenOptions,
+      getStateForAction: AppContainer.router.getStateForAction
+    };
+
+    AppContainer.router.getActionCreators = function (route, stateKey) {
+      return WrappedAppContainer.router.getActionCreators(route, stateKey);
+    };
+
+    AppContainer.router.getActionForPathAndParams = function (path, params) {
+      return WrappedAppContainer.router.getActionForPathAndParams(path, params);
+    };
+
+    AppContainer.router.getComponentForRouteName = function (routeName) {
+      return WrappedAppContainer.router.getComponentForRouteName(routeName);
+    };
+
+    AppContainer.router.getComponentForState = function (state) {
+      return WrappedAppContainer.router.getComponentForState(state);
+    };
+
+    AppContainer.router.getPathAndParamsForState = function (state) {
+      return WrappedAppContainer.router.getPathAndParamsForState(state);
+    };
+
+    AppContainer.router.getScreenOptions = function (navigation, screenProps) {
+      return WrappedAppContainer.router.getScreenOptions(navigation, screenProps);
+    };
+
+    AppContainer.router.getStateForAction = function (action, inputState) {
+      var {
+        routeName
+      } = action;
+      navigator._routeName = routeName;
+      return WrappedAppContainer.router.getStateForAction(action, inputState);
+    };
+  }
+
   return _temp = class extends _react.default.Component {
     constructor() {
       super(...arguments);
@@ -205,9 +128,11 @@ function _default(AppContainer, navigator) {
     }
 
     componentWillUnmount() {
-      navigator._setContainer(null);
+      if (navigator) {
+        navigator._setContainer(null);
 
-      navigator._setNavigator(null);
+        navigator._setNavigator(null);
+      }
     }
 
     render() {

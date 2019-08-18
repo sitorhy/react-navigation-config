@@ -188,8 +188,12 @@ export default class extends React.Component {
     );
   }
 }
-
 ```
+### Default Navigator
+```
+import router from "react-navigation-config/router"
+```
+
 ### API
 ### **reLaunch**
 take back to the first screen in the stack.
@@ -231,11 +235,25 @@ navigator.navigateTo("Profile",{}).then(()=>{
 ```
 
 ### **navigateBack**
-Go back to previous screen and close current screen.
+go back to previous screen and close current screen.
 ##### Parameters
 + `void`
 ##### Return Value
 + `<Promise>`
+
+### **getCurrentParams**
+get current navigation params.
+##### Parameters
++ `void`
+##### Return Value
++ `<Object>`
+
+### **getParams**
+get all navigation params from stack.
+##### Parameters
++ `void`
+##### Return Value
++ `<Object>`
 
 # Decorator
 ### **navigationOptions(options)**
