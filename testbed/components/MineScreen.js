@@ -7,6 +7,7 @@ import {
   Image,
   TouchableOpacity
 } from "react-native";
+
 import navigator from "../react-navigation-config/router";
 
 import imgAvatar from "../images/avatar.png";
@@ -56,6 +57,10 @@ export default class extends React.Component {
           {
             key: "native",
             title: "Native Test"
+          },
+          {
+            key: "params",
+            title: "Get Current Params"
           }
         ]
       }
@@ -88,6 +93,11 @@ export default class extends React.Component {
       case "toHome":
         {
           navigator.navigateTo("start");
+        }
+        break;
+      case "params":
+        {
+          console.log(navigator.getCurrentParams());
         }
         break;
     }

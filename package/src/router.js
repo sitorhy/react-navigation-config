@@ -1,4 +1,4 @@
-import {uuid} from "./common";
+import {removeEmpty, uuid} from "./common";
 import {NavigationActions, StackActions} from "react-navigation";
 
 function getNavState(nav)
@@ -39,6 +39,28 @@ function getNavState(nav)
     return [params, scopeParams];
 }
 
+function getActiveRoute(nav)
+{
+    const {routes, index} = nav;
+    if (index === null || index === undefined)
+    {
+        return null;
+    }
+    if (Array.isArray(routes) && routes.length)
+    {
+        const activeRoute = getActiveRoute(routes[index]);
+        if (activeRoute === null)
+        {
+            return routes[index];
+        }
+        else
+        {
+            return activeRoute;
+        }
+    }
+    return null;
+}
+
 function matchRoute(nav, name)
 {
     const {routes, routeName} = nav;
@@ -63,6 +85,10 @@ function matchRoute(nav, name)
 export class Navigator
 {
     _routeName = "";
+
+    _beforeEach = null;
+
+    _afterEach = null;
 
     _setNavigator(navigator)
     {
@@ -166,6 +192,35 @@ export class Navigator
         return this._asyncNavigate(
             () => this.navigator.dispatch(NavigationActions.back({}))
         );
+    }
+
+    beforeEach(action, toState, fromState)
+    {
+        const form = getActiveRoute(toState);
+        const to = getActiveRoute(toState);
+
+        if (typeof this._beforeEach === "function")
+        {
+            this._beforeEach(removeEmpty({
+                key: to.key,
+                params: to.params,
+                routeName: to.routeName
+            }), removeEmpty({
+                key: form.key,
+                params: form.params,
+                routeName: form.routeName
+            }));
+        }
+    }
+
+    afterEach(action, toState, fromState)
+    {
+
+    }
+
+    onReady()
+    {
+
     }
 }
 

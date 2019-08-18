@@ -20,7 +20,7 @@ function _default(AppContainer, navigator) {
     navigator = _router.default;
   }
 
-  class WrappedAppContainer extends AppContainer {
+  var WrappedAppContainer = class extends AppContainer {
     constructor() {
       super(...arguments);
 
@@ -29,7 +29,7 @@ function _default(AppContainer, navigator) {
       }
     }
 
-  }
+  };
 
   if (navigator) {
     WrappedAppContainer.router = {
@@ -68,10 +68,29 @@ function _default(AppContainer, navigator) {
 
     AppContainer.router.getStateForAction = function (action, inputState) {
       var {
-        routeName
+        routeName,
+        type
       } = action;
       navigator._routeName = routeName;
-      return WrappedAppContainer.router.getStateForAction(action, inputState);
+
+      switch (type) {
+        case "Navigation/NAVIGATE":
+          {
+            navigator.onReady();
+          }
+      }
+
+      var state = WrappedAppContainer.router.getStateForAction(action, inputState);
+
+      if (inputState) {
+        var nextAction = navigator.beforeEach(action, state, inputState);
+
+        if (nextAction) {
+          state = WrappedAppContainer.router.getStateForAction(nextAction, inputState);
+        }
+      }
+
+      return state;
     };
   }
 
@@ -91,6 +110,11 @@ function _default(AppContainer, navigator) {
         } = action;
 
         switch (action.type) {
+          case "Navigation/NAVIGATE":
+            {
+              navigator.afterEach(action, prevState, newState);
+            }
+
           default:
             {
               this._observers.splice(0, this._observers.length).forEach((_ref) => {

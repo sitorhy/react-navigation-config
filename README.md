@@ -193,6 +193,9 @@ export default class extends React.Component {
 ```
 import router from "react-navigation-config/router"
 ```
+```
+export default wrappedNavigatorRef(renderNavigation(routes));
+```
 
 ### API
 ### **reLaunch**

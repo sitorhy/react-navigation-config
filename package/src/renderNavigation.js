@@ -45,7 +45,7 @@ export default function (config)
             app,
             injectNavigationOptions = false,
             navigationOptions,
-            routerConfig,
+            routerConfig
         } = route;
 
         const prop = ["children", "all", "oneOf", "app"].find(j => !!route[j]);
@@ -74,7 +74,6 @@ export default function (config)
         }
         else
         {
-
             if (!component)
             {
                 throw new Error("navigation config missing component.");

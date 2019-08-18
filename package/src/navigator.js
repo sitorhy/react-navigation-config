@@ -3,17 +3,19 @@ import defaultNavigator from "./router";
 
 export default function (AppContainer, navigator = defaultNavigator)
 {
-    class WrappedAppContainer extends AppContainer
-    {
-        constructor(...args)
+    const WrappedAppContainer = (
+        class extends AppContainer
         {
-            super(...args);
-            if (navigator)
+            constructor(...args)
             {
-                navigator._setNavigator(this);
+                super(...args);
+                if (navigator)
+                {
+                    navigator._setNavigator(this);
+                }
             }
         }
-    }
+    );
 
     if (navigator)
     {
@@ -59,11 +61,28 @@ export default function (AppContainer, navigator = defaultNavigator)
 
         AppContainer.router.getStateForAction = function (action, inputState)
         {
-            const {routeName} = action;
-
+            const {routeName, type} = action;
             navigator._routeName = routeName;
 
-            return WrappedAppContainer.router.getStateForAction(action, inputState);
+            switch (type)
+            {
+                case "Navigation/NAVIGATE":
+                {
+                    navigator.onReady();
+                }
+            }
+            let state = WrappedAppContainer.router.getStateForAction(action, inputState);
+
+            if (inputState)
+            {
+                const nextAction = navigator.beforeEach(action, state, inputState);
+                if (nextAction)
+                {
+                    state = WrappedAppContainer.router.getStateForAction(nextAction, inputState);
+                }
+            }
+
+            return state;
         };
     }
 
@@ -101,6 +120,10 @@ export default function (AppContainer, navigator = defaultNavigator)
 
             switch (action.type)
             {
+                case "Navigation/NAVIGATE":
+                {
+                    navigator.afterEach(action, prevState, newState);
+                }
                 default:
                 {
                     this._observers.splice(0, this._observers.length).forEach(({callback}) =>

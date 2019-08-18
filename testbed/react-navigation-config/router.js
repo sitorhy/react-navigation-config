@@ -50,6 +50,29 @@ function getNavState(nav) {
   return [params, scopeParams];
 }
 
+function getActiveRoute(nav) {
+  var {
+    routes,
+    index
+  } = nav;
+
+  if (index === null || index === undefined) {
+    return null;
+  }
+
+  if (Array.isArray(routes) && routes.length) {
+    var activeRoute = getActiveRoute(routes[index]);
+
+    if (activeRoute === null) {
+      return routes[index];
+    } else {
+      return activeRoute;
+    }
+  }
+
+  return null;
+}
+
 function matchRoute(nav, name) {
   var {
     routes,
@@ -76,6 +99,10 @@ function matchRoute(nav, name) {
 class Navigator {
   constructor() {
     _defineProperty(this, "_routeName", "");
+
+    _defineProperty(this, "_beforeEach", null);
+
+    _defineProperty(this, "_afterEach", null);
   }
 
   _setNavigator(navigator) {
@@ -161,6 +188,27 @@ class Navigator {
   navigateBack() {
     return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.NavigationActions.back({})));
   }
+
+  beforeEach(action, toState, fromState) {
+    var form = getActiveRoute(toState);
+    var to = getActiveRoute(toState);
+
+    if (typeof this._beforeEach === "function") {
+      this._beforeEach((0, _common.removeEmpty)({
+        key: to.key,
+        params: to.params,
+        routeName: to.routeName
+      }), (0, _common.removeEmpty)({
+        key: form.key,
+        params: form.params,
+        routeName: form.routeName
+      }));
+    }
+  }
+
+  afterEach(action, toState, fromState) {}
+
+  onReady() {}
 
 }
 
