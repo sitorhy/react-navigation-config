@@ -4,7 +4,7 @@ import navigator from "../react-navigation-config/router";
 
 export default class extends React.Component {
   componentDidMount() {
-    console.log(navigator.getParams());
+    console.log(navigator.getCurrentParams());
   }
 
   render() {

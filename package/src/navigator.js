@@ -1,142 +1,9 @@
 import React, {Fragment} from "react";
-import {NavigationActions, StackActions} from "react-navigation";
-import {uuid} from "./common";
 import defaultNavigator from "./router";
-
-export function getNavState(nav)
-{
-    function _get(nav, mergeParams, scopeParams)
-    {
-        const {routes, index, params} = nav;
-        let state = null;
-        if (routes && routes.length && index !== undefined && index !== null)
-        {
-            state = _get(routes[index], mergeParams, scopeParams) || routes[index];
-            if (state.params)
-            {
-                if (scopeParams[state.routeName])
-                {
-                    scopeParams[state.routeName] = {
-                        ...scopeParams[state.routeName],
-                        [state.key]: state.params
-                    };
-                }
-                else
-                {
-                    scopeParams[state.routeName] = {[state.key]: state.params};
-                }
-                scopeParams[state.routeName].common = {
-                    ...scopeParams[state.routeName].common,
-                    ...state.params
-                };
-            }
-        }
-        Object.assign(mergeParams, params);
-        return state;
-    }
-
-    const params = {};
-    const scopeParams = {};
-    _get(nav, params, scopeParams);
-    return [params, scopeParams];
-}
-
-export class Navigator
-{
-    _setNavigator(navigator)
-    {
-        this.navigator = navigator;
-    }
-
-    _setContainer(container)
-    {
-        this.container = container;
-    }
-
-    _asyncNavigate(doTask)
-    {
-        return new Promise((resolve, reject) =>
-        {
-            const id = uuid();
-            const observer = {
-                id,
-                callback(obj)
-                {
-                    resolve(obj);
-                }
-            };
-            this.container._listen(observer);
-            if (!doTask())
-            {
-                this.container._remove(id);
-                reject();
-            }
-        });
-    }
-
-    getParams()
-    {
-        return getNavState(this.navigator.state.nav);
-    }
-
-    reLaunch(name, params)
-    {
-        return new Promise((resolve, reject) =>
-        {
-            this._asyncNavigate(
-                () => this.navigator.dispatch(StackActions.popToTop())
-            ).then((obj) =>
-            {
-                if (name)
-                {
-                    this.redirectTo(name, params).then((obj) =>
-                    {
-                        resolve(obj);
-                    }).catch(() =>
-                    {
-                        reject();
-                    });
-                }
-                else
-                {
-                    resolve(obj);
-                }
-            }).catch(() =>
-            {
-                reject();
-            });
-        });
-    }
-
-    redirectTo(name, params)
-    {
-        return this._asyncNavigate(() => this.navigator.dispatch(StackActions.replace({
-                routeName: name,
-                params: params
-            }))
-        );
-    }
-
-    navigateTo(name, params)
-    {
-        return this._asyncNavigate(() => this.navigator.dispatch(NavigationActions.navigate({
-                routeName: name,
-                params: params
-            }))
-        );
-    }
-
-    navigateBack()
-    {
-        return this._asyncNavigate(
-            () => this.navigator.dispatch(NavigationActions.back({}))
-        );
-    }
-}
 
 export default function (AppContainer, navigator = defaultNavigator)
 {
-    const WrappedAppContainer = class extends AppContainer
+    class WrappedAppContainer extends AppContainer
     {
         constructor(...args)
         {
@@ -146,6 +13,58 @@ export default function (AppContainer, navigator = defaultNavigator)
                 navigator._setNavigator(this);
             }
         }
+    }
+
+    if (navigator)
+    {
+        WrappedAppContainer.router = {
+            getActionCreators: AppContainer.router.getActionCreators,
+            getActionForPathAndParams: AppContainer.router.getActionForPathAndParams,
+            getComponentForRouteName: AppContainer.router.getComponentForRouteName,
+            getComponentForState: AppContainer.router.getComponentForState,
+            getPathAndParamsForState: AppContainer.router.getPathAndParamsForState,
+            getScreenOptions: AppContainer.router.getScreenOptions,
+            getStateForAction: AppContainer.router.getStateForAction
+        };
+
+        AppContainer.router.getActionCreators = function (route, stateKey)
+        {
+            return WrappedAppContainer.router.getActionCreators(route, stateKey);
+        };
+
+        AppContainer.router.getActionForPathAndParams = function (path, params)
+        {
+            return WrappedAppContainer.router.getActionForPathAndParams(path, params);
+        };
+
+        AppContainer.router.getComponentForRouteName = function (routeName)
+        {
+            return WrappedAppContainer.router.getComponentForRouteName(routeName);
+        };
+
+        AppContainer.router.getComponentForState = function (state)
+        {
+            return WrappedAppContainer.router.getComponentForState(state);
+        };
+
+        AppContainer.router.getPathAndParamsForState = function (state)
+        {
+            return WrappedAppContainer.router.getPathAndParamsForState(state);
+        };
+
+        AppContainer.router.getScreenOptions = function (navigation, screenProps)
+        {
+            return WrappedAppContainer.router.getScreenOptions(navigation, screenProps);
+        };
+
+        AppContainer.router.getStateForAction = function (action, inputState)
+        {
+            const {routeName} = action;
+
+            navigator._routeName = routeName;
+
+            return WrappedAppContainer.router.getStateForAction(action, inputState);
+        };
     }
 
     return class extends React.Component
@@ -178,7 +97,6 @@ export default function (AppContainer, navigator = defaultNavigator)
         onNavigationStateChange = (prevState, newState, action) =>
         {
             const {onNavigationStateChange} = this.props;
-
             const {params, routeName} = action;
 
             switch (action.type)
@@ -200,8 +118,11 @@ export default function (AppContainer, navigator = defaultNavigator)
 
         componentWillUnmount()
         {
-            navigator._setContainer(null);
-            navigator._setNavigator(null);
+            if (navigator)
+            {
+                navigator._setContainer(null);
+                navigator._setNavigator(null);
+            }
         }
 
         render()

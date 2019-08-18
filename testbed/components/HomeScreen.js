@@ -73,8 +73,8 @@ export default class extends React.Component {
   };
 
   componentDidMount() {
-    console.log(this.props);
     console.log(navigator.getParams());
+    console.log(navigator.getCurrentParams());
   }
 
   render() {
