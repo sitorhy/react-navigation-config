@@ -147,6 +147,9 @@ export default function (AppContainer, navigator = defaultNavigator)
             {
                 navigator._setContainer(null);
                 navigator._setNavigator(null);
+                navigator.onReady(null);
+                navigator.beforeEach(null);
+                navigator.afterEach(null);
             }
         }
 

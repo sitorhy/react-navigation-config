@@ -53,6 +53,11 @@ const routes = {
   oneOf: [
     {
       name: "main",
+      screenProps: {
+        stackCommonProps: {
+          username: "anonymous"
+        }
+      },
       children: [
         {
           name: "tab",

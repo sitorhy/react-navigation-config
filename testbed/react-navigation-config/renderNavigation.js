@@ -19,6 +19,8 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
 
 function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function inject(injectNavigationOptions, navigationOptions, component) {
   if (injectNavigationOptions) {
     if (injectNavigationOptions === "extend") {
@@ -58,6 +60,8 @@ function _default(config) {
     }
 
     if (prop && Array.isArray(route[prop]) && route[prop].length) {
+      var _class, _temp;
+
       var routeConfigs = {};
 
       for (var i of route[prop]) {
@@ -65,23 +69,28 @@ function _default(config) {
       }
 
       var navigation = creator[prop](routeConfigs, routerConfig);
+      var ScreenComponent = navigation;
+      var screen = screenProps ? (_temp = _class = class extends _react.default.Component {
+        render() {
+          var _this$props = this.props,
+              {
+            screenProps: dynamicScreenProps
+          } = _this$props,
+              others = _objectWithoutPropertiesLoose(_this$props, ["screenProps"]);
+
+          return _react.default.createElement(ScreenComponent, _extends({}, others, {
+            screenProps: _extends({}, screenProps, {}, dynamicScreenProps)
+          }));
+        }
+
+      }, _defineProperty(_class, "router", ScreenComponent.router), _temp) : ScreenComponent;
 
       if (app === true) {
-        return creator["app"](inject(injectNavigationOptions, navigationOptions, navigation));
+        return creator["app"](inject(injectNavigationOptions, navigationOptions, screen));
       } else {
-        var Screen = inject(injectNavigationOptions, navigationOptions, navigation);
         return {
           [name]: (0, _common.removeEmpty)({
-            screen: screenProps ? props => {
-              var {
-                screenProps: dynamicScreenProps
-              } = props,
-                  others = _objectWithoutPropertiesLoose(props, ["screenProps"]);
-
-              return _react.default.createElement(Screen, _extends({}, others, {
-                screenProps: _extends({}, screenProps, {}, dynamicScreenProps)
-              }));
-            } : Screen,
+            screen: inject(injectNavigationOptions, navigationOptions, screen),
             navigationOptions: injectNavigationOptions ? null : navigationOptions
           })
         };
@@ -91,20 +100,22 @@ function _default(config) {
         throw new Error("navigation config missing component.");
       }
 
-      var _Screen = inject(injectNavigationOptions, navigationOptions, component);
+      var _ScreenComponent = component;
+
+      var _screen = screenProps ? props => {
+        var {
+          screenProps: dynamicScreenProps
+        } = props,
+            others = _objectWithoutPropertiesLoose(props, ["screenProps"]);
+
+        return _react.default.createElement(_ScreenComponent, _extends({}, others, {
+          screenProps: _extends({}, screenProps, {}, dynamicScreenProps)
+        }));
+      } : _ScreenComponent;
 
       return {
         [name]: (0, _common.removeEmpty)({
-          screen: screenProps ? props => {
-            var {
-              screenProps: dynamicScreenProps
-            } = props,
-                others = _objectWithoutPropertiesLoose(props, ["screenProps"]);
-
-            return _react.default.createElement(_Screen, _extends({}, others, {
-              screenProps: _extends({}, screenProps, {}, dynamicScreenProps)
-            }));
-          } : _Screen,
+          screen: inject(injectNavigationOptions, navigationOptions, _screen),
           navigationOptions: injectNavigationOptions ? {
             header: null
           } : navigationOptions

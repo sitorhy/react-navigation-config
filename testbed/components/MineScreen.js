@@ -101,6 +101,7 @@ export default class extends React.Component {
         break;
       case "params":
         {
+          console.log(this.props);
           console.log(this.props.navigation);
           console.log(navigator.getCurrentParams());
         }

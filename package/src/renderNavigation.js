@@ -67,20 +67,27 @@ export default function (config)
 
             let navigation = (creator[prop])(routeConfigs, routerConfig);
 
+            const ScreenComponent = navigation;
+            const screen = screenProps ? class extends React.Component
+            {
+                static router = ScreenComponent.router;
+
+                render()
+                {
+                    const {screenProps: dynamicScreenProps, ...others} = this.props;
+                    return <ScreenComponent {...others} screenProps={{...screenProps, ...dynamicScreenProps}}/>
+                }
+            } : ScreenComponent
+
             if (app === true)
             {
-                return creator["app"](inject(injectNavigationOptions, navigationOptions, navigation));
+                return creator["app"](inject(injectNavigationOptions, navigationOptions, screen));
             }
             else
             {
-                const Screen = inject(injectNavigationOptions, navigationOptions, navigation);
                 return {
                     [name]: removeEmpty({
-                        screen: screenProps ? (props) =>
-                        {
-                            const {screenProps: dynamicScreenProps, ...others} = props;
-                            return <Screen {...others} screenProps={{...screenProps, ...dynamicScreenProps}}/>
-                        } : Screen,
+                        screen: inject(injectNavigationOptions, navigationOptions, screen),
                         navigationOptions: injectNavigationOptions ? null : navigationOptions
                     })
                 };
@@ -93,15 +100,16 @@ export default function (config)
                 throw new Error("navigation config missing component.");
             }
 
-            const Screen = inject(injectNavigationOptions, navigationOptions, component);
+            const ScreenComponent = component;
+            const screen = screenProps ? (props) =>
+            {
+                const {screenProps: dynamicScreenProps, ...others} = props;
+                return <ScreenComponent {...others} screenProps={{...screenProps, ...dynamicScreenProps}}/>
+            } : ScreenComponent
 
             return {
                 [name]: removeEmpty({
-                    screen: screenProps ? (props) =>
-                    {
-                        const {screenProps: dynamicScreenProps, ...others} = props;
-                        return <Screen {...others} screenProps={{...screenProps, ...dynamicScreenProps}}/>
-                    } : Screen,
+                    screen: inject(injectNavigationOptions, navigationOptions, screen),
                     navigationOptions: injectNavigationOptions ? {header: null} : navigationOptions
                 })
             };

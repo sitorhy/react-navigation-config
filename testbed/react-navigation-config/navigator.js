@@ -157,6 +157,10 @@ function _default(AppContainer, navigator) {
         navigator._setContainer(null);
 
         navigator._setNavigator(null);
+
+        navigator.onReady(null);
+        navigator.beforeEach(null);
+        navigator.afterEach(null);
       }
     }
 
