@@ -263,7 +263,7 @@ get all navigation params from stack.
 ### **beforeEach**
 register interceptor before state change.
 ##### Parameters
-+ `<function (toAction,formInfo,next:(routeName,params)=>void)=>[ ignore it ]>` callback
++ `<function (action,to,form,next:(routeName,params)=>void)=>[ ignore it ]>` callback
 ```
 router.beforeEach((to, from, next) => {
   if(from.routeName==="main")
@@ -283,7 +283,7 @@ get current navigation params.
 ### **afterEach**
 register a listener after state change.
 ##### Parameters
-+ `<function (toAction,formInfo)=>void>` callback
++ `<function (action,to,form)=>void>` callback
 
 ### **preventDefaultActionFix**
 ##### Parameters

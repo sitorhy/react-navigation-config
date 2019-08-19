@@ -17,14 +17,14 @@ router.onReady(() => {
   console.log("初始化完毕");
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((action, to, from, next) => {
   console.log("--- before start ---");
   console.log(to);
   console.log(from);
   console.log("--- before end ---");
 });
 
-router.afterEach((to, from) => {
+router.afterEach((action, to, from) => {
   console.log("--- after start ---");
   console.log(to);
   console.log(from);

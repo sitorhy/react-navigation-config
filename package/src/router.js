@@ -1,90 +1,10 @@
-import {removeEmpty, uuid} from "./common";
+import createStore from "./store";
+import {removeEmpty, uuid, getActiveRoute, matchRoute, getNavState} from "./common";
 import {NavigationActions, StackActions} from "react-navigation";
-
-function getNavState(nav)
-{
-    function _get(nav, mergeParams, scopeParams)
-    {
-        const {routes, index, params} = nav;
-        let state = null;
-        if (Array.isArray(routes) && routes.length && index !== undefined && index !== null)
-        {
-            state = _get(routes[index], mergeParams, scopeParams) || routes[index];
-            if (state.params)
-            {
-                if (scopeParams[state.routeName])
-                {
-                    scopeParams[state.routeName] = {
-                        ...scopeParams[state.routeName],
-                        [state.key]: state.params
-                    };
-                }
-                else
-                {
-                    scopeParams[state.routeName] = {[state.key]: state.params};
-                }
-                scopeParams[state.routeName].common = {
-                    ...scopeParams[state.routeName].common,
-                    ...state.params
-                };
-            }
-        }
-        Object.assign(mergeParams, params);
-        return state;
-    }
-
-    const params = {};
-    const scopeParams = {};
-    _get(nav, params, scopeParams);
-    return [params, scopeParams];
-}
-
-function getActiveRoute(nav)
-{
-    const {routes, index} = nav;
-    if (index === null || index === undefined)
-    {
-        return null;
-    }
-    if (Array.isArray(routes) && routes.length)
-    {
-        const activeRoute = getActiveRoute(routes[index]);
-        if (activeRoute === null)
-        {
-            return routes[index];
-        }
-        else
-        {
-            return activeRoute;
-        }
-    }
-    return null;
-}
-
-function matchRoute(nav, name)
-{
-    const {routes, routeName} = nav;
-    if (routeName === name)
-    {
-        return nav;
-    }
-    if (Array.isArray(routes) && routes.length)
-    {
-        for (const i of routes)
-        {
-            const j = matchRoute(i, name);
-            if (j)
-            {
-                return j;
-            }
-        }
-    }
-    return null;
-}
 
 export class Navigator
 {
-    _routeName = "";
+    _store = createStore();
 
     _beforeEachHandler = null;
 
@@ -131,7 +51,7 @@ export class Navigator
                 }
             }
 
-            nextAction = handler(action, removeEmpty({
+            nextAction = handler(action, to, removeEmpty({
                 key: form.key,
                 params: form.params,
                 routeName: form.routeName
@@ -145,10 +65,11 @@ export class Navigator
     {
         if (typeof this._afterEachHandler === "function")
         {
+            const to = getActiveRoute(toState);
             const from = getActiveRoute(fromState);
 
             const handler = this._afterEachHandler;
-            handler(action, removeEmpty({
+            handler(action, to, removeEmpty({
                 key: from.key,
                 params: from.params,
                 routeName: from.routeName
@@ -203,10 +124,11 @@ export class Navigator
 
     getCurrentParams()
     {
-        const routeName = this._routeName;
-        if (routeName)
+        const {navigation} = this._store.getState();
+        const {key} = navigation;
+        if (key)
         {
-            const route = matchRoute(this.navigator.state.nav, routeName);
+            const route = matchRoute(this.navigator.state.nav, key);
             if (route)
             {
                 return route.params;
@@ -296,6 +218,11 @@ export class Navigator
         {
             this._readyHandler = callback;
         }
+    }
+
+    getStore()
+    {
+        return this._store;
     }
 }
 

@@ -1,5 +1,7 @@
 import React, {Fragment} from "react";
 import defaultNavigator from "./router";
+import {getActiveRoute} from "./common";
+import {ACTIONS} from "./store";
 
 export default function (AppContainer, navigator = defaultNavigator)
 {
@@ -61,7 +63,7 @@ export default function (AppContainer, navigator = defaultNavigator)
 
         AppContainer.router.getStateForAction = function (action, inputState)
         {
-            const {type, routeName} = action;
+            const {type} = action;
 
             switch (type)
             {
@@ -72,17 +74,29 @@ export default function (AppContainer, navigator = defaultNavigator)
             }
             let state = WrappedAppContainer.router.getStateForAction(action, inputState);
 
-            navigator._routeName = routeName;
-
             if (inputState)
             {
                 const nextAction = navigator._bindBeforeEach(action, state, inputState);
                 if (nextAction)
                 {
                     state = WrappedAppContainer.router.getStateForAction(nextAction, inputState);
-                    navigator._routeName = nextAction.routeName;
                 }
             }
+
+            const activeRoute = getActiveRoute(state);
+            const {key, routeName} = activeRoute;
+
+            const store = navigator.getStore();
+
+            store.dispatch({
+                type: ACTIONS.SET_ROUTE_KEY,
+                key
+            });
+
+            store.dispatch({
+                type: ACTIONS.SET_ROUTE_NAME,
+                routeName
+            });
 
             return state;
         };

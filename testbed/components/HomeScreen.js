@@ -5,7 +5,6 @@ import {
   Text,
   FlatList,
   Image,
-  Button,
   TouchableOpacity
 } from "react-native";
 
@@ -73,12 +72,6 @@ export default class extends React.Component {
     );
   };
 
-  getParamsTest = () => {
-    console.log(this.props.navigation);
-    console.log(this.props);
-    console.log(navigator.getCurrentParams());
-  };
-
   componentDidMount() {
     console.log(navigator.getParams());
     console.log(navigator.getCurrentParams());
@@ -89,7 +82,6 @@ export default class extends React.Component {
 
     return (
       <View style={styles.todo}>
-        <Button title="Get Current Params" onPress={this.getParamsTest} />
         <FlatList
           data={data}
           renderItem={this.renderItem}

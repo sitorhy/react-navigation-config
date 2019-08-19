@@ -52,3 +52,85 @@ export function uuid(len, radix) {
 
     return uuid.join('');
 }
+
+export function getNavState(nav)
+{
+    function _get(nav, mergeParams, scopeParams)
+    {
+        const {routes, index, params} = nav;
+        let state = null;
+        if (Array.isArray(routes) && routes.length && index !== undefined && index !== null)
+        {
+            state = _get(routes[index], mergeParams, scopeParams) || routes[index];
+            if (state.params)
+            {
+                if (scopeParams[state.routeName])
+                {
+                    scopeParams[state.routeName] = {
+                        ...scopeParams[state.routeName],
+                        [state.key]: state.params
+                    };
+                }
+                else
+                {
+                    scopeParams[state.routeName] = {[state.key]: state.params};
+                }
+                scopeParams[state.routeName].common = {
+                    ...scopeParams[state.routeName].common,
+                    ...state.params
+                };
+            }
+        }
+        Object.assign(mergeParams, params);
+        return state;
+    }
+
+    const params = {};
+    const scopeParams = {};
+    _get(nav, params, scopeParams);
+    return [params, scopeParams];
+}
+
+export function getActiveRoute(nav)
+{
+    const {routes, index} = nav;
+    if (index === null || index === undefined)
+    {
+        return null;
+    }
+    if (Array.isArray(routes) && routes.length)
+    {
+        const activeRoute = getActiveRoute(routes[index]);
+        if (activeRoute === null)
+        {
+            return routes[index];
+        }
+        else
+        {
+            return activeRoute;
+        }
+    }
+    return null;
+}
+
+export function matchRoute(nav, key)
+{
+    const {routes, key:routeKey} = nav;
+    if (routeKey === key)
+    {
+        return nav;
+    }
+    if (Array.isArray(routes) && routes.length)
+    {
+        for (const i of routes)
+        {
+            const j = matchRoute(i, key);
+            if (j)
+            {
+                return j;
+            }
+        }
+    }
+    return null;
+}
+
