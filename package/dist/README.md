@@ -193,6 +193,9 @@ export default class extends React.Component {
 ```
 import router from "react-navigation-config/router"
 ```
+```
+export default wrappedNavigatorRef(renderNavigation(routes));
+```
 
 ### API
 ### **reLaunch**
@@ -255,11 +258,54 @@ get all navigation params from stack.
 ##### Return Value
 + `<Object>`
 
+### **beforeEach**
+register interceptor before state change.
+##### Parameters
++ `<function (toAction,formInfo,next:(routeName,params)=>void)=>[ ignore it ]>` callback
+```
+router.beforeEach((to, from, next) => {
+  if(from.routeName==="main")
+  {
+    next("home",{});
+  }
+});
+```
+
+### **onReady**
+get current navigation params.
+##### Parameters
++ `<function ((void)=>void)>` callback
+##### Return Value
++ `<Object>`
+
+### **afterEach**
+register a listener after state change.
+##### Parameters
++ `<function (toAction,formInfo)=>void>` callback
+
+### **preventDefaultActionFix**
+##### Parameters
++ `<Boolean>` disabled
+it is not work default.
+try call `preventDefaultActionFix(false)` to enable it.
+
+#### Problem
+```
+const A = createStackNavigator({ B:... })
+const C = createSwitchNavigator({C:A});
+...
+this.props.navigation.disptach(
+  NavigationActions.navigate({ routeName: 'A',params:{xyz:100} })
+);
+```
+navigate to route 'A' ,it is actually to 'B' ,but params `xyz` passed to route 'A'.
+get params from `this.props.navigation.state` is always `undefinded` in component 'B'.
+#### Fixed
+redirect to child route when `action.routeName` not equal to the state resolved.
+  
+
 # Decorator
 ### **navigationOptions(options)**
 set static navigationOptions variable in subclass.
 ##### Parameters
 + `Object` options - see **createStackNavigator** or others
-
-
-

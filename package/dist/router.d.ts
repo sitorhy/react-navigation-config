@@ -13,9 +13,13 @@ declare namespace router {
 
     function getParams(): Array<object>;
 
-    function beforeEach(callback: (to: object, from: object, next: (routeName: string) => object | null) => void);
+    function beforeEach(callback: (action: object, from: object, next: (routeName: string) => object | null) => void);
 
     function afterEach(callback: (to: object, from: object) => void);
+
+    function onReady(callback: () => void);
+
+    function preventDefaultActionFix(disabled: boolean);
 }
 
 export default router;

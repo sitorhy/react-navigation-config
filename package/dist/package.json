@@ -1,6 +1,6 @@
 {
   "name": "react-navigation-config",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "static route configuration helpers for react-navigation 3.x.",
   "main": "index.js",
   "repository": {

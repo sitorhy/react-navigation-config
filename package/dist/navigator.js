@@ -68,25 +68,26 @@ function _default(AppContainer, navigator) {
 
     AppContainer.router.getStateForAction = function (action, inputState) {
       var {
-        routeName,
-        type
+        type,
+        routeName
       } = action;
-      navigator._routeName = routeName;
 
       switch (type) {
-        case "Navigation/NAVIGATE":
+        case "Navigation/INIT":
           {
             navigator._bindReady();
           }
       }
 
       var state = WrappedAppContainer.router.getStateForAction(action, inputState);
+      navigator._routeName = routeName;
 
       if (inputState) {
         var nextAction = navigator._bindBeforeEach(action, state, inputState);
 
         if (nextAction) {
           state = WrappedAppContainer.router.getStateForAction(nextAction, inputState);
+          navigator._routeName = nextAction.routeName;
         }
       }
 
