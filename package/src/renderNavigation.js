@@ -1,3 +1,4 @@
+import React from "react";
 import {
     createAppContainer,
     createStackNavigator,
@@ -34,7 +35,7 @@ export default function (config)
         children: createStackNavigator,
         all: createBottomTabNavigator,
         oneOf: createSwitchNavigator,
-        app: createAppContainer,
+        app: createAppContainer
     };
 
     const map = function (route)
@@ -45,7 +46,8 @@ export default function (config)
             app,
             injectNavigationOptions = false,
             navigationOptions,
-            routerConfig
+            routerConfig,
+            screenProps
         } = route;
 
         const prop = ["children", "all", "oneOf", "app"].find(j => !!route[j]);
@@ -65,12 +67,24 @@ export default function (config)
 
             let navigation = (creator[prop])(routeConfigs, routerConfig);
 
-            return app === true ? creator["app"](inject(injectNavigationOptions, navigationOptions, navigation)) : {
-                [name]: removeEmpty({
-                    screen: inject(injectNavigationOptions, navigationOptions, navigation),
-                    navigationOptions: injectNavigationOptions ? null : navigationOptions
-                })
-            };
+            if (app === true)
+            {
+                return creator["app"](inject(injectNavigationOptions, navigationOptions, navigation));
+            }
+            else
+            {
+                const Screen = inject(injectNavigationOptions, navigationOptions, navigation);
+                return {
+                    [name]: removeEmpty({
+                        screen: screenProps ? (props) =>
+                        {
+                            const {screenProps: dynamicScreenProps, ...others} = props;
+                            return <Screen {...others} screenProps={{...screenProps, ...dynamicScreenProps}}/>
+                        } : Screen,
+                        navigationOptions: injectNavigationOptions ? null : navigationOptions
+                    })
+                };
+            }
         }
         else
         {
@@ -79,9 +93,15 @@ export default function (config)
                 throw new Error("navigation config missing component.");
             }
 
+            const Screen = inject(injectNavigationOptions, navigationOptions, component);
+
             return {
                 [name]: removeEmpty({
-                    screen: inject(injectNavigationOptions, navigationOptions, component),
+                    screen: screenProps ? (props) =>
+                    {
+                        const {screenProps: dynamicScreenProps, ...others} = props;
+                        return <Screen {...others} screenProps={{...screenProps, ...dynamicScreenProps}}/>
+                    } : Screen,
                     navigationOptions: injectNavigationOptions ? {header: null} : navigationOptions
                 })
             };

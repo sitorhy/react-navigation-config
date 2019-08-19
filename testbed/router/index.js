@@ -12,7 +12,7 @@ import NativeTestScreen from "../components/NativeTestScreen";
 import router from "../react-navigation-config/router";
 
 router.preventDefaultActionFix(false);
-
+/*
 router.onReady(() => {
   console.log("初始化完毕");
 });
@@ -30,6 +30,7 @@ router.afterEach((to, from) => {
   console.log(from);
   console.log("--- after end ---");
 });
+*/
 
 import { Image } from "react-native";
 import {
@@ -42,6 +43,10 @@ import iconMine from "../images/mine.png";
 
 const routes = {
   app: true,
+  screenProps: {
+    description: "test data",
+    permissions: ["SUPER_USER"]
+  },
   routerConfig: {
     initialRouteName: "start"
   },
@@ -59,6 +64,11 @@ const routes = {
               name: "home",
               component: HomeScreen,
               injectNavigationOptions: true,
+              screenProps: {
+                meta: {
+                  xyz: 999
+                }
+              },
               navigationOptions: {
                 title: "Home",
                 tabBarLabel: "Home",
@@ -99,6 +109,12 @@ const routes = {
           component: SettingScreen,
           navigationOptions: {
             headerTitle: "Setting"
+          },
+          screenProps: {
+            meta: {
+              a: 100,
+              b: 200
+            }
           }
         },
         {

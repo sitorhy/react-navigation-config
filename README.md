@@ -97,6 +97,8 @@ AppRegistry.registerComponent(name, () => App);
 
 + `<Object>` `navigationOptions` - set **navigationOptions** in **RouteConfigs** when injectNavigationOptions not specified
 
++ `<Object>` `screenProps` - initial metadata
+
 + `<Boolean | String>` `injectNavigationOptions` - not necessary, inject static variable **navigationOptions** in component class,available when one of following values:
     - `true`: static **<ComponentClass>.navigationOptions = navigationOptions;**
     - `"extend"`: extend class **Component**, and set static variable **navigationOptions**, same as:

@@ -75,6 +75,7 @@ export default class extends React.Component {
 
   getParamsTest = () => {
     console.log(this.props.navigation);
+    console.log(this.props);
     console.log(navigator.getCurrentParams());
   };
 

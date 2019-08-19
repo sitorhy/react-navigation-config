@@ -4,6 +4,7 @@ import navigator from "../react-navigation-config/router";
 
 export default class extends React.Component {
   componentDidMount() {
+    console.log(this.props.screenProps);
     console.log(navigator.getCurrentParams());
   }
 
