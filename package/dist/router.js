@@ -50,6 +50,29 @@ function getNavState(nav) {
   return [params, scopeParams];
 }
 
+function getActiveRoute(nav) {
+  var {
+    routes,
+    index
+  } = nav;
+
+  if (index === null || index === undefined) {
+    return null;
+  }
+
+  if (Array.isArray(routes) && routes.length) {
+    var activeRoute = getActiveRoute(routes[index]);
+
+    if (activeRoute === null) {
+      return routes[index];
+    } else {
+      return activeRoute;
+    }
+  }
+
+  return null;
+}
+
 function matchRoute(nav, name) {
   var {
     routes,
@@ -76,7 +99,46 @@ function matchRoute(nav, name) {
 class Navigator {
   constructor() {
     _defineProperty(this, "_routeName", "");
+
+    _defineProperty(this, "_beforeEachHandler", null);
+
+    _defineProperty(this, "_afterEachHandler", null);
   }
+
+  _bindBeforeEach(action, toState, fromState) {
+    var form = getActiveRoute(fromState);
+    var to = getActiveRoute(toState);
+
+    if (typeof this._beforeEachHandler === "function") {
+      var handler = this._beforeEachHandler;
+      var namedAction = null;
+
+      function _createNamedAction(routeName) {
+        if (routeName) {
+          namedAction = _extends({}, action, {
+            routeName
+          });
+        }
+
+        return null;
+      }
+
+      var nextAction = handler((0, _common.removeEmpty)({
+        key: to.key,
+        params: to.params,
+        routeName: to.routeName
+      }), (0, _common.removeEmpty)({
+        key: form.key,
+        params: form.params,
+        routeName: form.routeName
+      }), _createNamedAction);
+      return nextAction || namedAction;
+    }
+  }
+
+  _bindAfterEach(action, toState, fromState) {}
+
+  _bindReady() {}
 
   _setNavigator(navigator) {
     this.navigator = navigator;
@@ -160,6 +222,12 @@ class Navigator {
 
   navigateBack() {
     return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.NavigationActions.back({})));
+  }
+
+  beforeEach(callback) {
+    if (typeof callback === "function") {
+      this._beforeEachHandler = callback;
+    }
   }
 
 }

@@ -12,6 +12,10 @@ declare namespace router {
     function navigateBack(): Promise<object>;
 
     function getParams(): Array<object>;
+
+    function beforeEach(callback: (to: object, from: object, next: (routeName: string) => object | null) => void);
+
+    function afterEach(callback: (to: object, from: object) => void);
 }
 
 export default router;

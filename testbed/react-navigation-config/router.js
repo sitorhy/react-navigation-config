@@ -100,9 +100,73 @@ class Navigator {
   constructor() {
     _defineProperty(this, "_routeName", "");
 
-    _defineProperty(this, "_beforeEach", null);
+    _defineProperty(this, "_beforeEachHandler", null);
 
-    _defineProperty(this, "_afterEach", null);
+    _defineProperty(this, "_afterEachHandler", null);
+
+    _defineProperty(this, "_readyHandler", null);
+
+    _defineProperty(this, "_preventDefaultActionFix", true);
+  }
+
+  _bindBeforeEach(action, toState, fromState) {
+    var fixed = false;
+    var nextAction = null;
+    var customAction = null;
+    var to = getActiveRoute(toState);
+
+    if (this._preventDefaultActionFix !== true) {
+      if (to.routeName && to.routeName !== action.routeName) {
+        action.routeName = to.routeName;
+        fixed = true;
+      }
+    }
+
+    if (typeof this._beforeEachHandler === "function") {
+      var form = getActiveRoute(fromState);
+      var handler = this._beforeEachHandler;
+
+      function _rewriteAction(routeName, params) {
+        if (params === void 0) {
+          params = null;
+        }
+
+        if (routeName) {
+          customAction = _extends({}, action, {
+            routeName
+          }, (0, _common.removeEmpty)({
+            params
+          }));
+        }
+      }
+
+      nextAction = handler(action, (0, _common.removeEmpty)({
+        key: form.key,
+        params: form.params,
+        routeName: form.routeName
+      }), _rewriteAction);
+    }
+
+    return nextAction || customAction || fixed && action;
+  }
+
+  _bindAfterEach(action, toState, fromState) {
+    if (typeof this._afterEachHandler === "function") {
+      var from = getActiveRoute(fromState);
+      var handler = this._afterEachHandler;
+      handler(action, (0, _common.removeEmpty)({
+        key: from.key,
+        params: from.params,
+        routeName: from.routeName
+      }));
+    }
+  }
+
+  _bindReady() {
+    if (typeof this._readyHandler === "function") {
+      var handler = this._readyHandler;
+      handler();
+    }
   }
 
   _setNavigator(navigator) {
@@ -179,36 +243,42 @@ class Navigator {
   }
 
   navigateTo(name, params) {
-    return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.NavigationActions.navigate({
+    var options = (0, _common.removeEmpty)({
       routeName: name,
       params: params
-    })));
+    });
+    return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.NavigationActions.navigate(options)));
   }
 
   navigateBack() {
     return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.NavigationActions.back({})));
   }
 
-  beforeEach(action, toState, fromState) {
-    var form = getActiveRoute(toState);
-    var to = getActiveRoute(toState);
+  preventDefaultActionFix(disabled) {
+    if (disabled === void 0) {
+      disabled = true;
+    }
 
-    if (typeof this._beforeEach === "function") {
-      this._beforeEach((0, _common.removeEmpty)({
-        key: to.key,
-        params: to.params,
-        routeName: to.routeName
-      }), (0, _common.removeEmpty)({
-        key: form.key,
-        params: form.params,
-        routeName: form.routeName
-      }));
+    this._preventDefaultActionFix = disabled === true;
+  }
+
+  beforeEach(callback) {
+    if (typeof callback === "function") {
+      this._beforeEachHandler = callback;
     }
   }
 
-  afterEach(action, toState, fromState) {}
+  afterEach(callback) {
+    if (typeof callback === "function") {
+      this._afterEachHandler = callback;
+    }
+  }
 
-  onReady() {}
+  onReady(callback) {
+    if (typeof callback === "function") {
+      this._readyHandler = callback;
+    }
+  }
 
 }
 

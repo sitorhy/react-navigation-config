@@ -61,6 +61,10 @@ export default class extends React.Component {
           {
             key: "params",
             title: "Get Current Params"
+          },
+          {
+            key: "back",
+            title: "Go Back Test"
           }
         ]
       }
@@ -97,7 +101,15 @@ export default class extends React.Component {
         break;
       case "params":
         {
+          console.log(this.props.navigation);
           console.log(navigator.getCurrentParams());
+        }
+        break;
+      case "back":
+        {
+          navigator.navigateBack().then(() => {
+            console.log(this.props.navigation);
+          });
         }
         break;
     }

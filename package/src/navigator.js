@@ -61,24 +61,26 @@ export default function (AppContainer, navigator = defaultNavigator)
 
         AppContainer.router.getStateForAction = function (action, inputState)
         {
-            const {routeName, type} = action;
-            navigator._routeName = routeName;
+            const {type, routeName} = action;
 
             switch (type)
             {
-                case "Navigation/NAVIGATE":
+                case "Navigation/INIT":
                 {
-                    navigator.onReady();
+                    navigator._bindReady();
                 }
             }
             let state = WrappedAppContainer.router.getStateForAction(action, inputState);
 
+            navigator._routeName = routeName;
+
             if (inputState)
             {
-                const nextAction = navigator.beforeEach(action, state, inputState);
+                const nextAction = navigator._bindBeforeEach(action, state, inputState);
                 if (nextAction)
                 {
                     state = WrappedAppContainer.router.getStateForAction(nextAction, inputState);
+                    navigator._routeName = nextAction.routeName;
                 }
             }
 
@@ -122,7 +124,7 @@ export default function (AppContainer, navigator = defaultNavigator)
             {
                 case "Navigation/NAVIGATE":
                 {
-                    navigator.afterEach(action, prevState, newState);
+                    navigator._bindAfterEach(action, prevState, newState);
                 }
                 default:
                 {

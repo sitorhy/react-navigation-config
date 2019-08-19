@@ -9,6 +9,28 @@ import CountScreen from "../components/CountScreen";
 import CountControlScreen from "../components/CountControlScreen";
 import NativeTestScreen from "../components/NativeTestScreen";
 
+import router from "../react-navigation-config/router";
+
+router.preventDefaultActionFix(false);
+
+router.onReady(() => {
+  console.log("初始化完毕");
+});
+
+router.beforeEach((to, from, next) => {
+  console.log("--- before start ---");
+  console.log(to);
+  console.log(from);
+  console.log("--- before end ---");
+});
+
+router.afterEach((to, from) => {
+  console.log("--- after start ---");
+  console.log(to);
+  console.log(from);
+  console.log("--- after end ---");
+});
+
 import { Image } from "react-native";
 import {
   renderNavigation,

@@ -49,9 +49,10 @@ export default class extends React.Component {
 
   toMain = () => {
     // react-navigation 3.x bug, redirect to home , but params store in 'main'
-    //  navigator.navigateTo("main", { xyz: 100 });
 
-    navigator.navigateTo("home", { xyz: 100 });
+    navigator.navigateTo("main", { xyz: 100 });
+
+    //navigator.navigateTo("home", { xyz: 100 });
   };
 
   toCount = () => {
