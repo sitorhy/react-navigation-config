@@ -65,6 +65,10 @@ export default class extends React.Component {
           {
             key: "back",
             title: "Go Back Test"
+          },
+          {
+            key: "drawer",
+            title: "DrawerContainer Test"
           }
         ]
       }
@@ -112,6 +116,13 @@ export default class extends React.Component {
         {
           navigator.navigateBack().then(() => {
             console.log(this.props.navigation);
+          });
+        }
+        break;
+      case "drawer":
+        {
+          this.props.navigation.navigate({
+            routeName: "drawer"
           });
         }
         break;

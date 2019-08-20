@@ -1,6 +1,6 @@
 import createStore, {ACTIONS} from "./store";
 import {removeEmpty, uuid, getActiveRoute, matchRoute, getNavState} from "./common";
-import {NavigationActions, StackActions} from "react-navigation";
+import {NavigationActions, StackActions, DrawerActions} from "react-navigation";
 
 export class Navigator
 {
@@ -132,7 +132,7 @@ export class Navigator
 
     getRouteParams(key)
     {
-        if(key)
+        if (key)
         {
             const route = matchRoute(this.navigator.state.nav, key);
             if (route)
@@ -231,6 +231,13 @@ export class Navigator
     {
         return this._asyncNavigate(
             () => this.navigator.dispatch(NavigationActions.back({}))
+        );
+    }
+
+    toggleDrawer()
+    {
+        return this._asyncNavigate(
+            () => this.navigator.dispatch(DrawerActions.toggleDrawer())
         );
     }
 

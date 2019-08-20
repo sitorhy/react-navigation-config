@@ -17,6 +17,8 @@ declare namespace router {
 
     function navigateBack(): Promise<object>;
 
+    function toggleDrawer(): Promise<object>;
+
     function getParams(): Array<object>;
 
     function beforeEach(callback: (action: object, to: object, from: object, next: (routeName: string) => object | null) => void);

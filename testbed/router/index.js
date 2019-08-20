@@ -8,6 +8,8 @@ import SettingScreen from "../components/SettingScreen";
 import CountScreen from "../components/CountScreen";
 import CountControlScreen from "../components/CountControlScreen";
 import NativeTestScreen from "../components/NativeTestScreen";
+import DrawerScreen from "../components/DrawerScreen";
+import DrawerContentScreen from "../components/DrawerContentScreen";
 
 import router from "../react-navigation-config/router";
 
@@ -61,6 +63,8 @@ const routes = {
       children: [
         {
           name: "tab",
+          tabDirection: "bottom",
+          material: false,
           navigationOptions: {
             header: null
           },
@@ -112,8 +116,10 @@ const routes = {
         {
           name: "setting",
           component: SettingScreen,
-          navigationOptions: {
-            headerTitle: "Setting"
+          navigationOptions: ({ navigation }) => {
+            return {
+              headerTitle: navigation.getParam("headerTitle", "Setting")
+            };
           },
           screenProps: {
             meta: {
@@ -141,6 +147,21 @@ const routes = {
           component: NativeTestScreen,
           navigationOptions: {
             headerTitle: "Native-Test"
+          }
+        },
+        {
+          name: "drawerTest",
+          drawer: [
+            {
+              name: "drawer",
+              component: DrawerScreen
+            }
+          ],
+          routerConfig: {
+            contentComponent: DrawerContentScreen
+          },
+          navigationOptions: {
+            headerTitle: "DrawerLayout"
           }
         }
       ]

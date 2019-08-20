@@ -1,6 +1,6 @@
 {
   "name": "react-navigation-config",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "static route configuration helpers for react-navigation 3.x.",
   "main": "index.js",
   "scripts": {
@@ -33,6 +33,7 @@
     "gulp-babel": "^8.0.0",
     "react": "^16.9.0",
     "react-navigation": "^3.11.1",
+    "react-navigation-material-bottom-tabs": "^1.0.0",
     "redux": "^4.0.4"
   },
   "dependencies": {}

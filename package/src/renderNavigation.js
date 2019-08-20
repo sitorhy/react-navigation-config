@@ -3,13 +3,25 @@ import {
     createAppContainer,
     createStackNavigator,
     createSwitchNavigator,
-    createBottomTabNavigator
+    createBottomTabNavigator,
+    createDrawerNavigator,
+    createMaterialTopTabNavigator
 } from "react-navigation";
+
+import {createMaterialBottomTabNavigator} from "react-navigation-material-bottom-tabs";
 
 import defaultNavigator from "./router";
 import * as decorators from "./decorators";
 import {ObserveStore, removeEmpty} from "./common";
 import {ACTIONS} from "./store";
+
+const creator = {
+    children: createStackNavigator,
+    all: createBottomTabNavigator,
+    oneOf: createSwitchNavigator,
+    drawer: createDrawerNavigator,
+    app: createAppContainer
+};
 
 function inject(injectNavigationOptions, navigationOptions, component)
 {
@@ -35,8 +47,6 @@ function through(store, screenProps, ScreenComponent)
 {
     const ThroughComponent = class extends React.Component
     {
-        observer = null;
-
         constructor(...args)
         {
             super(...args);
@@ -111,78 +121,88 @@ function through(store, screenProps, ScreenComponent)
     return ThroughComponent;
 }
 
-export default function (config, navigator = defaultNavigator)
+const map = function (route, navigator)
 {
-    const creator = {
-        children: createStackNavigator,
-        all: createBottomTabNavigator,
-        oneOf: createSwitchNavigator,
-        app: createAppContainer
-    };
+    const {
+        name,
+        component,
+        app,
+        injectNavigationOptions = false,
+        navigationOptions,
+        routerConfig,
+        screenProps,
+        material = false,
+        tabDirection
+    } = route;
 
-    const map = function (route)
+    const prop = ["children", "all", "oneOf", "drawer", "app"].find(j => !!route[j]);
+
+    if (!name && app !== true)
     {
-        const {
-            name,
-            component,
-            app,
-            injectNavigationOptions = false,
-            navigationOptions,
-            routerConfig,
-            screenProps
-        } = route;
+        throw new Error("navigation config missing name.");
+    }
 
-        const prop = ["children", "all", "oneOf", "app"].find(j => !!route[j]);
-
-        if (!name && app !== true)
+    if (prop && Array.isArray(route[prop]) && route[prop].length)
+    {
+        const routeConfigs = {};
+        for (const i of route[prop])
         {
-            throw new Error("navigation config missing name.");
+            Object.assign(routeConfigs, map(i, navigator));
         }
 
-        if (prop && Array.isArray(route[prop]) && route[prop].length)
+        let containerCreator = creator[prop];
+        if (prop === "all")
         {
-            const routeConfigs = {};
-            for (const i of route[prop])
+            if (material === true)
             {
-                Object.assign(routeConfigs, map(i, creator[prop]));
+                if (tabDirection !== "bottom")
+                {
+                    containerCreator = createMaterialTopTabNavigator;
+                }
+                else
+                {
+                    containerCreator = createMaterialBottomTabNavigator;
+                }
             }
+        }
+        let navigation = containerCreator(routeConfigs, routerConfig);
 
-            let navigation = (creator[prop])(routeConfigs, routerConfig);
+        const ScreenComponent = navigation;
+        const screen = through(navigator ? navigator.getStore() : null, screenProps, ScreenComponent);
 
-            const ScreenComponent = navigation;
-            const screen = through(navigator ? navigator.getStore() : null, screenProps, ScreenComponent);
-
-            if (app === true)
-            {
-                return creator["app"](inject(injectNavigationOptions, navigationOptions, screen));
-            }
-            else
-            {
-                return {
-                    [name]: removeEmpty({
-                        screen: inject(injectNavigationOptions, navigationOptions, screen),
-                        navigationOptions: injectNavigationOptions ? null : navigationOptions
-                    })
-                };
-            }
+        if (app === true)
+        {
+            return creator["app"](inject(injectNavigationOptions, navigationOptions, screen));
         }
         else
         {
-            if (!component)
-            {
-                throw new Error("navigation config missing component.");
-            }
-
-            const ScreenComponent = component;
-            const screen = through(navigator ? navigator.getStore() : null, screenProps, ScreenComponent);
             return {
                 [name]: removeEmpty({
                     screen: inject(injectNavigationOptions, navigationOptions, screen),
-                    navigationOptions: injectNavigationOptions ? {header: null} : navigationOptions
+                    navigationOptions: injectNavigationOptions ? null : navigationOptions
                 })
             };
         }
-    };
+    }
+    else
+    {
+        if (!component)
+        {
+            throw new Error("navigation config missing component.");
+        }
 
-    return map(config);
+        const ScreenComponent = component;
+        const screen = through(navigator ? navigator.getStore() : null, screenProps, ScreenComponent);
+        return {
+            [name]: removeEmpty({
+                screen: inject(injectNavigationOptions, navigationOptions, screen),
+                navigationOptions: injectNavigationOptions ? {header: null} : navigationOptions
+            })
+        };
+    }
+};
+
+export default function (config, navigator = defaultNavigator)
+{
+    return map(config, navigator);
 }

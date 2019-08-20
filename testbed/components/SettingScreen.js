@@ -19,11 +19,16 @@ export default class extends React.Component {
     });
   };
 
+  changeTitle = () => {
+    this.props.navigation.setParams({ headerTitle: "力微任重久神疲" });
+  };
+
   render() {
     return (
       <View>
         <Text>Setting</Text>
         <Button title="Push Test" onPress={this.pushTest} />
+        <Button title="Change Title" onPress={this.changeTitle} />
       </View>
     );
   }

@@ -2,9 +2,12 @@
 configuration helpers for react-navigation 3.x.
 
 # Dependent
-+ react-native
++ react-navigation-material-bottom-tabs
++ react-native-paper
++ react-native-vector-icons
++ react
 + redux
-+ react-navigation 3.x
++ react-navigation
 
 # Usage
 navigation instance, project created by `react-native-cli`.
@@ -104,6 +107,10 @@ AppRegistry.registerComponent(name, () => App);
 + `<Object>` `navigationOptions` - set parameter **navigationOptions** in **RouteConfigs** when injectNavigationOptions not specified
 
 + `<Object>` `screenProps` - route meta fields,will be integrated into **screenProps**
+
++ `<Boolean>` `material` - material-design themed tab bar
+
++ `<String>` `tabDirection` - where material-design themed tab docking
 
 + `<Boolean | String>` `injectNavigationOptions` - this option is not necessary, inject static variable **navigationOptions** into the component's class
 it is available when one of following values:

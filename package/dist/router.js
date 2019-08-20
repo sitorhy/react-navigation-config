@@ -250,6 +250,10 @@ class Navigator {
     return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.NavigationActions.back({})));
   }
 
+  toggleDrawer() {
+    return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.DrawerActions.toggleDrawer()));
+  }
+
   preventDefaultActionFix(disabled) {
     if (disabled === void 0) {
       disabled = true;

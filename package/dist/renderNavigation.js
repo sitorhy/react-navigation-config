@@ -7,6 +7,8 @@ var _react = _interopRequireDefault(require("react"));
 
 var _reactNavigation = require("react-navigation");
 
+var _reactNavigationMaterialBottomTabs = require("react-navigation-material-bottom-tabs");
+
 var _router = _interopRequireDefault(require("./router"));
 
 var decorators = _interopRequireWildcard(require("./decorators"));
@@ -23,7 +25,13 @@ function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) r
 
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+var creator = {
+  children: _reactNavigation.createStackNavigator,
+  all: _reactNavigation.createBottomTabNavigator,
+  oneOf: _reactNavigation.createSwitchNavigator,
+  drawer: _reactNavigation.createDrawerNavigator,
+  app: _reactNavigation.createAppContainer
+};
 
 function inject(injectNavigationOptions, navigationOptions, component) {
   if (injectNavigationOptions) {
@@ -40,13 +48,9 @@ function inject(injectNavigationOptions, navigationOptions, component) {
 }
 
 function through(store, screenProps, ScreenComponent) {
-  var _temp;
-
-  var ThroughComponent = (_temp = class ThroughComponent extends _react.default.Component {
+  var ThroughComponent = class extends _react.default.Component {
     constructor() {
       super(...arguments);
-
-      _defineProperty(this, "observer", null);
 
       if (store) {
         this.observer = new _common.ObserveStore(store, (state, call) => {
@@ -116,7 +120,7 @@ function through(store, screenProps, ScreenComponent) {
       }));
     }
 
-  }, _temp);
+  };
 
   if (ScreenComponent.router) {
     ThroughComponent.router = ScreenComponent.router;
@@ -125,74 +129,81 @@ function through(store, screenProps, ScreenComponent) {
   return ThroughComponent;
 }
 
+var map = function map(route, navigator) {
+  var {
+    name,
+    component,
+    app,
+    injectNavigationOptions = false,
+    navigationOptions,
+    routerConfig,
+    screenProps,
+    material = false,
+    tabDirection
+  } = route;
+  var prop = ["children", "all", "oneOf", "drawer", "app"].find(j => !!route[j]);
+
+  if (!name && app !== true) {
+    throw new Error("navigation config missing name.");
+  }
+
+  if (prop && Array.isArray(route[prop]) && route[prop].length) {
+    var routeConfigs = {};
+
+    for (var i of route[prop]) {
+      Object.assign(routeConfigs, map(i, navigator));
+    }
+
+    var containerCreator = creator[prop];
+
+    if (prop === "all") {
+      if (material === true) {
+        if (tabDirection !== "bottom") {
+          containerCreator = _reactNavigation.createMaterialTopTabNavigator;
+        } else {
+          containerCreator = _reactNavigationMaterialBottomTabs.createMaterialBottomTabNavigator;
+        }
+      }
+    }
+
+    var navigation = containerCreator(routeConfigs, routerConfig);
+    var ScreenComponent = navigation;
+    var screen = through(navigator ? navigator.getStore() : null, screenProps, ScreenComponent);
+
+    if (app === true) {
+      return creator["app"](inject(injectNavigationOptions, navigationOptions, screen));
+    } else {
+      return {
+        [name]: (0, _common.removeEmpty)({
+          screen: inject(injectNavigationOptions, navigationOptions, screen),
+          navigationOptions: injectNavigationOptions ? null : navigationOptions
+        })
+      };
+    }
+  } else {
+    if (!component) {
+      throw new Error("navigation config missing component.");
+    }
+
+    var _ScreenComponent = component;
+
+    var _screen = through(navigator ? navigator.getStore() : null, screenProps, _ScreenComponent);
+
+    return {
+      [name]: (0, _common.removeEmpty)({
+        screen: inject(injectNavigationOptions, navigationOptions, _screen),
+        navigationOptions: injectNavigationOptions ? {
+          header: null
+        } : navigationOptions
+      })
+    };
+  }
+};
+
 function _default(config, navigator) {
   if (navigator === void 0) {
     navigator = _router.default;
   }
 
-  var creator = {
-    children: _reactNavigation.createStackNavigator,
-    all: _reactNavigation.createBottomTabNavigator,
-    oneOf: _reactNavigation.createSwitchNavigator,
-    app: _reactNavigation.createAppContainer
-  };
-
-  var map = function map(route) {
-    var {
-      name,
-      component,
-      app,
-      injectNavigationOptions = false,
-      navigationOptions,
-      routerConfig,
-      screenProps
-    } = route;
-    var prop = ["children", "all", "oneOf", "app"].find(j => !!route[j]);
-
-    if (!name && app !== true) {
-      throw new Error("navigation config missing name.");
-    }
-
-    if (prop && Array.isArray(route[prop]) && route[prop].length) {
-      var routeConfigs = {};
-
-      for (var i of route[prop]) {
-        Object.assign(routeConfigs, map(i, creator[prop]));
-      }
-
-      var navigation = creator[prop](routeConfigs, routerConfig);
-      var ScreenComponent = navigation;
-      var screen = through(navigator ? navigator.getStore() : null, screenProps, ScreenComponent);
-
-      if (app === true) {
-        return creator["app"](inject(injectNavigationOptions, navigationOptions, screen));
-      } else {
-        return {
-          [name]: (0, _common.removeEmpty)({
-            screen: inject(injectNavigationOptions, navigationOptions, screen),
-            navigationOptions: injectNavigationOptions ? null : navigationOptions
-          })
-        };
-      }
-    } else {
-      if (!component) {
-        throw new Error("navigation config missing component.");
-      }
-
-      var _ScreenComponent = component;
-
-      var _screen = through(navigator ? navigator.getStore() : null, screenProps, _ScreenComponent);
-
-      return {
-        [name]: (0, _common.removeEmpty)({
-          screen: inject(injectNavigationOptions, navigationOptions, _screen),
-          navigationOptions: injectNavigationOptions ? {
-            header: null
-          } : navigationOptions
-        })
-      };
-    }
-  };
-
-  return map(config);
+  return map(config, navigator);
 }
