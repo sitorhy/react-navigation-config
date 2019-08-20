@@ -81,8 +81,6 @@ function through(store, screenProps, ScreenComponent) {
           });
         });
       }
-
-      console.log(this.props.navigation);
     }
 
     componentWillUnmount() {
