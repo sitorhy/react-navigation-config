@@ -7,7 +7,7 @@ configuration helpers for react-navigation 3.x.
 + react-navigation 3.x
 
 # Usage
-navigation example, project created by `react-native-cli`.
+navigation instance, project created by `react-native-cli`.
 
 ##### Basic Example
 + App.js

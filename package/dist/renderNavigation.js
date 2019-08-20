@@ -59,11 +59,18 @@ function through(store, screenProps, ScreenComponent) {
           var {
             screenProps
           } = state;
-          return screenProps[key];
+
+          if (Object.hasOwnProperty.call(screenProps, key)) {
+            return screenProps[key] || null;
+          }
+
+          return undefined;
         }, screenProps => {
-          this.state = _extends({}, this.state, {
-            screenProps
-          });
+          if (screenProps !== undefined) {
+            this.state = _extends({}, this.state, {
+              screenProps
+            });
+          }
         });
       }
     }
@@ -86,11 +93,11 @@ function through(store, screenProps, ScreenComponent) {
         var {
           key
         } = navigation.state;
+        this.observer.unsubscribe();
         this.observer.store.dispatch({
           type: _store.ACTIONS.UNINSTALL_SCREEN_PROPS,
           key
         });
-        this.observer.unsubscribe();
       }
     }
 

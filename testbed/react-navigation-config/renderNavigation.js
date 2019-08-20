@@ -49,7 +49,7 @@ function through(store, screenProps, ScreenComponent) {
       _defineProperty(this, "observer", null);
 
       if (store) {
-        this.observer = new _common.ObserveStore(store, state => {
+        this.observer = new _common.ObserveStore(store, (state, call) => {
           var {
             navigation
           } = this.props;
@@ -59,7 +59,12 @@ function through(store, screenProps, ScreenComponent) {
           var {
             screenProps
           } = state;
-          return screenProps[key];
+
+          if (Object.hasOwnProperty.call(screenProps, key)) {
+            if (typeof call === "function") {
+              call(screenProps[key]);
+            }
+          }
         }, screenProps => {
           this.state = _extends({}, this.state, {
             screenProps
@@ -76,6 +81,8 @@ function through(store, screenProps, ScreenComponent) {
           });
         });
       }
+
+      console.log(this.props.navigation);
     }
 
     componentWillUnmount() {
@@ -86,11 +93,12 @@ function through(store, screenProps, ScreenComponent) {
         var {
           key
         } = navigation.state;
-        this.observer.store.dispatch({
+        this.observer.dispose();
+        store.dispatch({
           type: _store.ACTIONS.UNINSTALL_SCREEN_PROPS,
           key
         });
-        this.observer.unsubscribe();
+        this.observer = null;
       }
     }
 
@@ -106,7 +114,7 @@ function through(store, screenProps, ScreenComponent) {
           others = _objectWithoutPropertiesLoose(_this$props, ["screenProps"]);
 
       return _react.default.createElement(ScreenComponent, _extends({}, others, {
-        screenProps: _extends({}, screenProps, {}, dynamicScreenProps, {}, installScreenProps)
+        screenProps: _extends({}, dynamicScreenProps, {}, installScreenProps)
       }));
     }
 

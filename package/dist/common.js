@@ -162,11 +162,13 @@ class ObserveStore {
 
   start(onChange) {
     this.dispose = this.store.subscribe(() => {
-      var nextState = this.select(this.store.getState());
+      if (this.store) {
+        var nextState = this.select(this.store.getState());
 
-      if (nextState !== this.currentState) {
-        this.currentState = nextState;
-        onChange(this.currentState);
+        if (nextState !== this.currentState) {
+          this.currentState = nextState;
+          onChange(this.currentState);
+        }
       }
     });
   }

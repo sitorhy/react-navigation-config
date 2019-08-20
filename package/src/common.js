@@ -155,25 +155,30 @@ export class ObserveStore
 
     start(onChange)
     {
-        this.dispose = this.store.subscribe(() =>
+        this.unsubscribe = this.store.subscribe(() =>
         {
-            let nextState = this.select(this.store.getState());
-            if (nextState !== this.currentState)
+            if (this.unsubscribe)
             {
-                this.currentState = nextState;
-                onChange(this.currentState);
+                this.select(this.store.getState(), (nextState) =>
+                {
+                    if (nextState !== this.currentState)
+                    {
+                        this.currentState = nextState;
+                        onChange(this.currentState);
+                    }
+                });
             }
         });
     }
 
-    unsubscribe()
+    dispose()
     {
-        if (this.dispose)
+        if (this.unsubscribe)
         {
-            this.dispose();
+            this.unsubscribe();
         }
         this.store = null;
-        this.dispose = null;
+        this.unsubscribe = null;
         this.select = null;
         this.currentState = null;
     }

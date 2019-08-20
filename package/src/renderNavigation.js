@@ -42,12 +42,18 @@ function through(store, screenProps, ScreenComponent)
             super(...args);
             if (store)
             {
-                this.observer = new ObserveStore(store, (state) =>
+                this.observer = new ObserveStore(store, (state, call) =>
                 {
                     const {navigation} = this.props;
                     const {key} = navigation.state;
                     const {screenProps} = state;
-                    return screenProps[key];
+                    if (Object.hasOwnProperty.call(screenProps, key))
+                    {
+                        if (typeof call === "function")
+                        {
+                            call(screenProps[key]);
+                        }
+                    }
                 }, (screenProps) =>
                 {
                     this.state = {
@@ -69,6 +75,7 @@ function through(store, screenProps, ScreenComponent)
                     });
                 });
             }
+            console.log(this.props.navigation);
         }
 
         componentWillUnmount()
@@ -77,11 +84,12 @@ function through(store, screenProps, ScreenComponent)
             {
                 const {navigation} = this.props;
                 const {key} = navigation.state;
-                this.observer.store.dispatch({
+                this.observer.dispose();
+                store.dispatch({
                     type: ACTIONS.UNINSTALL_SCREEN_PROPS,
                     key
                 });
-                this.observer.unsubscribe();
+                this.observer = null;
             }
         }
 
@@ -91,7 +99,7 @@ function through(store, screenProps, ScreenComponent)
             const {screenProps: dynamicScreenProps, ...others} = this.props;
             return <ScreenComponent
                 {...others}
-                screenProps={{...screenProps, ...dynamicScreenProps, ...installScreenProps}}
+                screenProps={{...dynamicScreenProps, ...installScreenProps}}
             />
         }
     }

@@ -161,23 +161,25 @@ class ObserveStore {
   }
 
   start(onChange) {
-    this.dispose = this.store.subscribe(() => {
-      var nextState = this.select(this.store.getState());
-
-      if (nextState !== this.currentState) {
-        this.currentState = nextState;
-        onChange(this.currentState);
+    this.unsubscribe = this.store.subscribe(() => {
+      if (this.unsubscribe) {
+        this.select(this.store.getState(), nextState => {
+          if (nextState !== this.currentState) {
+            this.currentState = nextState;
+            onChange(this.currentState);
+          }
+        });
       }
     });
   }
 
-  unsubscribe() {
-    if (this.dispose) {
-      this.dispose();
+  dispose() {
+    if (this.unsubscribe) {
+      this.unsubscribe();
     }
 
     this.store = null;
-    this.dispose = null;
+    this.unsubscribe = null;
     this.select = null;
     this.currentState = null;
   }
