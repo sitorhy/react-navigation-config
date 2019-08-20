@@ -1,6 +1,11 @@
 # React Navigation Config
 configuration helpers for react-navigation 3.x.
 
+# Dependent
++ react-native
++ redux
++ react-navigation 3.x
+
 # Usage
 navigation example, project created by `react-native-cli`.
 
@@ -89,41 +94,33 @@ AppRegistry.registerComponent(name, () => App);
 # Configuration
 **Route** object with the properties.
 
-+ `<Boolean>` `app` - will call function **createAppContainer** last, return a **AppContainer** wrapper.
++ `<Boolean>` `app` - call function **createAppContainer** at last, return a **AppContainer** wrapper.
 
-+ `<String>` `name` - route name, required, for use **navigation.navigate(routeName)**, is not necessary when **app** is `true`
++ `<String>` `name` - route name, required, for use **this.props.navigation.navigate(routeName)**, is not necessary when **app** is `"true"`
 
-+ `<Object>` `routerConfig` - same as **StackNavigatorConfig**,**SwitchNavigatorConfig** ,**StackNavigatorConfig** and so on
++ `<Object>` `routerConfig` - read document releated 
+ **StackNavigatorConfig**,**SwitchNavigatorConfig** ,**StackNavigatorConfig** ...
 
-+ `<Object>` `navigationOptions` - set **navigationOptions** in **RouteConfigs** when injectNavigationOptions not specified
++ `<Object>` `navigationOptions` - set parameter **navigationOptions** in **RouteConfigs** when injectNavigationOptions not specified
 
-+ `<Object>` `screenProps` - initial metadata
++ `<Object>` `screenProps` - route meta fields,will be integrated into **screenProps**
 
-+ `<Boolean | String>` `injectNavigationOptions` - not necessary, inject static variable **navigationOptions** in component class,available when one of following values:
-    - `true`: static **<ComponentClass>.navigationOptions = navigationOptions;**
-    - `"extend"`: extend class **Component**, and set static variable **navigationOptions**, same as:
-```
-import {navigationOptions} from "react-navigation-config/decorators";
++ `<Boolean | String>` `injectNavigationOptions` - this option is not necessary, inject static variable **navigationOptions** into the component's class
+it is available when one of following values:
+    - `true`: direct injection
+    - `"extend"`: inherit first then inject
 
-@navigationOptions({
-   title: "Home"
-})
-class Component extend React.Component{
-
-}
-```
-
-under props can only choose one of them:
+only one of following options can be choose:
 + `Array<Route>` `children` - create as **StackNavigator**
 + `Array<Route>` `all` - create **BottomTabNavigator** default
 + `Array<Route>` `oneOf` - create as **SwitchNavigator**
 
 # API
 ### **filterNavigation(routes, allows)**
-remove route config where allows array not include.
+remove route config by name where the array allows not contain.
 ##### Parameters
 + `Array<Route>` routes - the route configuration
-+ `Array<String>` allows - route names that will be retain
++ `Array<String>` allows - route names that will be reserved
 
 ```
 filterNavigation(
@@ -149,7 +146,7 @@ receive a navigator that can navigate to specified route anywhere.
 + `<Navigator> navigator` the navigator that will be initialized
 
 # Navigator
-send some frequent action to router use the method provided in this object.
+send some frequent actions to router use the method provided by the navigator,not intended to replace the navigation prop.
 
 ### Usage
 + create and export a navigator object
@@ -205,7 +202,9 @@ export default wrappedNavigatorRef(renderNavigation(routes));
 take back to the first screen in the stack.
 ##### Parameters
 + `<String> name` optional, the next navigation route name that will replace first screen.
-+ `<Object> params` optional,route params
++ `<Object> options` optional
+      - `<Object> options.params` - the params field of navigation prop state
+      - `<Object> options.channel` - part of screenProps,can pass any objects, recommend functions for ineraction in navigation stack
 ##### Return Value
 + `<Promise>`
 
@@ -213,7 +212,7 @@ take back to the first screen in the stack.
 replace the route at the given name with another.
 ##### Parameters
 + `<String> name` required
-+ `<Object> params` optional
++ `<Object> options` optional
 ##### Return Value
 + `<Promise>`
 
@@ -221,7 +220,7 @@ replace the route at the given name with another.
 update the current state with the given name and params.
 ##### Parameters
 + `<String> name` required
-+ `<Object> params` optional
++ `<Object> options` optional
 ##### Return Value
 + `<Promise>` resolve when success for action
 ```
@@ -301,11 +300,51 @@ this.props.navigation.disptach(
   NavigationActions.navigate({ routeName: 'A',params:{xyz:100} })
 );
 ```
-navigate to route 'A' ,it is actually to 'B' ,but params `xyz` passed to route 'A'.
-get params from `this.props.navigation.state` is always `undefinded` in component 'B'.
+navigate to route `A` ,actually redirect to `B` ,but params `xyz` passed to route `A`.
+get params from `this.props.navigation.state` is always `undefinded` in component `B`.
 #### Fixed
 redirect to child route when `action.routeName` not equal to the state resolved.
+
+### **push**
+##### Parameters
++ `<String> name` required
++ `<Object> options` optional
+
+### **getRouteParams**
+##### Parameters
++ `<String> key` required
   
+### **getChannel**
+##### Parameters
++  `void`
+```
+class ScreenA extends React.Component
+{
+    state={n:0};
+    add=()=>{ this.setState({n:this.state.n+1}) };
+
+    onBtnNavigateClick=()=>{
+          navigator.navigateTo("B",{ channel:{ add:this.add } })
+    }
+    ...
+}
+
+// ScreenB
+
+class ScreenB extend React.Component
+{
+    onTest=()=>{
+        const {add} = navigator.getChannel();
+        add (); // update ScreenA state
+    }    
+
+    render()
+    {
+        return <Button title="test" onPress={this.onTest} />
+    }
+}
+
+```
 
 # Decorator
 ### **navigationOptions(options)**

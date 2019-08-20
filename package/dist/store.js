@@ -34,6 +34,17 @@ function _default() {
           }
           break;
 
+        case ACTIONS.UNINSTALL_SCREEN_PROPS:
+          {
+            if (action.key) {
+              delete state[action.key];
+              return _extends({}, state);
+            }
+
+            return state;
+          }
+          break;
+
         default:
           {
             return state;
