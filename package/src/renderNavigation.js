@@ -6,8 +6,9 @@ import {
     createBottomTabNavigator
 } from "react-navigation";
 
+import defaultNavigator from "./router";
 import * as decorators from "./decorators";
-import {removeEmpty} from "./common";
+import {ObserveStore, observeStore, removeEmpty} from "./common";
 
 function inject(injectNavigationOptions, navigationOptions, component)
 {
@@ -29,7 +30,7 @@ function inject(injectNavigationOptions, navigationOptions, component)
     return component;
 }
 
-export default function (config)
+export default function (config, navigator = defaultNavigator)
 {
     const creator = {
         children: createStackNavigator,
@@ -101,11 +102,68 @@ export default function (config)
             }
 
             const ScreenComponent = component;
-            const screen = screenProps ? (props) =>
+            const screen = screenProps ? function ()
             {
-                const {screenProps: dynamicScreenProps, ...others} = props;
-                return <ScreenComponent {...others} screenProps={{...screenProps, ...dynamicScreenProps}}/>
-            } : ScreenComponent
+                const store = navigator ? navigator.getStore() : null;
+                return (
+                    class extends React.Component
+                    {
+                        observer = null;
+
+                        constructor(...args)
+                        {
+                            super(...args);
+                            if (store)
+                            {
+                                this.observer = new ObserveStore(store, (state) =>
+                                {
+                                    const {navigation} = this.props;
+                                    const {key} = navigation.state;
+                                    const {screenProps} = state;
+                                    return screenProps[key];
+                                }, (screenProps) =>
+                                {
+                                    this.state = {
+                                        ...this.state,
+                                        screenProps
+                                    };
+                                });
+                            }
+                        }
+
+                        componentDidMount()
+                        {
+                            if (this.observer)
+                            {
+                                this.observer.start((screenProps) =>
+                                {
+                                    this.setState({
+                                        screenProps
+                                    });
+                                });
+                            }
+                        }
+
+                        componentWillUnmount()
+                        {
+                            if (this.observer)
+                            {
+                                this.observer.unsubscribe();
+                            }
+                        }
+
+                        render()
+                        {
+                            const {screenProps: installScreenProps} = this.state;
+                            const {screenProps: dynamicScreenProps, ...others} = this.props;
+                            return <ScreenComponent
+                                {...others}
+                                screenProps={{...screenProps, ...dynamicScreenProps, ...installScreenProps}}
+                            />
+                        }
+                    }
+                );
+            }() : ScreenComponent
 
             return {
                 [name]: removeEmpty({

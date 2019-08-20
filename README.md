@@ -136,10 +136,11 @@ output:
 [{"children":[{"name":"A","children":[{"name":"C"}]},{"name":"B"}]}]
 ```
 
-### **renderNavigation(routes)**
+### **renderNavigation(routes,navigator)**
 create navigation components with config.
 ##### Parameters
 + `Array<Route>` routes - the route configuration
++ `<Navigator> navigator` the navigator that will be initialized
 
 ### **wrappedNavigatorRef**
 receive a navigator that can navigate to specified route anywhere.
@@ -164,7 +165,7 @@ import navigator from "./navigator"; // navigator.js
 
 // ....config
 
-export default wrappedNavigatorRef(renderNavigation(routes), navigator);
+export default wrappedNavigatorRef(renderNavigation(routes,navigator), navigator);
 ```
 + import anywhere
 ```

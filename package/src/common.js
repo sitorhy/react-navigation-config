@@ -24,15 +24,19 @@ export function removeEmpty(obj, options = {})
     return accepts;
 }
 
-export function uuid(len, radix) {
+export function uuid(len, radix)
+{
     let chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
     let uuid = [], i;
     radix = radix || chars.length;
 
-    if (len) {
+    if (len)
+    {
         // Compact form
-        for (i = 0; i < len; i++) uuid[i] = chars[0 | Math.random()*radix];
-    } else {
+        for (i = 0; i < len; i++) uuid[i] = chars[0 | Math.random() * radix];
+    }
+    else
+    {
         // rfc4122, version 4 form
         let r;
 
@@ -42,9 +46,11 @@ export function uuid(len, radix) {
 
         // Fill in random data.  At i==19 set the high bits of clock sequence as
         // per rfc4122, sec. 4.1.5
-        for (i = 0; i < 36; i++) {
-            if (!uuid[i]) {
-                r = 0 | Math.random()*16;
+        for (i = 0; i < 36; i++)
+        {
+            if (!uuid[i])
+            {
+                r = 0 | Math.random() * 16;
                 uuid[i] = chars[(i == 19) ? (r & 0x3) | 0x8 : r];
             }
         }
@@ -115,7 +121,7 @@ export function getActiveRoute(nav)
 
 export function matchRoute(nav, key)
 {
-    const {routes, key:routeKey} = nav;
+    const {routes, key: routeKey} = nav;
     if (routeKey === key)
     {
         return nav;
@@ -134,3 +140,41 @@ export function matchRoute(nav, key)
     return null;
 }
 
+export class ObserveStore
+{
+    constructor(store, select, onCreate)
+    {
+        this.select = select;
+        this.store = store;
+        this.currentState = select(store.getState());
+        if (typeof onCreate === "function")
+        {
+            onCreate(this.currentState);
+        }
+    }
+
+    start(onChange)
+    {
+        this.dispose = this.store.subscribe(() =>
+        {
+            let nextState = this.select(this.store.getState());
+            if (nextState !== this.currentState)
+            {
+                this.currentState = nextState;
+                onChange(this.currentState);
+            }
+        });
+    }
+
+    unsubscribe()
+    {
+        if (this.dispose)
+        {
+            this.dispose();
+        }
+        this.store = null;
+        this.dispose = null;
+        this.select = null;
+        this.currentState = null;
+    }
+}

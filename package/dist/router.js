@@ -3,102 +3,21 @@
 exports.__esModule = true;
 exports.default = exports.Navigator = void 0;
 
+var _store = _interopRequireWildcard(require("./store"));
+
 var _common = require("./common");
 
 var _reactNavigation = require("react-navigation");
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
-function getNavState(nav) {
-  function _get(nav, mergeParams, scopeParams) {
-    var {
-      routes,
-      index,
-      params
-    } = nav;
-    var state = null;
-
-    if (Array.isArray(routes) && routes.length && index !== undefined && index !== null) {
-      state = _get(routes[index], mergeParams, scopeParams) || routes[index];
-
-      if (state.params) {
-        if (scopeParams[state.routeName]) {
-          scopeParams[state.routeName] = _extends({}, scopeParams[state.routeName], {
-            [state.key]: state.params
-          });
-        } else {
-          scopeParams[state.routeName] = {
-            [state.key]: state.params
-          };
-        }
-
-        scopeParams[state.routeName].common = _extends({}, scopeParams[state.routeName].common, {}, state.params);
-      }
-    }
-
-    Object.assign(mergeParams, params);
-    return state;
-  }
-
-  var params = {};
-  var scopeParams = {};
-
-  _get(nav, params, scopeParams);
-
-  return [params, scopeParams];
-}
-
-function getActiveRoute(nav) {
-  var {
-    routes,
-    index
-  } = nav;
-
-  if (index === null || index === undefined) {
-    return null;
-  }
-
-  if (Array.isArray(routes) && routes.length) {
-    var activeRoute = getActiveRoute(routes[index]);
-
-    if (activeRoute === null) {
-      return routes[index];
-    } else {
-      return activeRoute;
-    }
-  }
-
-  return null;
-}
-
-function matchRoute(nav, name) {
-  var {
-    routes,
-    routeName
-  } = nav;
-
-  if (routeName === name) {
-    return nav;
-  }
-
-  if (Array.isArray(routes) && routes.length) {
-    for (var i of routes) {
-      var j = matchRoute(i, name);
-
-      if (j) {
-        return j;
-      }
-    }
-  }
-
-  return null;
-}
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 class Navigator {
   constructor() {
-    _defineProperty(this, "_routeName", "");
+    _defineProperty(this, "_store", (0, _store.default)());
 
     _defineProperty(this, "_beforeEachHandler", null);
 
@@ -113,7 +32,7 @@ class Navigator {
     var fixed = false;
     var nextAction = null;
     var customAction = null;
-    var to = getActiveRoute(toState);
+    var to = (0, _common.getActiveRoute)(toState);
 
     if (this._preventDefaultActionFix !== true) {
       if (to.routeName && to.routeName !== action.routeName) {
@@ -123,7 +42,7 @@ class Navigator {
     }
 
     if (typeof this._beforeEachHandler === "function") {
-      var form = getActiveRoute(fromState);
+      var form = (0, _common.getActiveRoute)(fromState);
       var handler = this._beforeEachHandler;
 
       function _rewriteAction(routeName, params) {
@@ -140,7 +59,7 @@ class Navigator {
         }
       }
 
-      nextAction = handler(action, (0, _common.removeEmpty)({
+      nextAction = handler(action, to, (0, _common.removeEmpty)({
         key: form.key,
         params: form.params,
         routeName: form.routeName
@@ -152,9 +71,10 @@ class Navigator {
 
   _bindAfterEach(action, toState, fromState) {
     if (typeof this._afterEachHandler === "function") {
-      var from = getActiveRoute(fromState);
+      var to = (0, _common.getActiveRoute)(toState);
+      var from = (0, _common.getActiveRoute)(fromState);
       var handler = this._afterEachHandler;
-      handler(action, (0, _common.removeEmpty)({
+      handler(action, to, (0, _common.removeEmpty)({
         key: from.key,
         params: from.params,
         routeName: from.routeName
@@ -177,7 +97,7 @@ class Navigator {
     this.container = container;
   }
 
-  _asyncNavigate(doTask) {
+  _asyncNavigate(doTask, screenProps) {
     return new Promise((resolve, reject) => {
       var id = (0, _common.uuid)();
       var observer = {
@@ -188,10 +108,19 @@ class Navigator {
         }
 
       };
+      var store = this.getStore();
+      store.dispatch({
+        type: _store.ACTIONS.PUT_SCREEN_PROPS,
+        screenProps
+      });
 
       this.container._listen(observer);
 
       if (!doTask()) {
+        store.dispatch({
+          type: _store.ACTIONS.DUMP_SCREEN_PROPS
+        });
+
         this.container._remove(id);
 
         reject();
@@ -200,14 +129,19 @@ class Navigator {
   }
 
   getParams() {
-    return getNavState(this.navigator.state.nav);
+    return (0, _common.getNavState)(this.navigator.state.nav);
   }
 
   getCurrentParams() {
-    var routeName = this._routeName;
+    var {
+      navigation
+    } = this.getStore().getState();
+    var {
+      key
+    } = navigation;
 
-    if (routeName) {
-      var route = matchRoute(this.navigator.state.nav, routeName);
+    if (key) {
+      var route = (0, _common.matchRoute)(this.navigator.state.nav, key);
 
       if (route) {
         return route.params;
@@ -217,9 +151,9 @@ class Navigator {
     return null;
   }
 
-  reLaunch(name, params) {
+  reLaunch(name, params, screenProps) {
     return new Promise((resolve, reject) => {
-      this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.StackActions.popToTop())).then(obj => {
+      this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.StackActions.popToTop()), screenProps).then(obj => {
         if (name) {
           this.redirectTo(name, params).then(obj => {
             resolve(obj);
@@ -235,19 +169,25 @@ class Navigator {
     });
   }
 
-  redirectTo(name, params) {
+  push(name, params, screenProps) {
+    return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.StackActions.push({
+      routeName: name,
+      params
+    })), screenProps);
+  }
+
+  redirectTo(name, params, screenProps) {
     return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.StackActions.replace({
       routeName: name,
       params: params
-    })));
+    })), screenProps);
   }
 
-  navigateTo(name, params) {
-    var options = (0, _common.removeEmpty)({
+  navigateTo(name, params, screenProps) {
+    return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.NavigationActions.navigate({
       routeName: name,
       params: params
-    });
-    return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.NavigationActions.navigate(options)));
+    })), screenProps);
   }
 
   navigateBack() {
@@ -278,6 +218,10 @@ class Navigator {
     if (typeof callback === "function") {
       this._readyHandler = callback;
     }
+  }
+
+  getStore() {
+    return this._store;
   }
 
 }

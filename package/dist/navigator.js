@@ -7,6 +7,10 @@ var _react = _interopRequireWildcard(require("react"));
 
 var _router = _interopRequireDefault(require("./router"));
 
+var _common = require("./common");
+
+var _store = require("./store");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
@@ -68,8 +72,7 @@ function _default(AppContainer, navigator) {
 
     AppContainer.router.getStateForAction = function (action, inputState) {
       var {
-        type,
-        routeName
+        type
       } = action;
 
       switch (type) {
@@ -77,18 +80,57 @@ function _default(AppContainer, navigator) {
           {
             navigator._bindReady();
           }
+          break;
       }
 
       var state = WrappedAppContainer.router.getStateForAction(action, inputState);
-      navigator._routeName = routeName;
 
       if (inputState) {
         var nextAction = navigator._bindBeforeEach(action, state, inputState);
 
         if (nextAction) {
           state = WrappedAppContainer.router.getStateForAction(nextAction, inputState);
-          navigator._routeName = nextAction.routeName;
         }
+      }
+
+      var activeRoute = (0, _common.getActiveRoute)(state);
+      var {
+        key,
+        routeName
+      } = activeRoute;
+      var store = navigator.getStore();
+      store.dispatch({
+        type: _store.ACTIONS.SET_ROUTE_KEY,
+        key
+      });
+      store.dispatch({
+        type: _store.ACTIONS.SET_ROUTE_NAME,
+        routeName
+      });
+
+      switch (type) {
+        case "Navigation/REPLACE":
+        case "Navigation/PUSH":
+        case "Navigation/NAVIGATE":
+          {
+            var {
+              stage
+            } = store.getState();
+            var {
+              screenProps
+            } = stage;
+
+            if (screenProps) {
+              store.dispatch({
+                type: _store.ACTIONS.INSTALL_SCREEN_PROPS,
+                key,
+                screenProps
+              });
+              store.dispatch({
+                type: _store.ACTIONS.DUMP_SCREEN_PROPS
+              });
+            }
+          }
       }
 
       return state;
@@ -157,6 +199,10 @@ function _default(AppContainer, navigator) {
         navigator._setContainer(null);
 
         navigator._setNavigator(null);
+
+        navigator.onReady(null);
+        navigator.beforeEach(null);
+        navigator.afterEach(null);
       }
     }
 

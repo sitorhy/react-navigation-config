@@ -80,6 +80,7 @@ function _default(AppContainer, navigator) {
           {
             navigator._bindReady();
           }
+          break;
       }
 
       var state = WrappedAppContainer.router.getStateForAction(action, inputState);
@@ -118,6 +119,17 @@ function _default(AppContainer, navigator) {
             var {
               screenProps
             } = stage;
+
+            if (screenProps) {
+              store.dispatch({
+                type: _store.ACTIONS.INSTALL_SCREEN_PROPS,
+                key,
+                screenProps
+              });
+              store.dispatch({
+                type: _store.ACTIONS.DUMP_SCREEN_PROPS
+              });
+            }
           }
       }
 

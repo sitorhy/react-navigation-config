@@ -7,6 +7,8 @@ var _react = _interopRequireDefault(require("react"));
 
 var _reactNavigation = require("react-navigation");
 
+var _router = _interopRequireDefault(require("./router"));
+
 var decorators = _interopRequireWildcard(require("./decorators"));
 
 var _common = require("./common");
@@ -35,7 +37,11 @@ function inject(injectNavigationOptions, navigationOptions, component) {
   return component;
 }
 
-function _default(config) {
+function _default(config, navigator) {
+  if (navigator === void 0) {
+    navigator = _router.default;
+  }
+
   var creator = {
     children: _reactNavigation.createStackNavigator,
     all: _reactNavigation.createBottomTabNavigator,
@@ -102,16 +108,70 @@ function _default(config) {
 
       var _ScreenComponent = component;
 
-      var _screen = screenProps ? props => {
-        var {
-          screenProps: dynamicScreenProps
-        } = props,
-            others = _objectWithoutPropertiesLoose(props, ["screenProps"]);
+      var _screen = screenProps ? function () {
+        var _temp2;
 
-        return _react.default.createElement(_ScreenComponent, _extends({}, others, {
-          screenProps: _extends({}, screenProps, {}, dynamicScreenProps)
-        }));
-      } : _ScreenComponent;
+        var store = navigator ? navigator.getStore() : null;
+        return _temp2 = class extends _react.default.Component {
+          constructor() {
+            super(...arguments);
+
+            _defineProperty(this, "observer", null);
+
+            if (store) {
+              this.observer = new _common.ObserveStore(store, state => {
+                var {
+                  navigation
+                } = this.props;
+                var {
+                  key
+                } = navigation.state;
+                var {
+                  screenProps
+                } = state;
+                return screenProps[key];
+              }, screenProps => {
+                this.state = _extends({}, this.state, {
+                  screenProps
+                });
+              });
+            }
+          }
+
+          componentDidMount() {
+            if (this.observer) {
+              this.observer.start(screenProps => {
+                this.setState({
+                  screenProps
+                });
+              });
+            }
+          }
+
+          componentWillUnmount() {
+            if (this.observer) {
+              this.observer.unsubscribe();
+            }
+          }
+
+          render() {
+            var {
+              screenProps: installScreenProps
+            } = this.state;
+
+            var _this$props2 = this.props,
+                {
+              screenProps: dynamicScreenProps
+            } = _this$props2,
+                others = _objectWithoutPropertiesLoose(_this$props2, ["screenProps"]);
+
+            return _react.default.createElement(_ScreenComponent, _extends({}, others, {
+              screenProps: _extends({}, screenProps, {}, dynamicScreenProps, {}, installScreenProps)
+            }));
+          }
+
+        }, _temp2;
+      }() : _ScreenComponent;
 
       return {
         [name]: (0, _common.removeEmpty)({

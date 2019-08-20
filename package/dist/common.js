@@ -3,6 +3,12 @@
 exports.__esModule = true;
 exports.removeEmpty = removeEmpty;
 exports.uuid = uuid;
+exports.getNavState = getNavState;
+exports.getActiveRoute = getActiveRoute;
+exports.matchRoute = matchRoute;
+exports.ObserveStore = void 0;
+
+function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
 function removeEmpty(obj, options) {
   if (options === void 0) {
@@ -57,3 +63,125 @@ function uuid(len, radix) {
 
   return uuid.join('');
 }
+
+function _get(nav, mergeParams, scopeParams) {
+  var {
+    routes,
+    index,
+    params
+  } = nav;
+  var state = null;
+
+  if (Array.isArray(routes) && routes.length && index !== undefined && index !== null) {
+    state = _get(routes[index], mergeParams, scopeParams) || routes[index];
+
+    if (state.params) {
+      if (scopeParams[state.routeName]) {
+        scopeParams[state.routeName] = _extends({}, scopeParams[state.routeName], {
+          [state.key]: state.params
+        });
+      } else {
+        scopeParams[state.routeName] = {
+          [state.key]: state.params
+        };
+      }
+
+      scopeParams[state.routeName].common = _extends({}, scopeParams[state.routeName].common, {}, state.params);
+    }
+  }
+
+  Object.assign(mergeParams, params);
+  return state;
+}
+
+function getNavState(nav) {
+  var params = {};
+  var scopeParams = {};
+
+  _get(nav, params, scopeParams);
+
+  return [params, scopeParams];
+}
+
+function getActiveRoute(nav) {
+  var {
+    routes,
+    index
+  } = nav;
+
+  if (index === null || index === undefined) {
+    return null;
+  }
+
+  if (Array.isArray(routes) && routes.length) {
+    var activeRoute = getActiveRoute(routes[index]);
+
+    if (activeRoute === null) {
+      return routes[index];
+    } else {
+      return activeRoute;
+    }
+  }
+
+  return null;
+}
+
+function matchRoute(nav, key) {
+  var {
+    routes,
+    key: routeKey
+  } = nav;
+
+  if (routeKey === key) {
+    return nav;
+  }
+
+  if (Array.isArray(routes) && routes.length) {
+    for (var i of routes) {
+      var j = matchRoute(i, key);
+
+      if (j) {
+        return j;
+      }
+    }
+  }
+
+  return null;
+}
+
+class ObserveStore {
+  constructor(store, select, onCreate) {
+    this.select = select;
+    this.store = store;
+    this.currentState = select(store.getState());
+
+    if (typeof onCreate === "function") {
+      onCreate(this.currentState);
+    }
+  }
+
+  start(onChange) {
+    this.dispose = this.store.subscribe(() => {
+      var nextState = this.select(this.store.getState());
+
+      if (nextState !== this.currentState) {
+        this.currentState = nextState;
+        onChange(this.currentState);
+      }
+    });
+  }
+
+  unsubscribe() {
+    if (this.dispose) {
+      this.dispose();
+    }
+
+    this.store = null;
+    this.dispose = null;
+    this.select = null;
+    this.currentState = null;
+  }
+
+}
+
+exports.ObserveStore = ObserveStore;

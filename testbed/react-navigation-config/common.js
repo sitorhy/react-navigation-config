@@ -6,6 +6,7 @@ exports.uuid = uuid;
 exports.getNavState = getNavState;
 exports.getActiveRoute = getActiveRoute;
 exports.matchRoute = matchRoute;
+exports.ObserveStore = void 0;
 
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
@@ -147,3 +148,40 @@ function matchRoute(nav, key) {
 
   return null;
 }
+
+class ObserveStore {
+  constructor(store, select, onCreate) {
+    this.select = select;
+    this.store = store;
+    this.currentState = select(store.getState());
+
+    if (typeof onCreate === "function") {
+      onCreate(this.currentState);
+    }
+  }
+
+  start(onChange) {
+    this.dispose = this.store.subscribe(() => {
+      var nextState = this.select(this.store.getState());
+
+      if (nextState !== this.currentState) {
+        this.currentState = nextState;
+        onChange(this.currentState);
+      }
+    });
+  }
+
+  unsubscribe() {
+    if (this.dispose) {
+      this.dispose();
+    }
+
+    this.store = null;
+    this.dispose = null;
+    this.select = null;
+    this.currentState = null;
+  }
+
+}
+
+exports.ObserveStore = ObserveStore;

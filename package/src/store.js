@@ -5,8 +5,8 @@ export const ACTIONS = {
     SET_ROUTE_NAME: "SET_ROUTE_NAME",
     PUT_SCREEN_PROPS: "PUT_SCREEN_PROPS",
     DUMP_SCREEN_PROPS: "DUMP_SCREEN_PROPS",
-    MERGE_SCREEN_PROPS: "MERGE_SCREEN_PROPS",
-    REMOVE_SCREEN_PROPS: ""
+    INSTALL_SCREEN_PROPS: "INSTALL_SCREEN_PROPS",
+    UNINSTALL_SCREEN_PROPS: "UNINSTALL_SCREEN_PROPS"
 };
 
 export default function ()
@@ -17,7 +17,7 @@ export default function ()
             {
                 switch (action.type)
                 {
-                    case ACTIONS.MERGE_SCREEN_PROPS:
+                    case ACTIONS.INSTALL_SCREEN_PROPS:
                     {
                         return {
                             ...state,

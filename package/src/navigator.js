@@ -71,6 +71,7 @@ export default function (AppContainer, navigator = defaultNavigator)
                 {
                     navigator._bindReady();
                 }
+                break;
             }
             let state = WrappedAppContainer.router.getStateForAction(action, inputState);
 
@@ -106,7 +107,17 @@ export default function (AppContainer, navigator = defaultNavigator)
                 {
                     const {stage} = store.getState();
                     const {screenProps} = stage;
-
+                    if(screenProps)
+                    {
+                        store.dispatch({
+                            type: ACTIONS.INSTALL_SCREEN_PROPS,
+                            key,
+                            screenProps
+                        });
+                        store.dispatch({
+                            type: ACTIONS.DUMP_SCREEN_PROPS
+                        });
+                    }
                 }
             }
 

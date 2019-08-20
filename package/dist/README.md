@@ -97,6 +97,8 @@ AppRegistry.registerComponent(name, () => App);
 
 + `<Object>` `navigationOptions` - set **navigationOptions** in **RouteConfigs** when injectNavigationOptions not specified
 
++ `<Object>` `screenProps` - initial metadata
+
 + `<Boolean | String>` `injectNavigationOptions` - not necessary, inject static variable **navigationOptions** in component class,available when one of following values:
     - `true`: static **<ComponentClass>.navigationOptions = navigationOptions;**
     - `"extend"`: extend class **Component**, and set static variable **navigationOptions**, same as:
@@ -134,10 +136,11 @@ output:
 [{"children":[{"name":"A","children":[{"name":"C"}]},{"name":"B"}]}]
 ```
 
-### **renderNavigation(routes)**
+### **renderNavigation(routes,navigator)**
 create navigation components with config.
 ##### Parameters
 + `Array<Route>` routes - the route configuration
++ `<Navigator> navigator` the navigator that will be initialized
 
 ### **wrappedNavigatorRef**
 receive a navigator that can navigate to specified route anywhere.
@@ -162,7 +165,7 @@ import navigator from "./navigator"; // navigator.js
 
 // ....config
 
-export default wrappedNavigatorRef(renderNavigation(routes), navigator);
+export default wrappedNavigatorRef(renderNavigation(routes,navigator), navigator);
 ```
 + import anywhere
 ```
@@ -261,7 +264,7 @@ get all navigation params from stack.
 ### **beforeEach**
 register interceptor before state change.
 ##### Parameters
-+ `<function (toAction,formInfo,next:(routeName,params)=>void)=>[ ignore it ]>` callback
++ `<function (action,to,form,next:(routeName,params)=>void)=>[ ignore it ]>` callback
 ```
 router.beforeEach((to, from, next) => {
   if(from.routeName==="main")
@@ -281,7 +284,7 @@ get current navigation params.
 ### **afterEach**
 register a listener after state change.
 ##### Parameters
-+ `<function (toAction,formInfo)=>void>` callback
++ `<function (action,to,form)=>void>` callback
 
 ### **preventDefaultActionFix**
 ##### Parameters
