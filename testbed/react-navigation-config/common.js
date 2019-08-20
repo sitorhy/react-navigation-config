@@ -63,37 +63,37 @@ function uuid(len, radix) {
   return uuid.join('');
 }
 
-function getNavState(nav) {
-  function _get(nav, mergeParams, scopeParams) {
-    var {
-      routes,
-      index,
-      params
-    } = nav;
-    var state = null;
+function _get(nav, mergeParams, scopeParams) {
+  var {
+    routes,
+    index,
+    params
+  } = nav;
+  var state = null;
 
-    if (Array.isArray(routes) && routes.length && index !== undefined && index !== null) {
-      state = _get(routes[index], mergeParams, scopeParams) || routes[index];
+  if (Array.isArray(routes) && routes.length && index !== undefined && index !== null) {
+    state = _get(routes[index], mergeParams, scopeParams) || routes[index];
 
-      if (state.params) {
-        if (scopeParams[state.routeName]) {
-          scopeParams[state.routeName] = _extends({}, scopeParams[state.routeName], {
-            [state.key]: state.params
-          });
-        } else {
-          scopeParams[state.routeName] = {
-            [state.key]: state.params
-          };
-        }
-
-        scopeParams[state.routeName].common = _extends({}, scopeParams[state.routeName].common, {}, state.params);
+    if (state.params) {
+      if (scopeParams[state.routeName]) {
+        scopeParams[state.routeName] = _extends({}, scopeParams[state.routeName], {
+          [state.key]: state.params
+        });
+      } else {
+        scopeParams[state.routeName] = {
+          [state.key]: state.params
+        };
       }
-    }
 
-    Object.assign(mergeParams, params);
-    return state;
+      scopeParams[state.routeName].common = _extends({}, scopeParams[state.routeName].common, {}, state.params);
+    }
   }
 
+  Object.assign(mergeParams, params);
+  return state;
+}
+
+function getNavState(nav) {
   var params = {};
   var scopeParams = {};
 

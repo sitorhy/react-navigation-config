@@ -1,4 +1,4 @@
-import createStore from "./store";
+import createStore, {ACTIONS} from "./store";
 import {removeEmpty, uuid, getActiveRoute, matchRoute, getNavState} from "./common";
 import {NavigationActions, StackActions} from "react-navigation";
 
@@ -96,7 +96,7 @@ export class Navigator
         this.container = container;
     }
 
-    _asyncNavigate(doTask)
+    _asyncNavigate(doTask, screenProps)
     {
         return new Promise((resolve, reject) =>
         {
@@ -108,9 +108,17 @@ export class Navigator
                     resolve(obj);
                 }
             };
+            const store = this.getStore();
+            store.dispatch({
+                type: ACTIONS.PUT_SCREEN_PROPS,
+                screenProps
+            });
             this.container._listen(observer);
             if (!doTask())
             {
+                store.dispatch({
+                    type: ACTIONS.DUMP_SCREEN_PROPS
+                });
                 this.container._remove(id);
                 reject();
             }
@@ -124,7 +132,7 @@ export class Navigator
 
     getCurrentParams()
     {
-        const {navigation} = this._store.getState();
+        const {navigation} = this.getStore().getState();
         const {key} = navigation;
         if (key)
         {
@@ -137,12 +145,13 @@ export class Navigator
         return null;
     }
 
-    reLaunch(name, params)
+    reLaunch(name, params, screenProps)
     {
         return new Promise((resolve, reject) =>
         {
             this._asyncNavigate(
-                () => this.navigator.dispatch(StackActions.popToTop())
+                () => this.navigator.dispatch(StackActions.popToTop()),
+                screenProps
             ).then((obj) =>
             {
                 if (name)
@@ -166,22 +175,30 @@ export class Navigator
         });
     }
 
-    redirectTo(name, params)
+    push(name, params, screenProps)
     {
-        return this._asyncNavigate(() => this.navigator.dispatch(StackActions.replace({
+        return this._asyncNavigate(() => this.navigator.dispatch(
+            StackActions.push({
                 routeName: name,
-                params: params
-            }))
-        );
+                params
+            })
+        ), screenProps);
     }
 
-    navigateTo(name, params)
+    redirectTo(name, params, screenProps)
     {
-        const options = removeEmpty({
+        return this._asyncNavigate(() => this.navigator.dispatch(StackActions.replace({
             routeName: name,
             params: params
-        });
-        return this._asyncNavigate(() => this.navigator.dispatch(NavigationActions.navigate(options)));
+        })), screenProps);
+    }
+
+    navigateTo(name, params, screenProps)
+    {
+        return this._asyncNavigate(() => this.navigator.dispatch(NavigationActions.navigate({
+            routeName: name,
+            params: params
+        })), screenProps);
     }
 
     navigateBack()

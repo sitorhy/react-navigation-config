@@ -10,12 +10,66 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
 
 var ACTIONS = {
   SET_ROUTE_KEY: "SET_ROUTE_KEY",
-  SET_ROUTE_NAME: "SET_ROUTE_NAME"
+  SET_ROUTE_NAME: "SET_ROUTE_NAME",
+  PUT_SCREEN_PROPS: "PUT_SCREEN_PROPS",
+  DUMP_SCREEN_PROPS: "DUMP_SCREEN_PROPS",
+  MERGE_SCREEN_PROPS: "MERGE_SCREEN_PROPS",
+  REMOVE_SCREEN_PROPS: ""
 };
 exports.ACTIONS = ACTIONS;
 
 function _default() {
   return (0, _redux.createStore)((0, _redux.combineReducers)({
+    screenProps(state, action) {
+      if (state === void 0) {
+        state = {};
+      }
+
+      switch (action.type) {
+        case ACTIONS.MERGE_SCREEN_PROPS:
+          {
+            return _extends({}, state, {
+              [action.key]: action.screenProps
+            });
+          }
+          break;
+
+        default:
+          {
+            return state;
+          }
+      }
+    },
+
+    stage(state, action) {
+      if (state === void 0) {
+        state = {};
+      }
+
+      switch (action.type) {
+        case ACTIONS.PUT_SCREEN_PROPS:
+          {
+            return _extends({}, state, {
+              screenProps: action.screenProps
+            });
+          }
+          break;
+
+        case ACTIONS.DUMP_SCREEN_PROPS:
+          {
+            return _extends({}, state, {
+              screenProps: undefined
+            });
+          }
+          break;
+
+        default:
+          {
+            return state;
+          }
+      }
+    },
+
     navigation(state, action) {
       if (state === void 0) {
         state = {};

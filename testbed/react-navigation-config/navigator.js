@@ -106,6 +106,21 @@ function _default(AppContainer, navigator) {
         type: _store.ACTIONS.SET_ROUTE_NAME,
         routeName
       });
+
+      switch (type) {
+        case "Navigation/REPLACE":
+        case "Navigation/PUSH":
+        case "Navigation/NAVIGATE":
+          {
+            var {
+              stage
+            } = store.getState();
+            var {
+              screenProps
+            } = stage;
+          }
+      }
+
       return state;
     };
   }

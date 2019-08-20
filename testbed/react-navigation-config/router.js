@@ -3,13 +3,13 @@
 exports.__esModule = true;
 exports.default = exports.Navigator = void 0;
 
-var _store = _interopRequireDefault(require("./store"));
+var _store = _interopRequireWildcard(require("./store"));
 
 var _common = require("./common");
 
 var _reactNavigation = require("react-navigation");
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
@@ -97,7 +97,7 @@ class Navigator {
     this.container = container;
   }
 
-  _asyncNavigate(doTask) {
+  _asyncNavigate(doTask, screenProps) {
     return new Promise((resolve, reject) => {
       var id = (0, _common.uuid)();
       var observer = {
@@ -108,10 +108,19 @@ class Navigator {
         }
 
       };
+      var store = this.getStore();
+      store.dispatch({
+        type: _store.ACTIONS.PUT_SCREEN_PROPS,
+        screenProps
+      });
 
       this.container._listen(observer);
 
       if (!doTask()) {
+        store.dispatch({
+          type: _store.ACTIONS.DUMP_SCREEN_PROPS
+        });
+
         this.container._remove(id);
 
         reject();
@@ -126,8 +135,7 @@ class Navigator {
   getCurrentParams() {
     var {
       navigation
-    } = this._store.getState();
-
+    } = this.getStore().getState();
     var {
       key
     } = navigation;
@@ -143,9 +151,9 @@ class Navigator {
     return null;
   }
 
-  reLaunch(name, params) {
+  reLaunch(name, params, screenProps) {
     return new Promise((resolve, reject) => {
-      this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.StackActions.popToTop())).then(obj => {
+      this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.StackActions.popToTop()), screenProps).then(obj => {
         if (name) {
           this.redirectTo(name, params).then(obj => {
             resolve(obj);
@@ -161,19 +169,25 @@ class Navigator {
     });
   }
 
-  redirectTo(name, params) {
+  push(name, params, screenProps) {
+    return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.StackActions.push({
+      routeName: name,
+      params
+    })), screenProps);
+  }
+
+  redirectTo(name, params, screenProps) {
     return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.StackActions.replace({
       routeName: name,
       params: params
-    })));
+    })), screenProps);
   }
 
-  navigateTo(name, params) {
-    var options = (0, _common.removeEmpty)({
+  navigateTo(name, params, screenProps) {
+    return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.NavigationActions.navigate({
       routeName: name,
       params: params
-    });
-    return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.NavigationActions.navigate(options)));
+    })), screenProps);
   }
 
   navigateBack() {

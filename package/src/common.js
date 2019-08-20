@@ -53,38 +53,38 @@ export function uuid(len, radix) {
     return uuid.join('');
 }
 
-export function getNavState(nav)
+function _get(nav, mergeParams, scopeParams)
 {
-    function _get(nav, mergeParams, scopeParams)
+    const {routes, index, params} = nav;
+    let state = null;
+    if (Array.isArray(routes) && routes.length && index !== undefined && index !== null)
     {
-        const {routes, index, params} = nav;
-        let state = null;
-        if (Array.isArray(routes) && routes.length && index !== undefined && index !== null)
+        state = _get(routes[index], mergeParams, scopeParams) || routes[index];
+        if (state.params)
         {
-            state = _get(routes[index], mergeParams, scopeParams) || routes[index];
-            if (state.params)
+            if (scopeParams[state.routeName])
             {
-                if (scopeParams[state.routeName])
-                {
-                    scopeParams[state.routeName] = {
-                        ...scopeParams[state.routeName],
-                        [state.key]: state.params
-                    };
-                }
-                else
-                {
-                    scopeParams[state.routeName] = {[state.key]: state.params};
-                }
-                scopeParams[state.routeName].common = {
-                    ...scopeParams[state.routeName].common,
-                    ...state.params
+                scopeParams[state.routeName] = {
+                    ...scopeParams[state.routeName],
+                    [state.key]: state.params
                 };
             }
+            else
+            {
+                scopeParams[state.routeName] = {[state.key]: state.params};
+            }
+            scopeParams[state.routeName].common = {
+                ...scopeParams[state.routeName].common,
+                ...state.params
+            };
         }
-        Object.assign(mergeParams, params);
-        return state;
     }
+    Object.assign(mergeParams, params);
+    return state;
+}
 
+export function getNavState(nav)
+{
     const params = {};
     const scopeParams = {};
     _get(nav, params, scopeParams);

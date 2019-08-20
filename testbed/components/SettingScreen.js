@@ -1,6 +1,5 @@
 import React from "react";
 import { View, Text, Button } from "react-native";
-import { StackActions } from "react-navigation";
 import navigator from "../react-navigation-config/router";
 
 export default class extends React.Component {
@@ -10,14 +9,14 @@ export default class extends React.Component {
   }
 
   pushTest = () => {
-    const { navigation } = this.props;
-    navigation.dispatch(
-      StackActions.push({
-        routeName: "setting",
-        params: {
-          myUserId: 9,
-        },
-      })
+    navigator.push(
+      "setting",
+      {
+        randomSeed: parseInt(Math.random() * 100)
+      },
+      {
+        randomNum: parseInt(Math.random() * 100)
+      }
     );
   };
 

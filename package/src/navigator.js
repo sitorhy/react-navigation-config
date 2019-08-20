@@ -98,6 +98,18 @@ export default function (AppContainer, navigator = defaultNavigator)
                 routeName
             });
 
+            switch (type)
+            {
+                case "Navigation/REPLACE":
+                case "Navigation/PUSH":
+                case "Navigation/NAVIGATE":
+                {
+                    const {stage} = store.getState();
+                    const {screenProps} = stage;
+
+                }
+            }
+
             return state;
         };
     }
