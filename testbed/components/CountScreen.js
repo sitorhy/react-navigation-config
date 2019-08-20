@@ -10,7 +10,12 @@ export default class extends React.Component {
   timer = null;
 
   toCountControl = () => {
-    navigator.navigateTo("count-control");
+    navigator.navigateTo("count-control", {
+      channel: {
+        startCount: this.startCount,
+        stopCount: this.stopCount
+      }
+    });
   };
 
   startCount = () => {

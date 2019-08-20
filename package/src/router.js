@@ -130,6 +130,19 @@ export class Navigator
         return getNavState(this.navigator.state.nav);
     }
 
+    getRouteParams(key)
+    {
+        if(key)
+        {
+            const route = matchRoute(this.navigator.state.nav, key);
+            if (route)
+            {
+                return route.params;
+            }
+        }
+        return null;
+    }
+
     getCurrentParams()
     {
         const {navigation} = this.getStore().getState();

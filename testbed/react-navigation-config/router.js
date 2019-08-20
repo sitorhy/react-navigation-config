@@ -132,6 +132,18 @@ class Navigator {
     return (0, _common.getNavState)(this.navigator.state.nav);
   }
 
+  getRouteParams(key) {
+    if (key) {
+      var route = (0, _common.matchRoute)(this.navigator.state.nav, key);
+
+      if (route) {
+        return route.params;
+      }
+    }
+
+    return null;
+  }
+
   getCurrentParams() {
     var {
       navigation

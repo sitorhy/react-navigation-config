@@ -4,10 +4,20 @@ import navigator from "../react-navigation-config/router";
 
 export default class extends React.Component {
   startCount = () => {
-
+    const channel = navigator.getChannel();
+    const { startCount } = channel;
+    if (startCount) {
+      startCount();
+    }
   };
 
-  endCount = () => {};
+  endCount = () => {
+    const channel = navigator.getChannel();
+    const { stopCount } = channel;
+    if (stopCount) {
+      stopCount();
+    }
+  };
 
   chainNavigate = () => {
     navigator.navigateTo("home").then(() => {

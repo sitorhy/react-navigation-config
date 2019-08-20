@@ -3,6 +3,10 @@ declare namespace router {
 
     function getCurrentParams(): object | null;
 
+    function getRouteParams(key: string): object | null;
+
+    function getChannel(): object | null;
+
     function navigateTo(name: string, options: object): Promise<object>;
 
     function push(name: string, options: object): Promise<object>;

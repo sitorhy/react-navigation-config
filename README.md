@@ -205,7 +205,7 @@ export default wrappedNavigatorRef(renderNavigation(routes));
 take back to the first screen in the stack.
 ##### Parameters
 + `<String> name` optional, the next navigation route name that will replace first screen.
-+ `<Object> params` optional,route params
++ `<Object> options` optional,{ params?:[route params], channel?:[params merger to screenProps] }
 ##### Return Value
 + `<Promise>`
 
@@ -213,7 +213,7 @@ take back to the first screen in the stack.
 replace the route at the given name with another.
 ##### Parameters
 + `<String> name` required
-+ `<Object> params` optional
++ `<Object> options` optional
 ##### Return Value
 + `<Promise>`
 
@@ -221,7 +221,7 @@ replace the route at the given name with another.
 update the current state with the given name and params.
 ##### Parameters
 + `<String> name` required
-+ `<Object> params` optional
++ `<Object> options` optional
 ##### Return Value
 + `<Promise>` resolve when success for action
 ```
