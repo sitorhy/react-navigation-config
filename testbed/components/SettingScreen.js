@@ -9,15 +9,14 @@ export default class extends React.Component {
   }
 
   pushTest = () => {
-    navigator.push(
-      "setting",
-      {
+    navigator.push("setting", {
+      params: {
         randomSeed: parseInt(Math.random() * 100)
       },
-      {
+      channel: {
         randomNum: parseInt(Math.random() * 100)
       }
-    );
+    });
   };
 
   render() {

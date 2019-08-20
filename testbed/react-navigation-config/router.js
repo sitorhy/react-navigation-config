@@ -151,11 +151,31 @@ class Navigator {
     return null;
   }
 
-  reLaunch(name, params, screenProps) {
+  getChannel() {
+    var {
+      navigation,
+      screenProps
+    } = this.getStore().getState();
+    var {
+      key
+    } = navigation;
+
+    if (key) {
+      return screenProps[key];
+    }
+
+    return null;
+  }
+
+  reLaunch(name, options) {
+    if (options === void 0) {
+      options = {};
+    }
+
     return new Promise((resolve, reject) => {
-      this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.StackActions.popToTop()), screenProps).then(obj => {
+      this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.StackActions.popToTop())).then(obj => {
         if (name) {
-          this.redirectTo(name, params).then(obj => {
+          this.redirectTo(name, options).then(obj => {
             resolve(obj);
           }).catch(() => {
             reject();
@@ -169,25 +189,49 @@ class Navigator {
     });
   }
 
-  push(name, params, screenProps) {
+  push(name, options) {
+    if (options === void 0) {
+      options = {};
+    }
+
+    var {
+      params,
+      channel
+    } = options;
     return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.StackActions.push({
       routeName: name,
       params
-    })), screenProps);
+    })), channel);
   }
 
-  redirectTo(name, params, screenProps) {
+  redirectTo(name, options) {
+    if (options === void 0) {
+      options = {};
+    }
+
+    var {
+      params,
+      channel
+    } = options;
     return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.StackActions.replace({
       routeName: name,
       params: params
-    })), screenProps);
+    })), channel);
   }
 
-  navigateTo(name, params, screenProps) {
+  navigateTo(name, options) {
+    if (options === void 0) {
+      options = {};
+    }
+
+    var {
+      params,
+      channel
+    } = options;
     return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.NavigationActions.navigate({
       routeName: name,
       params: params
-    })), screenProps);
+    })), channel);
   }
 
   navigateBack() {

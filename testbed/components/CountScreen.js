@@ -7,9 +7,32 @@ export default class extends React.Component {
     count: 0
   };
 
+  timer = null;
+
   toCountControl = () => {
     navigator.navigateTo("count-control");
   };
+
+  startCount = () => {
+    if (!this.timer) {
+      this.timer = setInterval(() => {
+        this.setState({
+          count: (this.state.count || 0) + 1
+        });
+      }, 1000);
+    }
+  };
+
+  stopCount = () => {
+    if (this.timer) {
+      clearInterval(this.timer);
+      this.timer = null;
+    }
+  };
+
+  componentWillUnmount(): void {
+    this.startCount();
+  }
 
   render() {
     const { count } = this.state;

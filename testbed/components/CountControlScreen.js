@@ -3,7 +3,9 @@ import { Button, View } from "react-native";
 import navigator from "../react-navigation-config/router";
 
 export default class extends React.Component {
-  startCount = () => {};
+  startCount = () => {
+
+  };
 
   endCount = () => {};
 

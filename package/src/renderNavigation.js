@@ -8,7 +8,8 @@ import {
 
 import defaultNavigator from "./router";
 import * as decorators from "./decorators";
-import {ObserveStore, observeStore, removeEmpty} from "./common";
+import {ObserveStore, removeEmpty} from "./common";
+import {ACTIONS} from "./store";
 
 function inject(injectNavigationOptions, navigationOptions, component)
 {
@@ -28,6 +29,79 @@ function inject(injectNavigationOptions, navigationOptions, component)
     }
 
     return component;
+}
+
+function through(store, screenProps, ScreenComponent)
+{
+    const ThroughComponent = class extends React.Component
+    {
+        observer = null;
+
+        constructor(...args)
+        {
+            super(...args);
+            if (store)
+            {
+                this.observer = new ObserveStore(store, (state) =>
+                {
+                    const {navigation} = this.props;
+                    const {key} = navigation.state;
+                    const {screenProps} = state;
+                    return screenProps[key];
+                }, (screenProps) =>
+                {
+                    this.state = {
+                        ...this.state,
+                        screenProps
+                    };
+                });
+            }
+        }
+
+        componentDidMount()
+        {
+            if (this.observer)
+            {
+                this.observer.start((screenProps) =>
+                {
+                    this.setState({
+                        screenProps
+                    });
+                });
+            }
+        }
+
+        componentWillUnmount()
+        {
+            if (this.observer)
+            {
+                const {navigation} = this.props;
+                const {key} = navigation.state;
+                this.observer.store.dispatch({
+                    type: ACTIONS.UNINSTALL_SCREEN_PROPS,
+                    key
+                });
+                this.observer.unsubscribe();
+            }
+        }
+
+        render()
+        {
+            const {screenProps: installScreenProps} = this.state;
+            const {screenProps: dynamicScreenProps, ...others} = this.props;
+            return <ScreenComponent
+                {...others}
+                screenProps={{...screenProps, ...dynamicScreenProps, ...installScreenProps}}
+            />
+        }
+    }
+
+    if (ScreenComponent.router)
+    {
+        ThroughComponent.router = ScreenComponent.router;
+    }
+
+    return ThroughComponent;
 }
 
 export default function (config, navigator = defaultNavigator)
@@ -69,16 +143,7 @@ export default function (config, navigator = defaultNavigator)
             let navigation = (creator[prop])(routeConfigs, routerConfig);
 
             const ScreenComponent = navigation;
-            const screen = screenProps ? class extends React.Component
-            {
-                static router = ScreenComponent.router;
-
-                render()
-                {
-                    const {screenProps: dynamicScreenProps, ...others} = this.props;
-                    return <ScreenComponent {...others} screenProps={{...screenProps, ...dynamicScreenProps}}/>
-                }
-            } : ScreenComponent
+            const screen = through(navigator ? navigator.getStore() : null, screenProps, ScreenComponent);
 
             if (app === true)
             {
@@ -102,69 +167,7 @@ export default function (config, navigator = defaultNavigator)
             }
 
             const ScreenComponent = component;
-            const screen = screenProps ? function ()
-            {
-                const store = navigator ? navigator.getStore() : null;
-                return (
-                    class extends React.Component
-                    {
-                        observer = null;
-
-                        constructor(...args)
-                        {
-                            super(...args);
-                            if (store)
-                            {
-                                this.observer = new ObserveStore(store, (state) =>
-                                {
-                                    const {navigation} = this.props;
-                                    const {key} = navigation.state;
-                                    const {screenProps} = state;
-                                    return screenProps[key];
-                                }, (screenProps) =>
-                                {
-                                    this.state = {
-                                        ...this.state,
-                                        screenProps
-                                    };
-                                });
-                            }
-                        }
-
-                        componentDidMount()
-                        {
-                            if (this.observer)
-                            {
-                                this.observer.start((screenProps) =>
-                                {
-                                    this.setState({
-                                        screenProps
-                                    });
-                                });
-                            }
-                        }
-
-                        componentWillUnmount()
-                        {
-                            if (this.observer)
-                            {
-                                this.observer.unsubscribe();
-                            }
-                        }
-
-                        render()
-                        {
-                            const {screenProps: installScreenProps} = this.state;
-                            const {screenProps: dynamicScreenProps, ...others} = this.props;
-                            return <ScreenComponent
-                                {...others}
-                                screenProps={{...screenProps, ...dynamicScreenProps, ...installScreenProps}}
-                            />
-                        }
-                    }
-                );
-            }() : ScreenComponent
-
+            const screen = through(navigator ? navigator.getStore() : null, screenProps, ScreenComponent);
             return {
                 [name]: removeEmpty({
                     screen: inject(injectNavigationOptions, navigationOptions, screen),

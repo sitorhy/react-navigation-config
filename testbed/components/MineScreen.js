@@ -81,7 +81,9 @@ export default class extends React.Component {
         break;
       case "setting":
         {
-          navigator.navigateTo("setting", { acb: 200 });
+          navigator.navigateTo("setting", {
+            params: { acb: 200 }
+          });
         }
         break;
       case "navigate":

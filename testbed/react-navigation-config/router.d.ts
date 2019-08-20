@@ -3,13 +3,13 @@ declare namespace router {
 
     function getCurrentParams(): object | null;
 
-    function navigateTo(name: string, params: object): Promise<object>;
+    function navigateTo(name: string, options: object): Promise<object>;
 
-    function push(name: string, params: object): Promise<object>;
+    function push(name: string, options: object): Promise<object>;
 
-    function reLaunch(name: string, params: object): Promise<object>;
+    function reLaunch(name: string, options: object): Promise<object>;
 
-    function redirectTo(name: string, params: object): Promise<object>;
+    function redirectTo(name: string, options: object): Promise<object>;
 
     function navigateBack(): Promise<object>;
 

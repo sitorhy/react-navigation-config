@@ -145,18 +145,28 @@ export class Navigator
         return null;
     }
 
-    reLaunch(name, params, screenProps)
+    getChannel()
+    {
+        const {navigation, screenProps} = this.getStore().getState();
+        const {key} = navigation;
+        if (key)
+        {
+            return screenProps[key];
+        }
+        return null;
+    }
+
+    reLaunch(name, options = {})
     {
         return new Promise((resolve, reject) =>
         {
             this._asyncNavigate(
-                () => this.navigator.dispatch(StackActions.popToTop()),
-                screenProps
+                () => this.navigator.dispatch(StackActions.popToTop())
             ).then((obj) =>
             {
                 if (name)
                 {
-                    this.redirectTo(name, params).then((obj) =>
+                    this.redirectTo(name, options).then((obj) =>
                     {
                         resolve(obj);
                     }).catch(() =>
@@ -175,30 +185,33 @@ export class Navigator
         });
     }
 
-    push(name, params, screenProps)
+    push(name, options = {})
     {
+        const {params, channel} = options;
         return this._asyncNavigate(() => this.navigator.dispatch(
             StackActions.push({
                 routeName: name,
                 params
             })
-        ), screenProps);
+        ), channel);
     }
 
-    redirectTo(name, params, screenProps)
+    redirectTo(name, options = {})
     {
+        const {params, channel} = options;
         return this._asyncNavigate(() => this.navigator.dispatch(StackActions.replace({
             routeName: name,
             params: params
-        })), screenProps);
+        })), channel);
     }
 
-    navigateTo(name, params, screenProps)
+    navigateTo(name, options = {})
     {
+        const {params, channel} = options;
         return this._asyncNavigate(() => this.navigator.dispatch(NavigationActions.navigate({
             routeName: name,
             params: params
-        })), screenProps);
+        })), channel);
     }
 
     navigateBack()
