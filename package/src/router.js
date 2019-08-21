@@ -103,6 +103,7 @@ export class Navigator
             const id = uuid();
             const observer = {
                 id,
+                screenProps,
                 callback(obj)
                 {
                     resolve(obj);
@@ -232,6 +233,20 @@ export class Navigator
         return this._asyncNavigate(
             () => this.navigator.dispatch(NavigationActions.back({}))
         );
+    }
+
+    dispatchAction(action, options = {})
+    {
+        if (action)
+        {
+            const {channel, ...actionProps} = options;
+            return this._asyncNavigate(
+                () => this.navigator.dispatch({
+                    ...action,
+                    ...actionProps
+                }, channel)
+            );
+        }
     }
 
     toggleDrawer()

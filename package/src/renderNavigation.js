@@ -4,8 +4,7 @@ import {
     createStackNavigator,
     createSwitchNavigator,
     createBottomTabNavigator,
-    createDrawerNavigator,
-    createMaterialTopTabNavigator
+    createDrawerNavigator
 } from "react-navigation";
 
 import defaultNavigator from "./router";

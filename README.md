@@ -1,10 +1,14 @@
 # React Navigation Config
 configuration helpers for react-navigation 3.x.
 
+<br>
+
 # Dependent
 + react
 + redux
 + react-navigation
+
+<br>
 
 # Usage
 navigation instance, project created by `react-native-cli`.
@@ -89,7 +93,7 @@ AppRegistry.registerComponent(name, () => App);
 
 ```
 
-
+<br>
 
 # Configuration
 **Route** object with the properties.
@@ -131,6 +135,8 @@ only one of following options can be choose:
 + `Array<Route>` `all` - create **BottomTabNavigator** default
 + `Array<Route>` `oneOf` - create as **SwitchNavigator**
 
+<br>
+
 # API
 ### **filterNavigation(routes, allows)**
 remove route config by name where the array allows not contain.
@@ -149,11 +155,16 @@ output:
 [{"children":[{"name":"A","children":[{"name":"C"}]},{"name":"B"}]}]
 ```
 
+<br>
+
+
 ### **renderNavigation(routes,navigator)**
 create navigation components with config.
 ##### Parameters
 + `Array<Route>` routes - the route configuration
 + `<Navigator> navigator` - the navigator that will be initialized
+
+<br>
 
 ### **wrappedNavigatorRef**
 receive a navigator that can navigate to specified route anywhere.
@@ -161,10 +172,12 @@ receive a navigator that can navigate to specified route anywhere.
 + `Array<Route>` AppContainer - from call **renderNavigation**
 + `<Navigator> navigator` - the navigator that will be initialized
 
-# Navigator
-send some frequent actions to router use the method provided by the navigator,not intended to replace the navigation prop.
+<br>
 
-### Usage
+# Navigator
+send some frequent actions to router use the method provided by the navigator.
+### **Custom Navigator**
+-----------------------------
 + create and export a navigator object
 ```
 // navigator.js
@@ -205,7 +218,8 @@ export default class extends React.Component {
   }
 }
 ```
-### Default Navigator
+### **Default Navigator**
+-----------------------------
 ```
 import router from "react-navigation-config/router"
 ```
@@ -213,32 +227,20 @@ import router from "react-navigation-config/router"
 export default wrappedNavigatorRef(renderNavigation(routes));
 ```
 
-### API
-### **reLaunch**
-take back to the first screen in the stack.
-##### Parameters
-+ `<String> name` - optional, the next navigation route name that will replace first screen.
-+ `<Object> options` - optional
-      - `<Object> options.params` - the params field of navigation prop state
-      - `<Object> options.channel` - part of screenProps,can pass any objects, recommend functions for ineraction in navigation stack
-##### Return Value
-+ `<Promise>`
-
-### **redirectTo**
-replace the route at the given name with another.
-##### Parameters
-+ `<String> name` - required
-+ `<Object> options` - optional
-##### Return Value
-+ `<Promise>`
-
+### **Navigator API**
+--------------------------------------
 ### **navigateTo**
-update the current state with the given name and params.
+update the navigation state with the given name and options.
 ##### Parameters
 + `<String> name` - required
 + `<Object> options` - optional
++ ##### **options**
+> - `<Object> params` - optional, the params field of navigation prop state  
+>
+> - `<Object> channel` - optional, part of screenProps,can pass any objects, recommend functions for ineraction in navigation stack
+  
 ##### Return Value
-+ `<Promise>` - resolve when success for action
++ `<Promise>` - resolve when successful for action
 ```
 import { NavigationActions } from 'react-navigation';
 
@@ -255,6 +257,28 @@ navigator.navigateTo("Profile",{}).then(()=>{
 });
 ```
 
+<br>
+
+### **reLaunch**
+take back to the first screen in the stack.
+##### Parameters
++ `<String> name` - optional, the next navigation route name that will replace first screen.
++ `<Object> options` - optional
+##### Return Value
++ `<Promise>`
+
+<br>
+
+### **redirectTo**
+replace the route at the given name with another.
+##### Parameters
++ `<String> name` - required
++ `<Object> options` - optional
+##### Return Value
++ `<Promise>`
+
+<br>
+
 ### **navigateBack**
 go back to previous screen and close current screen.
 ##### Parameters
@@ -262,24 +286,12 @@ go back to previous screen and close current screen.
 ##### Return Value
 + `<Promise>`
 
-### **getCurrentParams**
-get current navigation params.
-##### Parameters
-+ `void`
-##### Return Value
-+ `<Object>`
-
-### **getParams**
-get all navigation params from stack.
-##### Parameters
-+ `void`
-##### Return Value
-+ `<Object>`
+<br>
 
 ### **beforeEach**
 register interceptor before state change.
 ##### Parameters
-+ `<function (action,to,form,next:(routeName,params)=>void)=>[ ignore it ]>` - callback
++ `<Function>` - callback
 ```
 router.beforeEach((to, from, next) => {
   if(from.routeName==="main")
@@ -288,22 +300,38 @@ router.beforeEach((to, from, next) => {
   }
 });
 ```
++ ##### **callback**
+> + action - navigation action
+> + to - route state
+> + from - current route state
+> + next(routeName,params) - may change target route, if parameter `params` is null or empty,it will be ignored and unchanged.
+
+<br>
 
 ### **onReady**
-get current navigation params.
+navigation initialized.
 ##### Parameters
-+ `<function ((void)=>void)>` - callback
++ `<Function ((void)=>void)>` - callback
 ##### Return Value
-+ `<Object>`
++ `void`
+
+<br>
 
 ### **afterEach**
 register a listener after state change.
 ##### Parameters
-+ `<function (action,to,form)=>void>` - callback
++ `<Function (action,to,form)=>void>` - callback
+##### Return Value
++ `void`
+
+<br>
 
 ### **preventDefaultActionFix**
+ it is not work default.
+
 ##### Parameters
-+ `<Boolean>` `disabled` - it is not work default, 
++ `<Boolean>` `disabled`
+
 try call `preventDefaultActionFix(false)` to enable it.
 
 #### Problem
@@ -320,26 +348,77 @@ get params from `this.props.navigation.state` is always `undefinded` in componen
 #### Fixed
 redirect to child route when `action.routeName` not equal to the state resolved.
 
+<br>
+
 ### **push**
 ##### Parameters
 + `<String> name` - required
 + `<Object> options` - optional
+##### Return Value
++ `<Promise>`
+
+<br>
+
+### **dispatchAction**
+update navigation current state with the given action.
+##### Parameters
++ `<Object> action` - navigation action
++ `<Object> options` - optional
+##### Return Value
++ `<Promise>`
+
+<br>
+
+### **getCurrentParams**
+get params of current navigation state.
+##### Parameters
++ `void`
+##### Return Value
++ `<Object | null>`
+
+<br>
+
+### **getParams**
+get all params from the stack.
+##### Parameters
++ `void`
+##### Return Value
++ `<Object | null>`
+
+<br>
 
 ### **getRouteParams**
+get params by route key.
 ##### Parameters
 + `<String> key` - required
+##### Return Value
++ `<Object | null>`
+
+<br>
 
 ### **openDrawer**
 ##### Parameters
 + `void`
+##### Return Value
++ `void`
+
+<br>
 
 ### **closeDrawer**
 ##### Parameters
 + `void`
+##### Return Value
++ `void`
+
+<br>
 
 ### **toggleDrawer**
 ##### Parameters
 + `void`
+##### Return Value
++ `void`
+
+<br>
   
 ### **getChannel**
 ##### Parameters
@@ -372,6 +451,10 @@ class ScreenB extend React.Component
 }
 
 ```
+##### Return Value
++ `<Object | null>`
+
+<br>
 
 # Decorator
 ### **navigationOptions(options)**
