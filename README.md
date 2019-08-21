@@ -2,9 +2,6 @@
 configuration helpers for react-navigation 3.x.
 
 # Dependent
-+ react-navigation-material-bottom-tabs
-+ react-native-paper
-+ react-native-vector-icons
 + react
 + redux
 + react-navigation
@@ -108,12 +105,24 @@ AppRegistry.registerComponent(name, () => App);
 
 + `<Object>` `screenProps` - route meta fields,will be integrated into **screenProps**
 
-+ `<Boolean>` `material` - material-design themed tab bar
++ `<Function>` `creator` - other container creator,use default setting if null
+```
+import { createMaterialBottomTabNavigator } from "react-navigation-material-bottom-tabs";
 
-+ `<String>` `tabDirection` - where material-design themed tab docking
+// config
 
-+ `<Boolean | String>` `injectNavigationOptions` - this option is not necessary, inject static variable **navigationOptions** into the component's class
-it is available when one of following values:
+{
+          name: "tab",
+          material: false,
+          creator: createMaterialBottomTabNavigator,
+          navigationOptions: {
+            header: null
+          },
+          all: [  ... ]
+}
+```
+
++ `<Boolean | String>` `injectNavigationOptions` - this option is not necessary, inject static variable **navigationOptions** into the component's class, it is available when one of following values:
     - `true`: direct injection
     - `"extend"`: inherit first then inject
 
@@ -320,6 +329,18 @@ redirect to child route when `action.routeName` not equal to the state resolved.
 ### **getRouteParams**
 ##### Parameters
 + `<String> key` required
+
+### **openDrawer**
+##### Parameters
++ `void`
+
+### **closeDrawer**
+##### Parameters
++ `void`
+
+### **toggleDrawer**
+##### Parameters
++ `void`
   
 ### **getChannel**
 ##### Parameters

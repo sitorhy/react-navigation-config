@@ -7,8 +7,6 @@ var _react = _interopRequireDefault(require("react"));
 
 var _reactNavigation = require("react-navigation");
 
-var _reactNavigationMaterialBottomTabs = require("react-navigation-material-bottom-tabs");
-
 var _router = _interopRequireDefault(require("./router"));
 
 var decorators = _interopRequireWildcard(require("./decorators"));
@@ -138,8 +136,7 @@ var map = function map(route, navigator) {
     navigationOptions,
     routerConfig,
     screenProps,
-    material = false,
-    tabDirection
+    creator: customCreator = null
   } = route;
   var prop = ["children", "all", "oneOf", "drawer", "app"].find(j => !!route[j]);
 
@@ -154,16 +151,12 @@ var map = function map(route, navigator) {
       Object.assign(routeConfigs, map(i, navigator));
     }
 
-    var containerCreator = creator[prop];
+    var containerCreator;
 
-    if (prop === "all") {
-      if (material === true) {
-        if (tabDirection !== "bottom") {
-          containerCreator = _reactNavigation.createMaterialTopTabNavigator;
-        } else {
-          containerCreator = _reactNavigationMaterialBottomTabs.createMaterialBottomTabNavigator;
-        }
-      }
+    if (typeof customCreator === "function") {
+      containerCreator = customCreator;
+    } else {
+      containerCreator = creator[prop];
     }
 
     var navigation = containerCreator(routeConfigs, routerConfig);

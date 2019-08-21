@@ -241,6 +241,20 @@ export class Navigator
         );
     }
 
+    openDrawer()
+    {
+        return this._asyncNavigate(
+            () => this.navigator.dispatch(DrawerActions.openDrawer())
+        );
+    }
+
+    closeDrawer()
+    {
+        return this._asyncNavigate(
+            () => this.navigator.dispatch(DrawerActions.closeDrawer())
+        );
+    }
+
     preventDefaultActionFix(disabled = true)
     {
         this._preventDefaultActionFix = disabled === true;

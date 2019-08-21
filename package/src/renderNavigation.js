@@ -8,8 +8,6 @@ import {
     createMaterialTopTabNavigator
 } from "react-navigation";
 
-import {createMaterialBottomTabNavigator} from "react-navigation-material-bottom-tabs";
-
 import defaultNavigator from "./router";
 import * as decorators from "./decorators";
 import {ObserveStore, removeEmpty} from "./common";
@@ -131,8 +129,7 @@ const map = function (route, navigator)
         navigationOptions,
         routerConfig,
         screenProps,
-        material = false,
-        tabDirection
+        creator: customCreator = null
     } = route;
 
     const prop = ["children", "all", "oneOf", "drawer", "app"].find(j => !!route[j]);
@@ -150,21 +147,17 @@ const map = function (route, navigator)
             Object.assign(routeConfigs, map(i, navigator));
         }
 
-        let containerCreator = creator[prop];
-        if (prop === "all")
+        let containerCreator;
+
+        if (typeof customCreator === "function")
         {
-            if (material === true)
-            {
-                if (tabDirection !== "bottom")
-                {
-                    containerCreator = createMaterialTopTabNavigator;
-                }
-                else
-                {
-                    containerCreator = createMaterialBottomTabNavigator;
-                }
-            }
+            containerCreator = customCreator;
         }
+        else
+        {
+            containerCreator = creator[prop];
+        }
+
         let navigation = containerCreator(routeConfigs, routerConfig);
 
         const ScreenComponent = navigation;

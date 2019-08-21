@@ -13,6 +13,9 @@ import DrawerContentScreen from "../components/DrawerContentScreen";
 
 import router from "../react-navigation-config/router";
 
+import { createMaterialTopTabNavigator } from "react-navigation";
+import { createMaterialBottomTabNavigator } from "react-navigation-material-bottom-tabs";
+
 router.preventDefaultActionFix(false);
 /*
 router.onReady(() => {
@@ -63,8 +66,8 @@ const routes = {
       children: [
         {
           name: "tab",
-          tabDirection: "bottom",
           material: false,
+          creator: createMaterialBottomTabNavigator,
           navigationOptions: {
             header: null
           },

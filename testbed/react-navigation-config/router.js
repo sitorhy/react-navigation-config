@@ -254,6 +254,14 @@ class Navigator {
     return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.DrawerActions.toggleDrawer()));
   }
 
+  openDrawer() {
+    return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.DrawerActions.openDrawer()));
+  }
+
+  closeDrawer() {
+    return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.DrawerActions.closeDrawer()));
+  }
+
   preventDefaultActionFix(disabled) {
     if (disabled === void 0) {
       disabled = true;
