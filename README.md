@@ -102,8 +102,7 @@ AppRegistry.registerComponent(name, () => App);
 
 + `<String>` `name` - route name, required, for use **this.props.navigation.navigate(routeName)**, is not necessary when **app** is `"true"`
 
-+ `<Object>` `routerConfig` - read document releated 
- **StackNavigatorConfig**,**SwitchNavigatorConfig** ,**StackNavigatorConfig** ...
++ `<Object>` `routerConfig` - read document releated **StackNavigatorConfig**,**SwitchNavigatorConfig** ,**StackNavigatorConfig** ...
 
 + `<Object>` `navigationOptions` - set parameter **navigationOptions** in **RouteConfigs** when injectNavigationOptions not specified
 
