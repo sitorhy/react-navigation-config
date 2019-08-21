@@ -153,13 +153,13 @@ output:
 create navigation components with config.
 ##### Parameters
 + `Array<Route>` routes - the route configuration
-+ `<Navigator> navigator` the navigator that will be initialized
++ `<Navigator> navigator` - the navigator that will be initialized
 
 ### **wrappedNavigatorRef**
 receive a navigator that can navigate to specified route anywhere.
 ##### Parameters
-+ `Array<Route>` AppContainer, from call **renderNavigation**
-+ `<Navigator> navigator` the navigator that will be initialized
++ `Array<Route>` AppContainer - from call **renderNavigation**
++ `<Navigator> navigator` - the navigator that will be initialized
 
 # Navigator
 send some frequent actions to router use the method provided by the navigator,not intended to replace the navigation prop.
@@ -217,8 +217,8 @@ export default wrappedNavigatorRef(renderNavigation(routes));
 ### **reLaunch**
 take back to the first screen in the stack.
 ##### Parameters
-+ `<String> name` optional, the next navigation route name that will replace first screen.
-+ `<Object> options` optional
++ `<String> name` - optional, the next navigation route name that will replace first screen.
++ `<Object> options` - optional
       - `<Object> options.params` - the params field of navigation prop state
       - `<Object> options.channel` - part of screenProps,can pass any objects, recommend functions for ineraction in navigation stack
 ##### Return Value
@@ -227,18 +227,18 @@ take back to the first screen in the stack.
 ### **redirectTo**
 replace the route at the given name with another.
 ##### Parameters
-+ `<String> name` required
-+ `<Object> options` optional
++ `<String> name` - required
++ `<Object> options` - optional
 ##### Return Value
 + `<Promise>`
 
 ### **navigateTo**
 update the current state with the given name and params.
 ##### Parameters
-+ `<String> name` required
-+ `<Object> options` optional
++ `<String> name` - required
++ `<Object> options` - optional
 ##### Return Value
-+ `<Promise>` resolve when success for action
++ `<Promise>` - resolve when success for action
 ```
 import { NavigationActions } from 'react-navigation';
 
@@ -279,7 +279,7 @@ get all navigation params from stack.
 ### **beforeEach**
 register interceptor before state change.
 ##### Parameters
-+ `<function (action,to,form,next:(routeName,params)=>void)=>[ ignore it ]>` callback
++ `<function (action,to,form,next:(routeName,params)=>void)=>[ ignore it ]>` - callback
 ```
 router.beforeEach((to, from, next) => {
   if(from.routeName==="main")
@@ -292,19 +292,18 @@ router.beforeEach((to, from, next) => {
 ### **onReady**
 get current navigation params.
 ##### Parameters
-+ `<function ((void)=>void)>` callback
++ `<function ((void)=>void)>` - callback
 ##### Return Value
 + `<Object>`
 
 ### **afterEach**
 register a listener after state change.
 ##### Parameters
-+ `<function (action,to,form)=>void>` callback
++ `<function (action,to,form)=>void>` - callback
 
 ### **preventDefaultActionFix**
 ##### Parameters
-+ `<Boolean>` disabled
-it is not work default.
++ `<Boolean>` `disabled` - it is not work default, 
 try call `preventDefaultActionFix(false)` to enable it.
 
 #### Problem
@@ -323,12 +322,12 @@ redirect to child route when `action.routeName` not equal to the state resolved.
 
 ### **push**
 ##### Parameters
-+ `<String> name` required
-+ `<Object> options` optional
++ `<String> name` - required
++ `<Object> options` - optional
 
 ### **getRouteParams**
 ##### Parameters
-+ `<String> key` required
++ `<String> key` - required
 
 ### **openDrawer**
 ##### Parameters
@@ -363,7 +362,7 @@ class ScreenB extend React.Component
 {
     onTest=()=>{
         const {add} = navigator.getChannel();
-        add (); // update ScreenA state
+        add(); // update ScreenA state
     }    
 
     render()
