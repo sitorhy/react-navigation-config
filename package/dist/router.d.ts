@@ -25,6 +25,8 @@ declare namespace router {
 
     function getParams(): Array<object>;
 
+    function dispatchAction(action: object, options: object);
+
     function beforeEach(callback: (action: object, to: object, from: object, next: (routeName: string) => object | null) => void);
 
     function afterEach(callback: (action: object, to: object, from: object) => void);
