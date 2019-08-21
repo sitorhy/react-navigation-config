@@ -234,7 +234,7 @@ update the navigation state with the given name and options.
 ##### Parameters
 + `<String> name` - required
 + `<Object> options` - optional
-+ ##### **options**
+##### **options**
 > - `<Object> params` - optional, the params field of navigation prop state  
 >
 > - `<Object> channel` - optional, part of screenProps,can pass any objects, recommend functions for ineraction in navigation stack
@@ -300,7 +300,7 @@ router.beforeEach((to, from, next) => {
   }
 });
 ```
-+ ##### **callback**
+##### **callback**
 > + action - navigation action
 > + to - route state
 > + from - current route state
