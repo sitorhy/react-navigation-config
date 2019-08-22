@@ -133,8 +133,9 @@ import { createMaterialBottomTabNavigator } from "react-navigation-material-bott
 
 only one of following options can be choose:
 + `Array<Route>` `children` - create as **StackNavigator**
-+ `Array<Route>` `all` - create **BottomTabNavigator** default
++ `Array<Route>` `all` - create **BottomTabNavigator**
 + `Array<Route>` `oneOf` - create as **SwitchNavigator**
++ `Array<Route>` `drawer` - create as **DrawerNavigator**
 
 <br>
 
@@ -238,7 +239,7 @@ update the navigation state with the given name and options.
 ##### **options**
 > - `<Object> params` - optional, the params field of navigation prop state  
 >
-> - `<Object> channel` - optional, will be integrated to  screenProps,can pass any objects from parent, recommend functions for interaction in navigation stack, but it is danger  during any pop operation.
+> - `<Object> channel` - optional, will be integrated to  screenProps, can pass any objects, including functions that interact between screens, but it is very danger for some pop actions.
 >
 > - `<String>` `routeKey` - optional
 ##### Return Value
@@ -262,8 +263,7 @@ navigator.navigateTo("Profile",{}).then(()=>{
 <br>
 
 ### **reLaunch**
-wipes the whole navigation state .
-`options.channel` is invalid.
+wipes the whole navigation state.
 ##### Parameters
 + `<String> name` - required, route name that will replace first screen.
 + `<Object> options` - optional
@@ -277,15 +277,6 @@ replace the route at the given name with another.
 ##### Parameters
 + `<String> name` - required
 + `<Object> options` - optional
-##### Return Value
-+ `<Promise>`
-
-<br>
-
-### **navigateBack**
-go back to previous screen and close current screen.
-##### Parameters
-+ `<Object>` `options` - optional
 ##### Return Value
 + `<Promise>`
 
@@ -366,7 +357,7 @@ redirect to child route when `action.routeName` not equal to the state resolved.
 low-level method, update navigation current state with the given action.
 ##### Parameters
 + `<Object> action` - navigation action
-+ `<Object> options` - optional, not sure fully effective.
++ `<Object> options` - optional, not sure all fields effective.
 ##### Return Value
 + `<Promise>`
 
@@ -391,18 +382,28 @@ get current route key.
 <br>
 
 ### **getParams**
-get all params from the stack.
+get route params by key.
 ##### Parameters
-+ `void`
++ `<String> key` - optional, return current route params if not specified
 ##### Return Value
 + `<Object | null>`
 
 <br>
 
-### **getRouteParams**
-get params by route key.
+### **getAllParams**
+get all params of the stack.
+##### Parameters
++ `<void> key`
+##### Return Value
++ `<Object | null>`
+
+<br>
+
+### **setParams**
+get route params by key.
 ##### Parameters
 + `<String> key` - required
++ `<String> params` - required
 ##### Return Value
 + `<Object | null>`
 
@@ -434,7 +435,7 @@ get params by route key.
 
 ### **pop**
 takes you back to a previous screen in the stack.
-`options.params` is not supported.
+`options.params` is not supported in any go back action.
 ##### Parameters
 + `<Object> n` - the number of screens
 + `<Object | null> options` - optional
@@ -451,10 +452,19 @@ takes you back to the first screen in the stack.
 + `<Promise>`
 
 <br>
+
+### **navigateBack**
+go back to previous screen and close current screen.
+##### Parameters
++ `<Object>` `options` - optional
+##### Return Value
++ `<Promise>`
+
+<br>
   
 ### **getChannel**
 ##### Parameters
-+  `void`
++  `<String> key` - optional
 ```
 class ScreenA extends React.Component
 {

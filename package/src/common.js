@@ -24,6 +24,7 @@ export const DEFAULT_CHANNEL_ACTIONS = [
     "Navigation/OPEN_DRAWER",
     "Navigation/CLOSE_DRAWER",
     "Navigation/TOGGLE_DRAWER",
+    "Navigation/RESET"
 ];
 
 export function removeEmpty(obj, options = {})
@@ -103,13 +104,13 @@ export function uuid(len, radix)
     return uuid.join("");
 }
 
-function _get(nav, mergeParams, scopeParams)
+function _getState(nav, mergeParams, scopeParams)
 {
     const {routes, index, params} = nav;
     let state = null;
     if (Array.isArray(routes) && routes.length && index !== undefined && index !== null)
     {
-        state = _get(routes[index], mergeParams, scopeParams) || routes[index];
+        state = _getState(routes[index], mergeParams, scopeParams) || routes[index];
         if (state.params)
         {
             if (scopeParams[state.routeName])
@@ -137,7 +138,7 @@ export function getNavState(nav)
 {
     const params = {};
     const scopeParams = {};
-    _get(nav, params, scopeParams);
+    _getState(nav, params, scopeParams);
     return [params, scopeParams];
 }
 
@@ -186,24 +187,22 @@ export function matchRoute(nav, key)
 
 export class ObserveStore
 {
-    constructor(store, select, onCreate)
+    constructor(store, onCreate)
     {
-        this.select = select;
         this.store = store;
-        this.currentState = select(store.getState());
         if (typeof onCreate === "function")
         {
-            onCreate(this.currentState);
+            this.currentState = onCreate(store.getState());
         }
     }
 
-    start(onChange)
+    start(select, onChange)
     {
         this.unsubscribe = this.store.subscribe(() =>
         {
             if (this.unsubscribe)
             {
-                this.select(this.store.getState(), (nextState) =>
+                select(this.store.getState(), (nextState) =>
                 {
                     if (nextState !== this.currentState)
                     {
@@ -223,7 +222,6 @@ export class ObserveStore
         }
         this.store = null;
         this.unsubscribe = null;
-        this.select = null;
         this.currentState = null;
     }
 }

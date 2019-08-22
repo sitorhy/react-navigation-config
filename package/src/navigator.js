@@ -1,4 +1,4 @@
-import React, {Fragment} from "react";
+import React from "react";
 import defaultNavigator from "./router";
 import {DEFAULT_CHANNEL_ACTIONS, getActiveRoute, getChannelFromStageModule, getStageModule} from "./common";
 import {ACTIONS} from "./store";
@@ -194,9 +194,7 @@ export default function (AppContainer, navigator = defaultNavigator, options = {
         {
             const {uriPrefix} = this.props;
             return (
-                <Fragment>
-                    <WrappedAppContainer uriPrefix={uriPrefix} onNavigationStateChange={this.onNavigationStateChange}/>
-                </Fragment>
+                <WrappedAppContainer uriPrefix={uriPrefix} onNavigationStateChange={this.onNavigationStateChange}/>
             );
         }
     }

@@ -19,7 +19,7 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
 
 var DEFAULT_IGNORE_ACTIONS = ["Navigation/COMPLETE_TRANSITION", "Navigation/BACK", "Navigation/OPEN_DRAWER", "Navigation/MARK_DRAWER_SETTLING", "Navigation/MARK_DRAWER_IDLE", "Navigation/DRAWER_OPENED", "Navigation/CLOSE_DRAWER", "Navigation/DRAWER_CLOSED", "Navigation/TOGGLE_DRAWER", "Navigation/SET_PARAMS", "Navigation/RESET", "Navigation/POP", "Navigation/POP_TO_TOP"];
 exports.DEFAULT_IGNORE_ACTIONS = DEFAULT_IGNORE_ACTIONS;
-var DEFAULT_CHANNEL_ACTIONS = ["Navigation/REPLACE", "Navigation/PUSH", "Navigation/NAVIGATE", "Navigation/POP", "Navigation/POP_TO_TOP", "Navigation/BACK", "Navigation/OPEN_DRAWER", "Navigation/CLOSE_DRAWER", "Navigation/TOGGLE_DRAWER"];
+var DEFAULT_CHANNEL_ACTIONS = ["Navigation/REPLACE", "Navigation/PUSH", "Navigation/NAVIGATE", "Navigation/POP", "Navigation/POP_TO_TOP", "Navigation/BACK", "Navigation/OPEN_DRAWER", "Navigation/CLOSE_DRAWER", "Navigation/TOGGLE_DRAWER", "Navigation/RESET"];
 exports.DEFAULT_CHANNEL_ACTIONS = DEFAULT_CHANNEL_ACTIONS;
 
 function removeEmpty(obj, options) {
@@ -90,7 +90,7 @@ function uuid(len, radix) {
   return uuid.join("");
 }
 
-function _get(nav, mergeParams, scopeParams) {
+function _getState(nav, mergeParams, scopeParams) {
   var {
     routes,
     index,
@@ -99,7 +99,7 @@ function _get(nav, mergeParams, scopeParams) {
   var state = null;
 
   if (Array.isArray(routes) && routes.length && index !== undefined && index !== null) {
-    state = _get(routes[index], mergeParams, scopeParams) || routes[index];
+    state = _getState(routes[index], mergeParams, scopeParams) || routes[index];
 
     if (state.params) {
       if (scopeParams[state.routeName]) {
@@ -124,7 +124,7 @@ function getNavState(nav) {
   var params = {};
   var scopeParams = {};
 
-  _get(nav, params, scopeParams);
+  _getState(nav, params, scopeParams);
 
   return [params, scopeParams];
 }
@@ -176,20 +176,18 @@ function matchRoute(nav, key) {
 }
 
 class ObserveStore {
-  constructor(store, select, onCreate) {
-    this.select = select;
+  constructor(store, onCreate) {
     this.store = store;
-    this.currentState = select(store.getState());
 
     if (typeof onCreate === "function") {
-      onCreate(this.currentState);
+      this.currentState = onCreate(store.getState());
     }
   }
 
-  start(onChange) {
+  start(select, onChange) {
     this.unsubscribe = this.store.subscribe(() => {
       if (this.unsubscribe) {
-        this.select(this.store.getState(), nextState => {
+        select(this.store.getState(), nextState => {
           if (nextState !== this.currentState) {
             this.currentState = nextState;
             onChange(this.currentState);
@@ -206,7 +204,6 @@ class ObserveStore {
 
     this.store = null;
     this.unsubscribe = null;
-    this.select = null;
     this.currentState = null;
   }
 

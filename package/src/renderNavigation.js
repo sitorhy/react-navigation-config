@@ -44,12 +44,30 @@ function through(store, screenProps, ScreenComponent)
 {
     const ThroughComponent = class extends React.Component
     {
-        constructor(...args)
+        constructor(props)
         {
-            super(...args);
+            super(props);
+            const key = props.navigation.state.key;
             if (store)
             {
-                this.observer = new ObserveStore(store, (state, call) =>
+                this.observer = new ObserveStore(store, (state) =>
+                {
+                    const channelModule = getChannelModule(state);
+                    const channel = getScreenPropsFromChannelModule(key, channelModule);
+                    this.state = {
+                        ...this.state,
+                        channel
+                    };
+                    return channel;
+                });
+            }
+        }
+
+        componentDidMount()
+        {
+            if (this.observer)
+            {
+                this.observer.start((state, call) =>
                 {
                     const {navigation} = this.props;
                     const {key} = navigation.state;
@@ -62,20 +80,6 @@ function through(store, screenProps, ScreenComponent)
                         }
                     }
                 }, (channel) =>
-                {
-                    this.state = {
-                        ...this.state,
-                        channel
-                    };
-                });
-            }
-        }
-
-        componentDidMount()
-        {
-            if (this.observer)
-            {
-                this.observer.start((channel) =>
                 {
                     this.setState({
                         channel

@@ -47,11 +47,25 @@ function inject(injectNavigationOptions, navigationOptions, component) {
 
 function through(store, screenProps, ScreenComponent) {
   var ThroughComponent = class extends _react.default.Component {
-    constructor() {
-      super(...arguments);
+    constructor(props) {
+      super(props);
+      var key = props.navigation.state.key;
 
       if (store) {
-        this.observer = new _common.ObserveStore(store, (state, call) => {
+        this.observer = new _common.ObserveStore(store, state => {
+          var channelModule = (0, _common.getChannelModule)(state);
+          var channel = (0, _common.getScreenPropsFromChannelModule)(key, channelModule);
+          this.state = _extends({}, this.state, {
+            channel
+          });
+          return channel;
+        });
+      }
+    }
+
+    componentDidMount() {
+      if (this.observer) {
+        this.observer.start((state, call) => {
           var {
             navigation
           } = this.props;
@@ -66,16 +80,6 @@ function through(store, screenProps, ScreenComponent) {
             }
           }
         }, channel => {
-          this.state = _extends({}, this.state, {
-            channel
-          });
-        });
-      }
-    }
-
-    componentDidMount() {
-      if (this.observer) {
-        this.observer.start(channel => {
           this.setState({
             channel
           });
