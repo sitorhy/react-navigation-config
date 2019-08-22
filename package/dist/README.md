@@ -380,6 +380,7 @@ get params of current navigation state.
 + `<Object | null>`
 
 <br>
+
 ### **getActiveKey**
 get current route key.
 ##### Parameters
