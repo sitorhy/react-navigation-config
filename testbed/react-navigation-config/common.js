@@ -6,9 +6,12 @@ exports.uuid = uuid;
 exports.getNavState = getNavState;
 exports.getActiveRoute = getActiveRoute;
 exports.matchRoute = matchRoute;
-exports.ObserveStore = void 0;
+exports.ObserveStore = exports.DEFAULT_IGNORE_ACTIONS = void 0;
 
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
+
+var DEFAULT_IGNORE_ACTIONS = ["Navigation/COMPLETE_TRANSITION", "Navigation/BACK", "Navigation/OPEN_DRAWER", "Navigation/MARK_DRAWER_SETTLING", "Navigation/MARK_DRAWER_IDLE", "Navigation/DRAWER_OPENED", "Navigation/CLOSE_DRAWER", "Navigation/DRAWER_CLOSED", "Navigation/SET_PARAMS"];
+exports.DEFAULT_IGNORE_ACTIONS = DEFAULT_IGNORE_ACTIONS;
 
 function removeEmpty(obj, options) {
   if (options === void 0) {
@@ -34,16 +37,17 @@ function removeEmpty(obj, options) {
   return accepts;
 }
 
+var uuid_chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
+
 function uuid(len, radix) {
-  var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
-  var uuid = [],
-      i;
-  radix = radix || chars.length;
+  var uuid = [];
+  var i;
+  radix = radix || uuid_chars.length;
 
   if (len) {
     // Compact form
     for (i = 0; i < len; i++) {
-      uuid[i] = chars[0 | Math.random() * radix];
+      uuid[i] = uuid_chars[0 | Math.random() * radix];
     }
   } else {
     // rfc4122, version 4 form
@@ -56,7 +60,7 @@ function uuid(len, radix) {
     for (i = 0; i < 36; i++) {
       if (!uuid[i]) {
         r = 0 | Math.random() * 16;
-        uuid[i] = chars[i == 19 ? r & 0x3 | 0x8 : r];
+        uuid[i] = uuid_chars[i == 19 ? r & 0x3 | 0x8 : r];
       }
     }
   }

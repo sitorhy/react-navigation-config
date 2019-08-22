@@ -1,5 +1,5 @@
 import createStore, {ACTIONS} from "./store";
-import {removeEmpty, uuid, getActiveRoute, matchRoute, getNavState} from "./common";
+import {removeEmpty, uuid, getActiveRoute, matchRoute, getNavState, DEFAULT_IGNORE_ACTIONS} from "./common";
 import {NavigationActions, StackActions, DrawerActions} from "react-navigation";
 
 export class Navigator
@@ -14,8 +14,17 @@ export class Navigator
 
     _preventDefaultActionFix = true;
 
+    _ignoreActions = DEFAULT_IGNORE_ACTIONS;
+
     _bindBeforeEach(action, toState, fromState)
     {
+        const {type} = action;
+
+        if (this._ignoreActions.includes(type))
+        {
+            return null;
+        }
+        
         let fixed = false;
         let nextAction = null;
         let customAction = null;
@@ -275,8 +284,16 @@ export class Navigator
         this._preventDefaultActionFix = disabled === true;
     }
 
-    beforeEach(callback)
+    beforeEach(callback, options = {})
     {
+        if (options)
+        {
+            const {ignoreActions} = options;
+            if (Array.isArray(ignoreActions))
+            {
+                this._ignoreActions = ignoreActions;
+            }
+        }
         if (typeof callback === "function")
         {
             this._beforeEachHandler = callback;

@@ -1,3 +1,15 @@
+export const DEFAULT_IGNORE_ACTIONS = [
+    "Navigation/COMPLETE_TRANSITION",
+    "Navigation/BACK",
+    "Navigation/OPEN_DRAWER",
+    "Navigation/MARK_DRAWER_SETTLING",
+    "Navigation/MARK_DRAWER_IDLE",
+    "Navigation/DRAWER_OPENED",
+    "Navigation/CLOSE_DRAWER",
+    "Navigation/DRAWER_CLOSED",
+    "Navigation/SET_PARAMS"
+];
+
 export function removeEmpty(obj, options = {})
 {
     if (!obj)
@@ -24,16 +36,18 @@ export function removeEmpty(obj, options = {})
     return accepts;
 }
 
+const uuid_chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
+
 export function uuid(len, radix)
 {
-    let chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
-    let uuid = [], i;
-    radix = radix || chars.length;
+    const uuid = [];
+    let i;
+    radix = radix || uuid_chars.length;
 
     if (len)
     {
         // Compact form
-        for (i = 0; i < len; i++) uuid[i] = chars[0 | Math.random() * radix];
+        for (i = 0; i < len; i++) uuid[i] = uuid_chars[0 | Math.random() * radix];
     }
     else
     {
@@ -51,7 +65,7 @@ export function uuid(len, radix)
             if (!uuid[i])
             {
                 r = 0 | Math.random() * 16;
-                uuid[i] = chars[(i == 19) ? (r & 0x3) | 0x8 : r];
+                uuid[i] = uuid_chars[(i == 19) ? (r & 0x3) | 0x8 : r];
             }
         }
     }

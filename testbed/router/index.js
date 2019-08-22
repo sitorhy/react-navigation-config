@@ -13,8 +13,8 @@ import DrawerContentScreen from "../components/DrawerContentScreen";
 
 import router from "../react-navigation-config/router";
 
-import { createMaterialTopTabNavigator } from "react-navigation";
-import { createMaterialBottomTabNavigator } from "react-navigation-material-bottom-tabs";
+// import { createMaterialTopTabNavigator } from "react-navigation";
+// import { createMaterialBottomTabNavigator } from "react-navigation-material-bottom-tabs";
 
 router.preventDefaultActionFix(false);
 /*
@@ -67,7 +67,7 @@ const routes = {
         {
           name: "tab",
           material: false,
-          creator: createMaterialBottomTabNavigator,
+          //    creator: createMaterialBottomTabNavigator,
           navigationOptions: {
             header: null
           },

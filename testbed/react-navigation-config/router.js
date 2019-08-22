@@ -28,9 +28,19 @@ class Navigator {
     _defineProperty(this, "_readyHandler", null);
 
     _defineProperty(this, "_preventDefaultActionFix", true);
+
+    _defineProperty(this, "_ignoreActions", _common.DEFAULT_IGNORE_ACTIONS);
   }
 
   _bindBeforeEach(action, toState, fromState) {
+    var {
+      type
+    } = action;
+
+    if (this._ignoreActions.includes(type)) {
+      return null;
+    }
+
     var fixed = false;
     var nextAction = null;
     var customAction = null;
@@ -288,7 +298,21 @@ class Navigator {
     this._preventDefaultActionFix = disabled === true;
   }
 
-  beforeEach(callback) {
+  beforeEach(callback, options) {
+    if (options === void 0) {
+      options = {};
+    }
+
+    if (options) {
+      var {
+        ignoreActions
+      } = options;
+
+      if (Array.isArray(ignoreActions)) {
+        this._ignoreActions = ignoreActions;
+      }
+    }
+
     if (typeof callback === "function") {
       this._beforeEachHandler = callback;
     }
