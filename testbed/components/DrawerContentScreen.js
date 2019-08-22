@@ -3,8 +3,20 @@ import { Button, View } from "react-native";
 import navigator from "../react-navigation-config/router";
 
 export default class extends React.Component {
+  componentDidUpdate() {
+    const channel = navigator.getChannel();
+    if (channel) {
+      const { setText } = channel;
+      if (setText) {
+        setText("力拔山兮气盖世");
+      }
+    }
+  }
+
   closeDrawer = () => {
-    navigator.closeDrawer();
+    navigator.closeDrawer({
+      channel: {}
+    });
   };
 
   render() {

@@ -23,12 +23,27 @@ export default class extends React.Component {
     this.props.navigation.setParams({ headerTitle: "力微任重久神疲" });
   };
 
+  reLaunch = () => {
+    navigator.reLaunch("main").then(() => {});
+  };
+
+  pop = () => {
+    navigator.pop(1);
+  };
+
+  toTop = () => {
+    navigator.popToTop();
+  };
+
   render() {
     return (
       <View>
         <Text>Setting</Text>
         <Button title="Push Test" onPress={this.pushTest} />
         <Button title="Change Title" onPress={this.changeTitle} />
+        <Button title="ReLaunch Test" onPress={this.reLaunch} />
+        <Button title="Pop Test" onPress={this.pop} />
+        <Button title="PopToTop Test" onPress={this.toTop} />
       </View>
     );
   }

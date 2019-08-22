@@ -2,16 +2,19 @@
 
 exports.__esModule = true;
 exports.removeEmpty = removeEmpty;
+exports.randomString = randomString;
 exports.uuid = uuid;
 exports.getNavState = getNavState;
 exports.getActiveRoute = getActiveRoute;
 exports.matchRoute = matchRoute;
-exports.ObserveStore = exports.DEFAULT_IGNORE_ACTIONS = void 0;
+exports.ObserveStore = exports.DEFAULT_CHANNEL_ACTIONS = exports.DEFAULT_IGNORE_ACTIONS = void 0;
 
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
-var DEFAULT_IGNORE_ACTIONS = ["Navigation/COMPLETE_TRANSITION", "Navigation/BACK", "Navigation/OPEN_DRAWER", "Navigation/MARK_DRAWER_SETTLING", "Navigation/MARK_DRAWER_IDLE", "Navigation/DRAWER_OPENED", "Navigation/CLOSE_DRAWER", "Navigation/DRAWER_CLOSED", "Navigation/SET_PARAMS"];
+var DEFAULT_IGNORE_ACTIONS = ["Navigation/COMPLETE_TRANSITION", "Navigation/BACK", "Navigation/OPEN_DRAWER", "Navigation/MARK_DRAWER_SETTLING", "Navigation/MARK_DRAWER_IDLE", "Navigation/DRAWER_OPENED", "Navigation/CLOSE_DRAWER", "Navigation/DRAWER_CLOSED", "Navigation/TOGGLE_DRAWER", "Navigation/SET_PARAMS", "Navigation/RESET", "Navigation/POP", "Navigation/POP_TO_TOP"];
 exports.DEFAULT_IGNORE_ACTIONS = DEFAULT_IGNORE_ACTIONS;
+var DEFAULT_CHANNEL_ACTIONS = ["Navigation/REPLACE", "Navigation/PUSH", "Navigation/NAVIGATE", "Navigation/POP", "Navigation/POP_TO_TOP", "Navigation/BACK", "Navigation/OPEN_DRAWER", "Navigation/CLOSE_DRAWER", "Navigation/TOGGLE_DRAWER"];
+exports.DEFAULT_CHANNEL_ACTIONS = DEFAULT_CHANNEL_ACTIONS;
 
 function removeEmpty(obj, options) {
   if (options === void 0) {
@@ -37,7 +40,20 @@ function removeEmpty(obj, options) {
   return accepts;
 }
 
-var uuid_chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
+var uuid_chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".split("");
+var random_chars = "ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678";
+
+function randomString(len) {
+  len = len || 32;
+  var maxPos = random_chars.length;
+  var pwd = "";
+
+  for (var i = 0; i < len; i++) {
+    pwd += random_chars.charAt(Math.floor(Math.random() * maxPos));
+  }
+
+  return pwd;
+}
 
 function uuid(len, radix) {
   var uuid = [];
@@ -53,8 +69,8 @@ function uuid(len, radix) {
     // rfc4122, version 4 form
     var r; // rfc4122 requires these characters
 
-    uuid[8] = uuid[13] = uuid[18] = uuid[23] = '-';
-    uuid[14] = '4'; // Fill in random data.  At i==19 set the high bits of clock sequence as
+    uuid[8] = uuid[13] = uuid[18] = uuid[23] = "-";
+    uuid[14] = "4"; // Fill in random data.  At i==19 set the high bits of clock sequence as
     // per rfc4122, sec. 4.1.5
 
     for (i = 0; i < 36; i++) {
@@ -65,7 +81,7 @@ function uuid(len, radix) {
     }
   }
 
-  return uuid.join('');
+  return uuid.join("");
 }
 
 function _get(nav, mergeParams, scopeParams) {

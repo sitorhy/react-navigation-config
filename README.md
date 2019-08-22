@@ -100,9 +100,11 @@ AppRegistry.registerComponent(name, () => App);
 
 + `<Boolean>` `app` - call function **createAppContainer** at last, return a **AppContainer** wrapper.
 
-+ `<String>` `name` - route name, required, for use **this.props.navigation.navigate(routeName)**, is not necessary when **app** is `"true"`
++ `<String>` `name` - route name, optional, use random name if not specified, for use **this.props.navigation.navigate(routeName)**, is not necessary when **app** is `"true"`
 
-+ `<Object>` `routerConfig` - read document releated **StackNavigatorConfig**,**SwitchNavigatorConfig** ,**StackNavigatorConfig** ...
+= `<String>` `path` - optional, deep linking
+
++ `<Object>` `routerConfig` - read document related to **StackNavigatorConfig**,**SwitchNavigatorConfig** ,**StackNavigatorConfig** ...
 
 + `<Object>` `navigationOptions` - set parameter **navigationOptions** in **RouteConfigs** when injectNavigationOptions not specified
 
@@ -236,8 +238,9 @@ update the navigation state with the given name and options.
 ##### **options**
 > - `<Object> params` - optional, the params field of navigation prop state  
 >
-> - `<Object> channel` - optional, part of screenProps,can pass any objects, recommend functions for ineraction in navigation stack
-  
+> - `<Object> channel` - optional, will be integrated to  screenProps,can pass any objects from parent, recommend functions for interaction in navigation stack, but it is danger  during any pop operation.
+>
+> - `<String>` `routeKey` - optional
 ##### Return Value
 + `<Promise>` - resolve when successful for action
 ```
@@ -259,9 +262,10 @@ navigator.navigateTo("Profile",{}).then(()=>{
 <br>
 
 ### **reLaunch**
-take back to the first screen in the stack.
+wipes the whole navigation state .
+`options.channel` is invalid.
 ##### Parameters
-+ `<String> name` - optional, the next navigation route name that will replace first screen.
++ `<String> name` - required, route name that will replace first screen.
 + `<Object> options` - optional
 ##### Return Value
 + `<Promise>`
@@ -281,7 +285,7 @@ replace the route at the given name with another.
 ### **navigateBack**
 go back to previous screen and close current screen.
 ##### Parameters
-+ `void`
++ `<Object>` `options` - optional
 ##### Return Value
 + `<Promise>`
 
@@ -300,10 +304,10 @@ router.beforeEach((to, from, next) => {
 });
 ```
 ##### **callback**
-> + action - navigation action
-> + to - route state
-> + from - current route state
-> + next(routeName,params) - may change target route, if parameter `params` is null or empty,it will be ignored and unchanged.
+> + `<Object>` `action` - navigation action
+> + `<Object>` `to` - route state
+> + `<Object>` `from` - current route state
+> + `<Function>` `next(routeName,params)` - may change target route, if parameter `params` is null or empty,it will be ignored and unchanged.
 
 <br>
 
@@ -359,10 +363,10 @@ redirect to child route when `action.routeName` not equal to the state resolved.
 <br>
 
 ### **dispatchAction**
-update navigation current state with the given action.
+low-level method, update navigation current state with the given action.
 ##### Parameters
 + `<Object> action` - navigation action
-+ `<Object> options` - optional
++ `<Object> options` - optional, not sure fully effective.
 ##### Return Value
 + `<Promise>`
 
@@ -374,6 +378,14 @@ get params of current navigation state.
 + `void`
 ##### Return Value
 + `<Object | null>`
+
+<br>
+### **getActiveKey**
+get current route key.
+##### Parameters
++ `void`
+##### Return Value
++ `<String| null>`
 
 <br>
 
@@ -397,25 +409,45 @@ get params by route key.
 
 ### **openDrawer**
 ##### Parameters
-+ `void`
++ `<Object>` `options` - optional
 ##### Return Value
-+ `void`
++ `<Promise>`
 
 <br>
 
 ### **closeDrawer**
 ##### Parameters
-+ `void`
++ `<Object>` `options` - optional
 ##### Return Value
-+ `void`
++ `<Promise>`
 
 <br>
 
 ### **toggleDrawer**
 ##### Parameters
-+ `void`
++ `<Object>` `options` - optional
 ##### Return Value
-+ `void`
++ `<Promise>`
+
+<br>
+
+### **pop**
+takes you back to a previous screen in the stack.
+`options.params` is not supported.
+##### Parameters
++ `<Object> n` - the number of screens
++ `<Object | null> options` - optional
+##### Return Value
++ `<Promise>`
+
+<br>
+
+### **popToTop**
+takes you back to the first screen in the stack.
+##### Parameters
++ `<Object | null> options` - optional
+##### Return Value
++ `<Promise>`
 
 <br>
   

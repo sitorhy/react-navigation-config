@@ -27,6 +27,10 @@ export default function ()
                         break;
                     case ACTIONS.UNINSTALL_SCREEN_PROPS:
                     {
+                        if (!state.hasOwnProperty(action.key))
+                        {
+                            return state;
+                        }
                         if (action.key)
                         {
                             delete state[action.key];

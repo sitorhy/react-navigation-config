@@ -129,16 +129,23 @@ function through(store, screenProps, ScreenComponent) {
 
 var map = function map(route, navigator) {
   var {
-    name,
     component,
     app,
     injectNavigationOptions = false,
     navigationOptions,
     routerConfig,
     screenProps,
+    path,
     creator: customCreator = null
   } = route;
+  var {
+    name
+  } = route;
   var prop = ["children", "all", "oneOf", "drawer", "app"].find(j => !!route[j]);
+
+  if (app !== true && !name) {
+    name = "anonymous-" + (0, _common.randomString)(8) + "-" + Date.now();
+  }
 
   if (!name && app !== true) {
     throw new Error("navigation config missing name.");
@@ -169,6 +176,7 @@ var map = function map(route, navigator) {
       return {
         [name]: (0, _common.removeEmpty)({
           screen: inject(injectNavigationOptions, navigationOptions, screen),
+          path,
           navigationOptions: injectNavigationOptions ? null : navigationOptions
         })
       };
@@ -185,6 +193,7 @@ var map = function map(route, navigator) {
     return {
       [name]: (0, _common.removeEmpty)({
         screen: inject(injectNavigationOptions, navigationOptions, _screen),
+        path,
         navigationOptions: injectNavigationOptions ? {
           header: null
         } : navigationOptions

@@ -57,7 +57,6 @@ const routes = {
   },
   oneOf: [
     {
-      name: "main",
       screenProps: {
         stackCommonProps: {
           username: "anonymous"
@@ -65,7 +64,7 @@ const routes = {
       },
       children: [
         {
-          name: "tab",
+          name: "main",
           material: false,
           //    creator: createMaterialBottomTabNavigator,
           navigationOptions: {
@@ -153,7 +152,6 @@ const routes = {
           }
         },
         {
-          name: "drawerTest",
           drawer: [
             {
               name: "drawer",

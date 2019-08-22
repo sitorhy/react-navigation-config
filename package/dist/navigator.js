@@ -17,13 +17,20 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-function _default(AppContainer, navigator) {
+function _default(AppContainer, navigator, options) {
   var _temp;
 
   if (navigator === void 0) {
     navigator = _router.default;
   }
 
+  if (options === void 0) {
+    options = {};
+  }
+
+  var {
+    channelActions
+  } = options || {};
   var WrappedAppContainer = class extends AppContainer {
     constructor() {
       super(...arguments);
@@ -34,6 +41,7 @@ function _default(AppContainer, navigator) {
     }
 
   };
+  AppContainer.CHANNEL_ACTIONS = channelActions || _common.DEFAULT_CHANNEL_ACTIONS;
 
   if (navigator) {
     WrappedAppContainer.router = {
@@ -108,31 +116,26 @@ function _default(AppContainer, navigator) {
         routeName
       });
 
-      switch (type) {
-        case "Navigation/REPLACE":
-        case "Navigation/PUSH":
-        case "Navigation/NAVIGATE":
-          {
-            var {
-              stage
-            } = store.getState();
-            var {
-              screenProps
-            } = stage;
+      if (AppContainer.CHANNEL_ACTIONS.includes(type)) {
+        var {
+          stage
+        } = store.getState();
+        var {
+          screenProps
+        } = stage;
 
-            if (screenProps) {
-              store.dispatch({
-                type: _store.ACTIONS.INSTALL_SCREEN_PROPS,
-                key,
-                screenProps
-              });
-              store.dispatch({
-                type: _store.ACTIONS.DUMP_SCREEN_PROPS
-              });
-            }
-          }
+        if (screenProps) {
+          store.dispatch({
+            type: _store.ACTIONS.INSTALL_SCREEN_PROPS,
+            key,
+            screenProps
+          });
+        }
       }
 
+      store.dispatch({
+        type: _store.ACTIONS.DUMP_SCREEN_PROPS
+      });
       return state;
     };
   }

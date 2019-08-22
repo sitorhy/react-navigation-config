@@ -43,9 +43,13 @@ export default class extends React.Component {
     data: toDoList
   };
 
+  test = () => {
+    console.log(this);
+  };
+
   renderItem = ({ item }) => {
     return (
-      <TouchableOpacity>
+      <TouchableOpacity onPress={this.test}>
         <View key={item.key} style={styles.listItem}>
           <View style={styles.itemLeft}>
             <Image style={styles.iconTask} source={imgTask} />
@@ -74,6 +78,7 @@ export default class extends React.Component {
 
   componentDidMount() {
     console.log(navigator.getParams());
+    console.log(navigator.getChannel());
     console.log(navigator.getCurrentParams());
   }
 

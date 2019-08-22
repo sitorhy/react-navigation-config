@@ -7,7 +7,23 @@ export const DEFAULT_IGNORE_ACTIONS = [
     "Navigation/DRAWER_OPENED",
     "Navigation/CLOSE_DRAWER",
     "Navigation/DRAWER_CLOSED",
-    "Navigation/SET_PARAMS"
+    "Navigation/TOGGLE_DRAWER",
+    "Navigation/SET_PARAMS",
+    "Navigation/RESET",
+    "Navigation/POP",
+    "Navigation/POP_TO_TOP"
+];
+
+export const DEFAULT_CHANNEL_ACTIONS=[
+ "Navigation/REPLACE",
+ "Navigation/PUSH",
+ "Navigation/NAVIGATE",
+ "Navigation/POP",
+ "Navigation/POP_TO_TOP",
+ "Navigation/BACK",
+ "Navigation/OPEN_DRAWER",
+ "Navigation/CLOSE_DRAWER",
+ "Navigation/TOGGLE_DRAWER",
 ];
 
 export function removeEmpty(obj, options = {})
@@ -36,7 +52,21 @@ export function removeEmpty(obj, options = {})
     return accepts;
 }
 
-const uuid_chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
+const uuid_chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".split("");
+
+const random_chars = "ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678";
+
+export function randomString(len)
+{
+    len = len || 32;
+    let maxPos = random_chars.length;
+    let pwd = "";
+    for (let i = 0; i < len; i++)
+    {
+        pwd += random_chars.charAt(Math.floor(Math.random() * maxPos));
+    }
+    return pwd;
+}
 
 export function uuid(len, radix)
 {
@@ -55,8 +85,8 @@ export function uuid(len, radix)
         let r;
 
         // rfc4122 requires these characters
-        uuid[8] = uuid[13] = uuid[18] = uuid[23] = '-';
-        uuid[14] = '4';
+        uuid[8] = uuid[13] = uuid[18] = uuid[23] = "-";
+        uuid[14] = "4";
 
         // Fill in random data.  At i==19 set the high bits of clock sequence as
         // per rfc4122, sec. 4.1.5
@@ -70,7 +100,7 @@ export function uuid(len, radix)
         }
     }
 
-    return uuid.join('');
+    return uuid.join("");
 }
 
 function _get(nav, mergeParams, scopeParams)

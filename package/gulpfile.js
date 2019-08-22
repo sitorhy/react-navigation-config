@@ -30,6 +30,9 @@ gulp.task("default", async () =>
     const json = require("./package.json");
     delete json.devDependencies;
     delete json.scripts;
+    delete json.homepage;
+    delete json.bugs;
+    delete json.repository;
     if (!fs.existsSync("./dist"))
     {
         fs.mkdirSync("./dist");

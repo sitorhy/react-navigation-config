@@ -1,21 +1,13 @@
 {
   "name": "react-navigation-config",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "description": "static route configuration helpers for react-navigation 3.x.",
   "main": "index.js",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/sitorhy/react-navigation-config.git"
-  },
   "keywords": [
     "react-navigation",
     "react-native"
   ],
   "author": "sitorhy",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/sitorhy/react-navigation-config/issues"
-  },
-  "homepage": "https://github.com/sitorhy/react-navigation-config#readme",
   "dependencies": {}
 }

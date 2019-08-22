@@ -1,10 +1,12 @@
 import React, {Fragment} from "react";
 import defaultNavigator from "./router";
-import {getActiveRoute} from "./common";
+import {DEFAULT_CHANNEL_ACTIONS, getActiveRoute} from "./common";
 import {ACTIONS} from "./store";
 
-export default function (AppContainer, navigator = defaultNavigator)
+export default function (AppContainer, navigator = defaultNavigator, options = {})
 {
+    const {channelActions} = options || {};
+
     const WrappedAppContainer = (
         class extends AppContainer
         {
@@ -18,6 +20,8 @@ export default function (AppContainer, navigator = defaultNavigator)
             }
         }
     );
+
+    AppContainer.CHANNEL_ACTIONS = channelActions || DEFAULT_CHANNEL_ACTIONS;
 
     if (navigator)
     {
@@ -71,7 +75,7 @@ export default function (AppContainer, navigator = defaultNavigator)
                 {
                     navigator._bindReady();
                 }
-                break;
+                    break;
             }
             let state = WrappedAppContainer.router.getStateForAction(action, inputState);
 
@@ -99,27 +103,23 @@ export default function (AppContainer, navigator = defaultNavigator)
                 routeName
             });
 
-            switch (type)
+            if (AppContainer.CHANNEL_ACTIONS.includes(type))
             {
-                case "Navigation/REPLACE":
-                case "Navigation/PUSH":
-                case "Navigation/NAVIGATE":
+                const {stage} = store.getState();
+                const {screenProps} = stage;
+                if (screenProps)
                 {
-                    const {stage} = store.getState();
-                    const {screenProps} = stage;
-                    if(screenProps)
-                    {
-                        store.dispatch({
-                            type: ACTIONS.INSTALL_SCREEN_PROPS,
-                            key,
-                            screenProps
-                        });
-                        store.dispatch({
-                            type: ACTIONS.DUMP_SCREEN_PROPS
-                        });
-                    }
+                    store.dispatch({
+                        type: ACTIONS.INSTALL_SCREEN_PROPS,
+                        key,
+                        screenProps
+                    });
                 }
             }
+
+            store.dispatch({
+                type: ACTIONS.DUMP_SCREEN_PROPS
+            });
 
             return state;
         };

@@ -9,7 +9,7 @@ import {
 
 import defaultNavigator from "./router";
 import * as decorators from "./decorators";
-import {ObserveStore, removeEmpty} from "./common";
+import {ObserveStore, randomString, removeEmpty} from "./common";
 import {ACTIONS} from "./store";
 
 const creator = {
@@ -121,17 +121,24 @@ function through(store, screenProps, ScreenComponent)
 const map = function (route, navigator)
 {
     const {
-        name,
         component,
         app,
         injectNavigationOptions = false,
         navigationOptions,
         routerConfig,
         screenProps,
+        path,
         creator: customCreator = null
     } = route;
 
+    let {name} = route;
+
     const prop = ["children", "all", "oneOf", "drawer", "app"].find(j => !!route[j]);
+
+    if (app !== true && !name)
+    {
+        name = `anonymous-${randomString(8)}-${Date.now()}`;
+    }
 
     if (!name && app !== true)
     {
@@ -171,7 +178,8 @@ const map = function (route, navigator)
             return {
                 [name]: removeEmpty({
                     screen: inject(injectNavigationOptions, navigationOptions, screen),
-                    navigationOptions: injectNavigationOptions ? null : navigationOptions
+                    path,
+                    navigationOptions: injectNavigationOptions ? null : navigationOptions,
                 })
             };
         }
@@ -188,6 +196,7 @@ const map = function (route, navigator)
         return {
             [name]: removeEmpty({
                 screen: inject(injectNavigationOptions, navigationOptions, screen),
+                path,
                 navigationOptions: injectNavigationOptions ? {header: null} : navigationOptions
             })
         };

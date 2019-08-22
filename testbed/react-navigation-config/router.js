@@ -11,8 +11,6 @@ var _reactNavigation = require("react-navigation");
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
-function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
-
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -192,26 +190,44 @@ class Navigator {
     return null;
   }
 
+  getActiveKey() {
+    var {
+      navigation
+    } = this.getStore().getState();
+    var {
+      key
+    } = navigation;
+    return key;
+  }
+
+  setParams(routeKey, params) {
+    return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.NavigationActions.setParams({
+      params: params,
+      key: routeKey
+    })));
+  }
+
   reLaunch(name, options) {
     if (options === void 0) {
       options = {};
     }
 
-    return new Promise((resolve, reject) => {
-      this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.StackActions.popToTop())).then(obj => {
-        if (name) {
-          this.redirectTo(name, options).then(obj => {
-            resolve(obj);
-          }).catch(() => {
-            reject();
-          });
-        } else {
-          resolve(obj);
-        }
-      }).catch(() => {
-        reject();
-      });
-    });
+    var params = null,
+        channel = null;
+
+    if (options) {
+      params = options.params;
+      channel = options.channel;
+    }
+
+    return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.StackActions.reset({
+      index: 0,
+      actions: [_reactNavigation.NavigationActions.navigate(_extends({
+        routeName: name
+      }, (0, _common.removeEmpty)({
+        params
+      })))]
+    })), channel);
   }
 
   push(name, options) {
@@ -219,14 +235,19 @@ class Navigator {
       options = {};
     }
 
-    var {
-      params,
-      channel
-    } = options;
-    return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.StackActions.push({
-      routeName: name,
+    var params = null,
+        channel = null;
+
+    if (options) {
+      params = options.params;
+      channel = options.channel;
+    }
+
+    return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.StackActions.push(_extends({
+      routeName: name
+    }, (0, _common.removeEmpty)({
       params
-    })), channel);
+    })))), channel);
   }
 
   redirectTo(name, options) {
@@ -234,14 +255,19 @@ class Navigator {
       options = {};
     }
 
-    var {
-      params,
-      channel
-    } = options;
-    return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.StackActions.replace({
-      routeName: name,
-      params: params
-    })), channel);
+    var params = null,
+        channel = null;
+
+    if (options) {
+      params = options.params;
+      channel = options.channel;
+    }
+
+    return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.StackActions.replace(_extends({
+      routeName: name
+    }, (0, _common.removeEmpty)({
+      params
+    })))), channel);
   }
 
   navigateTo(name, options) {
@@ -249,45 +275,100 @@ class Navigator {
       options = {};
     }
 
-    var {
+    var params = null,
+        channel = null,
+        routeKey = null;
+
+    if (options) {
+      params = options.params;
+      channel = options.channel;
+      routeKey = options.routeKey;
+    }
+
+    return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.NavigationActions.navigate(_extends({
+      routeName: name
+    }, (0, _common.removeEmpty)({
       params,
-      channel
-    } = options;
-    return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.NavigationActions.navigate({
-      routeName: name,
-      params: params
-    })), channel);
+      key: routeKey
+    })))), channel);
   }
 
-  navigateBack() {
-    return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.NavigationActions.back({})));
+  navigateBack(options) {
+    var channel = null,
+        routeKey = null;
+
+    if (options) {
+      channel = options.channel;
+      routeKey = options.routeKey;
+    }
+
+    return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.NavigationActions.back((0, _common.removeEmpty)({
+      key: routeKey
+    }))), channel);
   }
 
   dispatchAction(action, options) {
-    if (options === void 0) {
-      options = {};
-    }
-
     if (action) {
-      var {
-        channel
-      } = options,
-          actionProps = _objectWithoutPropertiesLoose(options, ["channel"]);
+      var channel = null;
 
-      return this._asyncNavigate(() => this.navigator.dispatch(_extends({}, action, {}, actionProps), channel));
+      if (options) {
+        channel = options.channel;
+      }
+
+      return this._asyncNavigate(() => this.navigator.dispatch(action), channel);
     }
   }
 
-  toggleDrawer() {
-    return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.DrawerActions.toggleDrawer()));
+  popToTop(options) {
+    if (options === void 0) {
+      options = null;
+    }
+
+    return this.dispatchAction(_reactNavigation.StackActions.popToTop(), options);
   }
 
-  openDrawer() {
-    return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.DrawerActions.openDrawer()));
+  pop(n, options) {
+    if (n === void 0) {
+      n = 1;
+    }
+
+    if (options === void 0) {
+      options = null;
+    }
+
+    return this.dispatchAction(_reactNavigation.StackActions.pop({
+      n
+    }), options);
   }
 
-  closeDrawer() {
-    return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.DrawerActions.closeDrawer()));
+  toggleDrawer(options) {
+    var channel = null;
+
+    if (options) {
+      channel = options.channel;
+    }
+
+    return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.DrawerActions.toggleDrawer()), channel);
+  }
+
+  openDrawer(options) {
+    var channel = null;
+
+    if (options) {
+      channel = options.channel;
+    }
+
+    return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.DrawerActions.openDrawer()), channel);
+  }
+
+  closeDrawer(options) {
+    var channel = null;
+
+    if (options) {
+      channel = options.channel;
+    }
+
+    return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.DrawerActions.closeDrawer()), channel);
   }
 
   preventDefaultActionFix(disabled) {

@@ -24,7 +24,7 @@ export class Navigator
         {
             return null;
         }
-        
+
         let fixed = false;
         let nextAction = null;
         let customAction = null;
@@ -179,103 +179,170 @@ export class Navigator
         return null;
     }
 
+    getActiveKey()
+    {
+        const {navigation} = this.getStore().getState();
+        const {key} = navigation;
+        return key;
+    }
+
+    setParams(routeKey, params)
+    {
+        return this._asyncNavigate(() => this.navigator.dispatch(
+            NavigationActions.setParams({
+                params: params,
+                key: routeKey
+            })
+        ))
+    }
+
     reLaunch(name, options = {})
     {
-        return new Promise((resolve, reject) =>
+        let params = null, channel = null;
+        if (options)
         {
-            this._asyncNavigate(
-                () => this.navigator.dispatch(StackActions.popToTop())
-            ).then((obj) =>
-            {
-                if (name)
-                {
-                    this.redirectTo(name, options).then((obj) =>
-                    {
-                        resolve(obj);
-                    }).catch(() =>
-                    {
-                        reject();
-                    });
-                }
-                else
-                {
-                    resolve(obj);
-                }
-            }).catch(() =>
-            {
-                reject();
-            });
-        });
+            params = options.params;
+            channel = options.channel;
+        }
+        return this._asyncNavigate(() => this.navigator.dispatch(
+            StackActions.reset({
+                index: 0,
+                actions: [NavigationActions.navigate({
+                    routeName: name,
+                    ...removeEmpty({params})
+                })],
+            })
+        ), channel);
     }
 
     push(name, options = {})
     {
-        const {params, channel} = options;
+        let params = null, channel = null;
+        if (options)
+        {
+            params = options.params;
+            channel = options.channel;
+        }
         return this._asyncNavigate(() => this.navigator.dispatch(
             StackActions.push({
                 routeName: name,
-                params
+                ...removeEmpty({
+                    params
+                })
             })
         ), channel);
     }
 
     redirectTo(name, options = {})
     {
-        const {params, channel} = options;
+        let params = null, channel = null;
+        if (options)
+        {
+            params = options.params;
+            channel = options.channel;
+        }
         return this._asyncNavigate(() => this.navigator.dispatch(StackActions.replace({
             routeName: name,
-            params: params
+            ...removeEmpty({
+                params
+            })
         })), channel);
     }
 
     navigateTo(name, options = {})
     {
-        const {params, channel} = options;
+        let params = null, channel = null, routeKey = null;
+        if (options)
+        {
+            params = options.params;
+            channel = options.channel;
+            routeKey = options.routeKey;
+        }
         return this._asyncNavigate(() => this.navigator.dispatch(NavigationActions.navigate({
             routeName: name,
-            params: params
+            ...removeEmpty({
+                params,
+                key: routeKey
+            })
         })), channel);
     }
 
-    navigateBack()
+    navigateBack(options)
     {
+        let channel = null, routeKey = null;
+        if (options)
+        {
+            channel = options.channel;
+            routeKey = options.routeKey;
+        }
         return this._asyncNavigate(
-            () => this.navigator.dispatch(NavigationActions.back({}))
+            () => this.navigator.dispatch(NavigationActions.back(
+                removeEmpty({key: routeKey})
+            )),
+            channel
         );
     }
 
-    dispatchAction(action, options = {})
+    dispatchAction(action, options)
     {
         if (action)
         {
-            const {channel, ...actionProps} = options;
+            let channel = null;
+            if (options)
+            {
+                channel = options.channel;
+            }
             return this._asyncNavigate(
-                () => this.navigator.dispatch({
-                    ...action,
-                    ...actionProps
-                }, channel)
+                () => this.navigator.dispatch(action), channel
             );
         }
     }
 
-    toggleDrawer()
+    popToTop(options = null)
     {
+        return this.dispatchAction(StackActions.popToTop(), options);
+    }
+
+    pop(n = 1, options = null)
+    {
+        return this.dispatchAction(StackActions.pop({
+            n,
+        }), options);
+    }
+
+    toggleDrawer(options)
+    {
+        let channel = null;
+        if (options)
+        {
+            channel = options.channel;
+        }
         return this._asyncNavigate(
-            () => this.navigator.dispatch(DrawerActions.toggleDrawer())
+            () => this.navigator.dispatch(DrawerActions.toggleDrawer()), channel
         );
     }
 
-    openDrawer()
+    openDrawer(options)
     {
+        let channel = null;
+        if (options)
+        {
+            channel = options.channel;
+        }
         return this._asyncNavigate(
-            () => this.navigator.dispatch(DrawerActions.openDrawer())
+            () => this.navigator.dispatch(DrawerActions.openDrawer()), channel
         );
     }
 
-    closeDrawer()
+    closeDrawer(options)
     {
+        let channel = null;
+        if (options)
+        {
+            channel = options.channel;
+        }
         return this._asyncNavigate(
-            () => this.navigator.dispatch(DrawerActions.closeDrawer())
+            () => this.navigator.dispatch(DrawerActions.closeDrawer()), channel
         );
     }
 
