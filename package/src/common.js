@@ -228,11 +228,45 @@ export class ObserveStore
     }
 }
 
-export function getScreenPropsFormCollection(key, state)
+export function getScreenPropsFromChannelModule(key, state)
 {
     if (!state)
     {
         return null;
     }
     return state[key];
+}
+
+export function getChannelModule(state)
+{
+    return state.channels;
+}
+
+export function getKeyFromNavigationModule(state)
+{
+    if (!state)
+    {
+        return null;
+    }
+    return state.key;
+}
+
+export function getNavigationModule(state)
+{
+    return state.navigation;
+}
+
+
+export function getStageModule(state)
+{
+    return state.stage;
+}
+
+export function getChannelFromStageModule(state)
+{
+    if (!state)
+    {
+        return null;
+    }
+    return state.channel;
 }

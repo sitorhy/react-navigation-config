@@ -7,7 +7,12 @@ exports.uuid = uuid;
 exports.getNavState = getNavState;
 exports.getActiveRoute = getActiveRoute;
 exports.matchRoute = matchRoute;
-exports.getScreenPropsFormCollection = getScreenPropsFormCollection;
+exports.getScreenPropsFromChannelModule = getScreenPropsFromChannelModule;
+exports.getChannelModule = getChannelModule;
+exports.getKeyFromNavigationModule = getKeyFromNavigationModule;
+exports.getNavigationModule = getNavigationModule;
+exports.getStageModule = getStageModule;
+exports.getChannelFromStageModule = getChannelFromStageModule;
 exports.ObserveStore = exports.DEFAULT_CHANNEL_ACTIONS = exports.DEFAULT_IGNORE_ACTIONS = void 0;
 
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
@@ -209,10 +214,38 @@ class ObserveStore {
 
 exports.ObserveStore = ObserveStore;
 
-function getScreenPropsFormCollection(key, state) {
+function getScreenPropsFromChannelModule(key, state) {
   if (!state) {
     return null;
   }
 
   return state[key];
+}
+
+function getChannelModule(state) {
+  return state.channels;
+}
+
+function getKeyFromNavigationModule(state) {
+  if (!state) {
+    return null;
+  }
+
+  return state.key;
+}
+
+function getNavigationModule(state) {
+  return state.navigation;
+}
+
+function getStageModule(state) {
+  return state.stage;
+}
+
+function getChannelFromStageModule(state) {
+  if (!state) {
+    return null;
+  }
+
+  return state.channel;
 }

@@ -1,6 +1,6 @@
 import React, {Fragment} from "react";
 import defaultNavigator from "./router";
-import {DEFAULT_CHANNEL_ACTIONS, getActiveRoute} from "./common";
+import {DEFAULT_CHANNEL_ACTIONS, getActiveRoute, getChannelFromStageModule, getStageModule} from "./common";
 import {ACTIONS} from "./store";
 
 export default function (AppContainer, navigator = defaultNavigator, options = {})
@@ -105,20 +105,20 @@ export default function (AppContainer, navigator = defaultNavigator, options = {
 
             if (AppContainer.CHANNEL_ACTIONS.includes(type))
             {
-                const {stage} = store.getState();
-                const {screenProps} = stage;
-                if (screenProps)
+                const state = store.getState();
+                const channel = getChannelFromStageModule(getStageModule(state));
+                if (channel)
                 {
                     store.dispatch({
-                        type: ACTIONS.INSTALL_SCREEN_PROPS,
+                        type: ACTIONS.INSTALL_CHANNEL,
                         key,
-                        screenProps
+                        channel
                     });
                 }
             }
 
             store.dispatch({
-                type: ACTIONS.DUMP_SCREEN_PROPS
+                type: ACTIONS.DUMP_CHANNEL
             });
 
             return state;

@@ -11,10 +11,10 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
 var ACTIONS = {
   SET_ROUTE_KEY: "SET_ROUTE_KEY",
   SET_ROUTE_NAME: "SET_ROUTE_NAME",
-  PUT_SCREEN_PROPS: "PUT_SCREEN_PROPS",
-  DUMP_SCREEN_PROPS: "DUMP_SCREEN_PROPS",
-  INSTALL_SCREEN_PROPS: "INSTALL_SCREEN_PROPS",
-  UNINSTALL_SCREEN_PROPS: "UNINSTALL_SCREEN_PROPS"
+  DEPOSIT_CHANNEL: "DEPOSIT_CHANNEL",
+  DUMP_CHANNEL: "DUMP_CHANNEL",
+  INSTALL_CHANNEL: "INSTALL_CHANNEL",
+  UNINSTALL_CHANNEL: "UNINSTALL_CHANNEL"
 };
 exports.ACTIONS = ACTIONS;
 
@@ -26,7 +26,7 @@ function _default() {
       }
 
       switch (action.type) {
-        case ACTIONS.INSTALL_SCREEN_PROPS:
+        case ACTIONS.INSTALL_CHANNEL:
           {
             return _extends({}, state, {
               [action.key]: action.screenProps
@@ -34,7 +34,7 @@ function _default() {
           }
           break;
 
-        case ACTIONS.UNINSTALL_SCREEN_PROPS:
+        case ACTIONS.UNINSTALL_CHANNEL:
           {
             if (!state.hasOwnProperty(action.key)) {
               return state;
@@ -62,7 +62,7 @@ function _default() {
       }
 
       switch (action.type) {
-        case ACTIONS.PUT_SCREEN_PROPS:
+        case ACTIONS.DEPOSIT_CHANNEL:
           {
             return _extends({}, state, {
               screenProps: action.screenProps
@@ -70,8 +70,12 @@ function _default() {
           }
           break;
 
-        case ACTIONS.DUMP_SCREEN_PROPS:
+        case ACTIONS.DUMP_CHANNEL:
           {
+            if (state.screenProps === undefined) {
+              return state;
+            }
+
             return _extends({}, state, {
               screenProps: undefined
             });

@@ -126,7 +126,7 @@ function _default(AppContainer, navigator, options) {
 
         if (screenProps) {
           store.dispatch({
-            type: _store.ACTIONS.INSTALL_SCREEN_PROPS,
+            type: _store.ACTIONS.INSTALL_CHANNEL,
             key,
             screenProps
           });
@@ -134,7 +134,7 @@ function _default(AppContainer, navigator, options) {
       }
 
       store.dispatch({
-        type: _store.ACTIONS.DUMP_SCREEN_PROPS
+        type: _store.ACTIONS.DUMP_CHANNEL
       });
       return state;
     };

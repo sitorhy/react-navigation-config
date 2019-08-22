@@ -117,24 +117,21 @@ function _default(AppContainer, navigator, options) {
       });
 
       if (AppContainer.CHANNEL_ACTIONS.includes(type)) {
-        var {
-          stage
-        } = store.getState();
-        var {
-          screenProps
-        } = stage;
+        var _state = store.getState();
 
-        if (screenProps) {
+        var channel = (0, _common.getChannelFromStageModule)((0, _common.getStageModule)(_state));
+
+        if (channel) {
           store.dispatch({
-            type: _store.ACTIONS.INSTALL_SCREEN_PROPS,
+            type: _store.ACTIONS.INSTALL_CHANNEL,
             key,
-            screenProps
+            channel
           });
         }
       }
 
       store.dispatch({
-        type: _store.ACTIONS.DUMP_SCREEN_PROPS
+        type: _store.ACTIONS.DUMP_CHANNEL
       });
       return state;
     };

@@ -9,7 +9,7 @@ import {
 
 import defaultNavigator from "./router";
 import * as decorators from "./decorators";
-import {getScreenPropsFormCollection, ObserveStore, randomString, removeEmpty} from "./common";
+import {getChannelModule, getScreenPropsFromChannelModule, ObserveStore, randomString, removeEmpty} from "./common";
 import {ACTIONS} from "./store";
 
 const creator = {
@@ -53,12 +53,12 @@ function through(store, screenProps, ScreenComponent)
                 {
                     const {navigation} = this.props;
                     const {key} = navigation.state;
-                    const {screenProps: collection} = state;
-                    if (Object.hasOwnProperty.call(collection, key))
+                    const channelModule = getChannelModule(state);
+                    if (Object.hasOwnProperty.call(channelModule, key))
                     {
                         if (typeof call === "function")
                         {
-                            call(getScreenPropsFormCollection(key, collection));
+                            call(getScreenPropsFromChannelModule(key, channelModule));
                         }
                     }
                 }, (channel) =>
@@ -92,7 +92,7 @@ function through(store, screenProps, ScreenComponent)
                 const {key} = navigation.state;
                 this.observer.dispose();
                 store.dispatch({
-                    type: ACTIONS.UNINSTALL_SCREEN_PROPS,
+                    type: ACTIONS.UNINSTALL_CHANNEL,
                     key
                 });
                 this.observer = null;

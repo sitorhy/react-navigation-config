@@ -45,6 +45,7 @@ export default class extends React.Component {
 
   test = () => {
     console.log(this);
+    console.log(navigator.getStore().getState());
   };
 
   renderItem = ({ item }) => {

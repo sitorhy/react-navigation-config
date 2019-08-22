@@ -107,12 +107,11 @@ class Navigator {
     this.container = container;
   }
 
-  _asyncNavigate(doTask, screenProps) {
+  _asyncNavigate(doTask, channel) {
     return new Promise((resolve, reject) => {
       var id = (0, _common.uuid)();
       var observer = {
         id,
-        screenProps,
 
         callback(obj) {
           resolve(obj);
@@ -121,15 +120,15 @@ class Navigator {
       };
       var store = this.getStore();
       store.dispatch({
-        type: _store.ACTIONS.PUT_SCREEN_PROPS,
-        screenProps
+        type: _store.ACTIONS.DEPOSIT_CHANNEL,
+        channel
       });
 
       this.container._listen(observer);
 
       if (!doTask()) {
         store.dispatch({
-          type: _store.ACTIONS.DUMP_SCREEN_PROPS
+          type: _store.ACTIONS.DUMP_CHANNEL
         });
 
         this.container._remove(id);
@@ -151,12 +150,8 @@ class Navigator {
         return route.params;
       }
     } else {
-      var {
-        navigation
-      } = this.getStore().getState();
-      var {
-        key
-      } = navigation;
+      var navigation = (0, _common.getNavigationModule)(this.getStore().getState());
+      var key = (0, _common.getKeyFromNavigationModule)(navigation);
 
       if (key) {
         var _route = (0, _common.matchRoute)(this.navigator.state.nav, key);
@@ -171,20 +166,15 @@ class Navigator {
   }
 
   getChannel(routeKey) {
-    var {
-      navigation,
-      screenProps
-    } = this.getStore().getState();
+    var state = this.getStore().getState();
 
     if (routeKey) {
-      return (0, _common.getScreenPropsFormCollection)(routeKey, screenProps);
+      return (0, _common.getScreenPropsFromChannelModule)(routeKey, (0, _common.getChannelModule)(state));
     } else {
-      var {
-        key
-      } = navigation;
+      var key = (0, _common.getKeyFromNavigationModule)((0, _common.getNavigationModule)(state));
 
       if (key) {
-        return (0, _common.getScreenPropsFormCollection)(key, screenProps);
+        return (0, _common.getScreenPropsFromChannelModule)(key, (0, _common.getChannelModule)(state));
       }
     }
 
@@ -192,13 +182,8 @@ class Navigator {
   }
 
   getActiveKey() {
-    var {
-      navigation
-    } = this.getStore().getState();
-    var {
-      key
-    } = navigation;
-    return key;
+    var navigation = (0, _common.getNavigationModule)(this.getStore().getState());
+    return (0, _common.getKeyFromNavigationModule)(navigation);
   }
 
   setParams(routeKey, params) {

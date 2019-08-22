@@ -6,7 +6,10 @@ import {
     matchRoute,
     getNavState,
     DEFAULT_IGNORE_ACTIONS,
-    getScreenPropsFormCollection
+    getScreenPropsFromChannelModule,
+    getNavigationModule,
+    getKeyFromNavigationModule,
+    getChannelModule
 } from "./common";
 import {NavigationActions, StackActions, DrawerActions} from "react-navigation";
 
@@ -113,14 +116,13 @@ export class Navigator
         this.container = container;
     }
 
-    _asyncNavigate(doTask, screenProps)
+    _asyncNavigate(doTask, channel)
     {
         return new Promise((resolve, reject) =>
         {
             const id = uuid();
             const observer = {
                 id,
-                screenProps,
                 callback(obj)
                 {
                     resolve(obj);
@@ -128,14 +130,14 @@ export class Navigator
             };
             const store = this.getStore();
             store.dispatch({
-                type: ACTIONS.PUT_SCREEN_PROPS,
-                screenProps
+                type: ACTIONS.DEPOSIT_CHANNEL,
+                channel
             });
             this.container._listen(observer);
             if (!doTask())
             {
                 store.dispatch({
-                    type: ACTIONS.DUMP_SCREEN_PROPS
+                    type: ACTIONS.DUMP_CHANNEL
                 });
                 this.container._remove(id);
                 reject();
@@ -160,8 +162,8 @@ export class Navigator
         }
         else
         {
-            const {navigation} = this.getStore().getState();
-            const {key} = navigation;
+            const navigation = getNavigationModule(this.getStore().getState());
+            const key = getKeyFromNavigationModule(navigation);
             if (key)
             {
                 const route = matchRoute(this.navigator.state.nav, key);
@@ -176,17 +178,17 @@ export class Navigator
 
     getChannel(routeKey)
     {
-        const {navigation, screenProps} = this.getStore().getState();
+        const state = this.getStore().getState();
         if (routeKey)
         {
-            return getScreenPropsFormCollection(routeKey, screenProps);
+            return getScreenPropsFromChannelModule(routeKey, getChannelModule(state));
         }
         else
         {
-            const {key} = navigation;
+            const key = getKeyFromNavigationModule(getNavigationModule(state));
             if (key)
             {
-                return getScreenPropsFormCollection(key, screenProps);
+                return getScreenPropsFromChannelModule(key, getChannelModule(state));
             }
         }
         return null;
@@ -194,9 +196,8 @@ export class Navigator
 
     getActiveKey()
     {
-        const {navigation} = this.getStore().getState();
-        const {key} = navigation;
-        return key;
+        const navigation = getNavigationModule(this.getStore().getState());
+        return getKeyFromNavigationModule(navigation);
     }
 
     setParams(routeKey, params)

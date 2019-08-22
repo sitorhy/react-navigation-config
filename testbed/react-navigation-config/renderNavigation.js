@@ -58,13 +58,11 @@ function through(store, screenProps, ScreenComponent) {
           var {
             key
           } = navigation.state;
-          var {
-            screenProps: collection
-          } = state;
+          var channelModule = (0, _common.getChannelModule)(state);
 
-          if (Object.hasOwnProperty.call(collection, key)) {
+          if (Object.hasOwnProperty.call(channelModule, key)) {
             if (typeof call === "function") {
-              call((0, _common.getScreenPropsFormCollection)(key, collection));
+              call((0, _common.getScreenPropsFromChannelModule)(key, channelModule));
             }
           }
         }, channel => {
@@ -95,7 +93,7 @@ function through(store, screenProps, ScreenComponent) {
         } = navigation.state;
         this.observer.dispose();
         store.dispatch({
-          type: _store.ACTIONS.UNINSTALL_SCREEN_PROPS,
+          type: _store.ACTIONS.UNINSTALL_CHANNEL,
           key
         });
         this.observer = null;
