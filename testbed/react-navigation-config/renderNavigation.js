@@ -59,17 +59,17 @@ function through(store, screenProps, ScreenComponent) {
             key
           } = navigation.state;
           var {
-            screenProps
+            screenProps: collection
           } = state;
 
-          if (Object.hasOwnProperty.call(screenProps, key)) {
+          if (Object.hasOwnProperty.call(collection, key)) {
             if (typeof call === "function") {
-              call(screenProps[key]);
+              call((0, _common.getScreenPropsFormCollection)(key, collection));
             }
           }
-        }, screenProps => {
+        }, channel => {
           this.state = _extends({}, this.state, {
-            screenProps
+            channel
           });
         });
       }
@@ -77,9 +77,9 @@ function through(store, screenProps, ScreenComponent) {
 
     componentDidMount() {
       if (this.observer) {
-        this.observer.start(screenProps => {
+        this.observer.start(channel => {
           this.setState({
-            screenProps
+            channel
           });
         });
       }
@@ -104,7 +104,7 @@ function through(store, screenProps, ScreenComponent) {
 
     render() {
       var {
-        screenProps: installScreenProps
+        channel
       } = this.state;
 
       var _this$props = this.props,
@@ -114,7 +114,7 @@ function through(store, screenProps, ScreenComponent) {
           others = _objectWithoutPropertiesLoose(_this$props, ["screenProps"]);
 
       return _react.default.createElement(ScreenComponent, _extends({}, others, {
-        screenProps: _extends({}, dynamicScreenProps, {}, installScreenProps)
+        screenProps: _extends({}, screenProps, {}, dynamicScreenProps, {}, channel)
       }));
     }
 

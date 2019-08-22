@@ -72,6 +72,10 @@ function _default() {
 
         case ACTIONS.DUMP_SCREEN_PROPS:
           {
+            if (state.screenProps === undefined) {
+              return state;
+            }
+
             return _extends({}, state, {
               screenProps: undefined
             });

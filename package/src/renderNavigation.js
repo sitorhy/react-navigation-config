@@ -9,7 +9,7 @@ import {
 
 import defaultNavigator from "./router";
 import * as decorators from "./decorators";
-import {ObserveStore, randomString, removeEmpty} from "./common";
+import {getScreenPropsFormCollection, ObserveStore, randomString, removeEmpty} from "./common";
 import {ACTIONS} from "./store";
 
 const creator = {
@@ -53,19 +53,19 @@ function through(store, screenProps, ScreenComponent)
                 {
                     const {navigation} = this.props;
                     const {key} = navigation.state;
-                    const {screenProps} = state;
-                    if (Object.hasOwnProperty.call(screenProps, key))
+                    const {screenProps: collection} = state;
+                    if (Object.hasOwnProperty.call(collection, key))
                     {
                         if (typeof call === "function")
                         {
-                            call(screenProps[key]);
+                            call(getScreenPropsFormCollection(key, collection));
                         }
                     }
-                }, (screenProps) =>
+                }, (channel) =>
                 {
                     this.state = {
                         ...this.state,
-                        screenProps
+                        channel
                     };
                 });
             }
@@ -75,10 +75,10 @@ function through(store, screenProps, ScreenComponent)
         {
             if (this.observer)
             {
-                this.observer.start((screenProps) =>
+                this.observer.start((channel) =>
                 {
                     this.setState({
-                        screenProps
+                        channel
                     });
                 });
             }
@@ -101,11 +101,11 @@ function through(store, screenProps, ScreenComponent)
 
         render()
         {
-            const {screenProps: installScreenProps} = this.state;
+            const {channel} = this.state;
             const {screenProps: dynamicScreenProps, ...others} = this.props;
             return <ScreenComponent
                 {...others}
-                screenProps={{...dynamicScreenProps, ...installScreenProps}}
+                screenProps={{...screenProps, ...dynamicScreenProps, ...channel}}
             />
         }
     }

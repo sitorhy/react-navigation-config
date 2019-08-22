@@ -139,52 +139,53 @@ class Navigator {
     });
   }
 
-  getParams() {
+  getAllParams() {
     return (0, _common.getNavState)(this.navigator.state.nav);
   }
 
-  getRouteParams(key) {
-    if (key) {
-      var route = (0, _common.matchRoute)(this.navigator.state.nav, key);
+  getParams(routeKey) {
+    if (routeKey) {
+      var route = (0, _common.matchRoute)(this.navigator.state.nav, routeKey);
 
       if (route) {
         return route.params;
+      }
+    } else {
+      var {
+        navigation
+      } = this.getStore().getState();
+      var {
+        key
+      } = navigation;
+
+      if (key) {
+        var _route = (0, _common.matchRoute)(this.navigator.state.nav, key);
+
+        if (_route) {
+          return _route.params;
+        }
       }
     }
 
     return null;
   }
 
-  getCurrentParams() {
-    var {
-      navigation
-    } = this.getStore().getState();
-    var {
-      key
-    } = navigation;
-
-    if (key) {
-      var route = (0, _common.matchRoute)(this.navigator.state.nav, key);
-
-      if (route) {
-        return route.params;
-      }
-    }
-
-    return null;
-  }
-
-  getChannel() {
+  getChannel(routeKey) {
     var {
       navigation,
       screenProps
     } = this.getStore().getState();
-    var {
-      key
-    } = navigation;
 
-    if (key) {
-      return screenProps[key];
+    if (routeKey) {
+      return (0, _common.getScreenPropsFormCollection)(routeKey, screenProps);
+    } else {
+      var {
+        key
+      } = navigation;
+
+      if (key) {
+        return (0, _common.getScreenPropsFormCollection)(key, screenProps);
+      }
     }
 
     return null;

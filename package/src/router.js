@@ -1,5 +1,13 @@
 import createStore, {ACTIONS} from "./store";
-import {removeEmpty, uuid, getActiveRoute, matchRoute, getNavState, DEFAULT_IGNORE_ACTIONS} from "./common";
+import {
+    removeEmpty,
+    uuid,
+    getActiveRoute,
+    matchRoute,
+    getNavState,
+    DEFAULT_IGNORE_ACTIONS,
+    getScreenPropsFormCollection
+} from "./common";
 import {NavigationActions, StackActions, DrawerActions} from "react-navigation";
 
 export class Navigator
@@ -135,46 +143,51 @@ export class Navigator
         });
     }
 
-    getParams()
+    getAllParams()
     {
         return getNavState(this.navigator.state.nav);
     }
 
-    getRouteParams(key)
+    getParams(routeKey)
     {
-        if (key)
+        if (routeKey)
         {
-            const route = matchRoute(this.navigator.state.nav, key);
+            const route = matchRoute(this.navigator.state.nav, routeKey);
             if (route)
             {
                 return route.params;
             }
         }
-        return null;
-    }
-
-    getCurrentParams()
-    {
-        const {navigation} = this.getStore().getState();
-        const {key} = navigation;
-        if (key)
+        else
         {
-            const route = matchRoute(this.navigator.state.nav, key);
-            if (route)
+            const {navigation} = this.getStore().getState();
+            const {key} = navigation;
+            if (key)
             {
-                return route.params;
+                const route = matchRoute(this.navigator.state.nav, key);
+                if (route)
+                {
+                    return route.params;
+                }
             }
         }
         return null;
     }
 
-    getChannel()
+    getChannel(routeKey)
     {
         const {navigation, screenProps} = this.getStore().getState();
-        const {key} = navigation;
-        if (key)
+        if (routeKey)
         {
-            return screenProps[key];
+            return getScreenPropsFormCollection(routeKey, screenProps);
+        }
+        else
+        {
+            const {key} = navigation;
+            if (key)
+            {
+                return getScreenPropsFormCollection(key, screenProps);
+            }
         }
         return null;
     }

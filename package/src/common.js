@@ -14,16 +14,16 @@ export const DEFAULT_IGNORE_ACTIONS = [
     "Navigation/POP_TO_TOP"
 ];
 
-export const DEFAULT_CHANNEL_ACTIONS=[
- "Navigation/REPLACE",
- "Navigation/PUSH",
- "Navigation/NAVIGATE",
- "Navigation/POP",
- "Navigation/POP_TO_TOP",
- "Navigation/BACK",
- "Navigation/OPEN_DRAWER",
- "Navigation/CLOSE_DRAWER",
- "Navigation/TOGGLE_DRAWER",
+export const DEFAULT_CHANNEL_ACTIONS = [
+    "Navigation/REPLACE",
+    "Navigation/PUSH",
+    "Navigation/NAVIGATE",
+    "Navigation/POP",
+    "Navigation/POP_TO_TOP",
+    "Navigation/BACK",
+    "Navigation/OPEN_DRAWER",
+    "Navigation/CLOSE_DRAWER",
+    "Navigation/TOGGLE_DRAWER",
 ];
 
 export function removeEmpty(obj, options = {})
@@ -226,4 +226,13 @@ export class ObserveStore
         this.select = null;
         this.currentState = null;
     }
+}
+
+export function getScreenPropsFormCollection(key, state)
+{
+    if (!state)
+    {
+        return null;
+    }
+    return state[key];
 }

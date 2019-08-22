@@ -5,7 +5,7 @@ import navigator from "../react-navigation-config/router";
 export default class extends React.Component {
   componentDidMount() {
     console.log(this.props);
-    console.log(navigator.getCurrentParams());
+    console.log(navigator.getParams());
   }
 
   pushTest = () => {

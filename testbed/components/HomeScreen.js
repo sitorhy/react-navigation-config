@@ -79,7 +79,7 @@ export default class extends React.Component {
   componentDidMount() {
     console.log(navigator.getParams());
     console.log(navigator.getChannel());
-    console.log(navigator.getCurrentParams());
+    console.log(this.props);
   }
 
   render() {

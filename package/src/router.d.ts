@@ -3,9 +3,9 @@ declare namespace router {
 
     function getActiveKey(): string | null;
 
-    function getCurrentParams(): object | null;
+    function getAllParams(): object | null;
 
-    function getRouteParams(key: string): object | null;
+    function getParams(key: string | null | undefined): object | null;
 
     function getChannel(): object | null;
 

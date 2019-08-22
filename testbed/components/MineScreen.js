@@ -110,7 +110,7 @@ export default class extends React.Component {
           console.log(this.props);
           console.log(this.props.navigation);
           console.log(navigator.getActiveKey());
-          console.log(navigator.getCurrentParams());
+          console.log(navigator.getParams());
         }
         break;
       case "back":

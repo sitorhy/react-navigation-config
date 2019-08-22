@@ -61,6 +61,10 @@ export default function ()
                         break;
                     case ACTIONS.DUMP_SCREEN_PROPS:
                     {
+                        if (state.screenProps === undefined)
+                        {
+                            return state;
+                        }
                         return {
                             ...state,
                             screenProps: undefined
