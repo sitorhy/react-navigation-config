@@ -9,7 +9,7 @@ import {
     getScreenPropsFromChannelModule,
     getNavigationModule,
     getKeyFromNavigationModule,
-    getChannelModule
+    getChannelModule, mergeChannel
 } from "./common";
 import {NavigationActions, StackActions, DrawerActions} from "react-navigation";
 
@@ -192,6 +192,12 @@ export class Navigator
             }
         }
         return null;
+    }
+
+    getAllChannels()
+    {
+        const state = this.getStore().getState();
+        return mergeChannel(getChannelModule(state));
     }
 
     getActiveKey()

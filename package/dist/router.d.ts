@@ -9,6 +9,8 @@ declare namespace router {
 
     function getChannel(): object | null;
 
+    function getAllChannels(): Array<object>;
+
     function navigateTo(name: string, options: object): Promise<object>;
 
     function push(name: string, options: object): Promise<object>;

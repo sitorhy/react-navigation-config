@@ -20,7 +20,7 @@ exports.ACTIONS = ACTIONS;
 
 function _default() {
   return (0, _redux.createStore)((0, _redux.combineReducers)({
-    screenProps(state, action) {
+    channels(state, action) {
       if (state === void 0) {
         state = {};
       }
@@ -28,8 +28,16 @@ function _default() {
       switch (action.type) {
         case ACTIONS.INSTALL_CHANNEL:
           {
+            if (!action.key) {
+              throw new Error("missing route key of channel install action.");
+              return state;
+            }
+
             return _extends({}, state, {
-              [action.key]: action.screenProps
+              [action.key]: {
+                timestamp: Date.now(),
+                channel: action.channel
+              }
             });
           }
           break;
@@ -65,19 +73,19 @@ function _default() {
         case ACTIONS.DEPOSIT_CHANNEL:
           {
             return _extends({}, state, {
-              screenProps: action.screenProps
+              channel: action.channel
             });
           }
           break;
 
         case ACTIONS.DUMP_CHANNEL:
           {
-            if (state.screenProps === undefined) {
+            if (state.channel === undefined) {
               return state;
             }
 
             return _extends({}, state, {
-              screenProps: undefined
+              channel: undefined
             });
           }
           break;

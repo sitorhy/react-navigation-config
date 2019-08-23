@@ -19,9 +19,17 @@ export default function ()
                 {
                     case ACTIONS.INSTALL_CHANNEL:
                     {
+                        if (!action.key)
+                        {
+                            throw new Error("missing route key of channel install action.");
+                            return state;
+                        }
                         return {
                             ...state,
-                            [action.key]: action.channel
+                            [action.key]: {
+                                timestamp: Date.now(),
+                                channel: action.channel
+                            }
                         };
                     }
                         break;

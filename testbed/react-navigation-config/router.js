@@ -181,6 +181,11 @@ class Navigator {
     return null;
   }
 
+  getAllChannels() {
+    var state = this.getStore().getState();
+    return (0, _common.mergeChannel)((0, _common.getChannelModule)(state));
+  }
+
   getActiveKey() {
     var navigation = (0, _common.getNavigationModule)(this.getStore().getState());
     return (0, _common.getKeyFromNavigationModule)(navigation);

@@ -5,16 +5,22 @@ exports.removeEmpty = removeEmpty;
 exports.randomString = randomString;
 exports.uuid = uuid;
 exports.getNavState = getNavState;
+exports.mergeChannel = mergeChannel;
 exports.getActiveRoute = getActiveRoute;
 exports.matchRoute = matchRoute;
-exports.getScreenPropsFormCollection = getScreenPropsFormCollection;
+exports.getScreenPropsFromChannelModule = getScreenPropsFromChannelModule;
+exports.getChannelModule = getChannelModule;
+exports.getKeyFromNavigationModule = getKeyFromNavigationModule;
+exports.getNavigationModule = getNavigationModule;
+exports.getStageModule = getStageModule;
+exports.getChannelFromStageModule = getChannelFromStageModule;
 exports.ObserveStore = exports.DEFAULT_CHANNEL_ACTIONS = exports.DEFAULT_IGNORE_ACTIONS = void 0;
 
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
 var DEFAULT_IGNORE_ACTIONS = ["Navigation/COMPLETE_TRANSITION", "Navigation/BACK", "Navigation/OPEN_DRAWER", "Navigation/MARK_DRAWER_SETTLING", "Navigation/MARK_DRAWER_IDLE", "Navigation/DRAWER_OPENED", "Navigation/CLOSE_DRAWER", "Navigation/DRAWER_CLOSED", "Navigation/TOGGLE_DRAWER", "Navigation/SET_PARAMS", "Navigation/RESET", "Navigation/POP", "Navigation/POP_TO_TOP"];
 exports.DEFAULT_IGNORE_ACTIONS = DEFAULT_IGNORE_ACTIONS;
-var DEFAULT_CHANNEL_ACTIONS = ["Navigation/REPLACE", "Navigation/PUSH", "Navigation/NAVIGATE", "Navigation/POP", "Navigation/POP_TO_TOP", "Navigation/BACK", "Navigation/OPEN_DRAWER", "Navigation/CLOSE_DRAWER", "Navigation/TOGGLE_DRAWER"];
+var DEFAULT_CHANNEL_ACTIONS = ["Navigation/REPLACE", "Navigation/PUSH", "Navigation/NAVIGATE", "Navigation/POP", "Navigation/POP_TO_TOP", "Navigation/BACK", "Navigation/OPEN_DRAWER", "Navigation/CLOSE_DRAWER", "Navigation/TOGGLE_DRAWER", "Navigation/RESET"];
 exports.DEFAULT_CHANNEL_ACTIONS = DEFAULT_CHANNEL_ACTIONS;
 
 function removeEmpty(obj, options) {
@@ -85,7 +91,7 @@ function uuid(len, radix) {
   return uuid.join("");
 }
 
-function _get(nav, mergeParams, scopeParams) {
+function _getState(nav, mergeParams, scopeParams) {
   var {
     routes,
     index,
@@ -94,7 +100,7 @@ function _get(nav, mergeParams, scopeParams) {
   var state = null;
 
   if (Array.isArray(routes) && routes.length && index !== undefined && index !== null) {
-    state = _get(routes[index], mergeParams, scopeParams) || routes[index];
+    state = _getState(routes[index], mergeParams, scopeParams) || routes[index];
 
     if (state.params) {
       if (scopeParams[state.routeName]) {
@@ -119,9 +125,29 @@ function getNavState(nav) {
   var params = {};
   var scopeParams = {};
 
-  _get(nav, params, scopeParams);
+  _getState(nav, params, scopeParams);
 
   return [params, scopeParams];
+}
+
+function mergeChannel(channelModule) {
+  var channels = {};
+  var scopeChannels = {};
+  Object.keys(channelModule).map(key => {
+    var module = channelModule[key];
+    Object.assign(scopeChannels, {
+      [key]: module.channel
+    });
+    return module;
+  }).sort((i, j) => {
+    return i.timestamp - j.timestamp;
+  }).forEach(module => {
+    var {
+      channel
+    } = module;
+    Object.assign(channels, channel);
+  });
+  return [channels, scopeChannels];
 }
 
 function getActiveRoute(nav) {
@@ -171,20 +197,18 @@ function matchRoute(nav, key) {
 }
 
 class ObserveStore {
-  constructor(store, select, onCreate) {
-    this.select = select;
+  constructor(store, onCreate) {
     this.store = store;
-    this.currentState = select(store.getState());
 
     if (typeof onCreate === "function") {
-      onCreate(this.currentState);
+      this.currentState = onCreate(store.getState());
     }
   }
 
-  start(onChange) {
+  start(select, onChange) {
     this.unsubscribe = this.store.subscribe(() => {
       if (this.unsubscribe) {
-        this.select(this.store.getState(), nextState => {
+        select(this.store.getState(), nextState => {
           if (nextState !== this.currentState) {
             this.currentState = nextState;
             onChange(this.currentState);
@@ -201,7 +225,6 @@ class ObserveStore {
 
     this.store = null;
     this.unsubscribe = null;
-    this.select = null;
     this.currentState = null;
   }
 
@@ -209,10 +232,39 @@ class ObserveStore {
 
 exports.ObserveStore = ObserveStore;
 
-function getScreenPropsFormCollection(key, state) {
+function getScreenPropsFromChannelModule(key, state) {
   if (!state) {
     return null;
   }
 
-  return state[key];
+  var module = state[key];
+  return module ? module.channel : null;
+}
+
+function getChannelModule(state) {
+  return state.channels;
+}
+
+function getKeyFromNavigationModule(state) {
+  if (!state) {
+    return null;
+  }
+
+  return state.key;
+}
+
+function getNavigationModule(state) {
+  return state.navigation;
+}
+
+function getStageModule(state) {
+  return state.stage;
+}
+
+function getChannelFromStageModule(state) {
+  if (!state) {
+    return null;
+  }
+
+  return state.channel;
 }

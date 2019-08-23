@@ -6,6 +6,7 @@ export default class extends React.Component {
   componentDidMount() {
     console.log(this.props);
     console.log(navigator.getChannel());
+    console.log(navigator.getAllChannels());
     console.log(navigator.getParams());
   }
 

@@ -223,10 +223,10 @@ export default class extends React.Component {
 ### **Default Navigator**
 -----------------------------
 ```
-import router from "react-navigation-config/router"
-```
-```
 export default wrappedNavigatorRef(renderNavigation(routes));
+```
+```
+import router from "react-navigation-config/router"
 ```
 
 ### **Navigator API**
@@ -239,7 +239,7 @@ update the navigation state with the given name and options.
 ##### **options**
 > - `<Object> params` - optional, the params field of navigation prop state  
 >
-> - `<Object> channel` - optional, will be integrated to  screenProps, can pass any objects, including functions that interact between screens, but it is very danger for some pop actions.
+> - `<Object> channel` - optional, will be integrated to  screenProps, can pass any objects, including functions that interact between screens, but use for pop action may be very dangerous.
 >
 > - `<String>` `routeKey` - optional
 ##### Return Value
@@ -495,6 +495,19 @@ class ScreenB extend React.Component
 ```
 ##### Return Value
 + `<Object | null>`
+
+<br>
+
+### **getAllChannels**
+merge channels of state, fields of channels with the same name will be overridden.
+##### Parameters
++ `<void>`
+##### Return Value
++ `<Array<object>>`
+```
+const [stackChannels] = navigator.getAllChannels();
+const { ... } = stackChannels;
+```
 
 <br>
 

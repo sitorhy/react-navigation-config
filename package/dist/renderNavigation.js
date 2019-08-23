@@ -47,37 +47,39 @@ function inject(injectNavigationOptions, navigationOptions, component) {
 
 function through(store, screenProps, ScreenComponent) {
   var ThroughComponent = class extends _react.default.Component {
-    constructor() {
-      super(...arguments);
+    constructor(props) {
+      super(props);
+      var key = props.navigation.state.key;
 
       if (store) {
-        this.observer = new _common.ObserveStore(store, (state, call) => {
-          var {
-            navigation
-          } = this.props;
-          var {
-            key
-          } = navigation.state;
-          var {
-            screenProps: collection
-          } = state;
-
-          if (Object.hasOwnProperty.call(collection, key)) {
-            if (typeof call === "function") {
-              call((0, _common.getScreenPropsFormCollection)(key, collection));
-            }
-          }
-        }, channel => {
+        this.observer = new _common.ObserveStore(store, state => {
+          var channelModule = (0, _common.getChannelModule)(state);
+          var channel = (0, _common.getScreenPropsFromChannelModule)(key, channelModule);
           this.state = _extends({}, this.state, {
             channel
           });
+          return channel;
         });
       }
     }
 
     componentDidMount() {
       if (this.observer) {
-        this.observer.start(channel => {
+        this.observer.start((state, call) => {
+          var {
+            navigation
+          } = this.props;
+          var {
+            key
+          } = navigation.state;
+          var channelModule = (0, _common.getChannelModule)(state);
+
+          if (Object.hasOwnProperty.call(channelModule, key)) {
+            if (typeof call === "function") {
+              call((0, _common.getScreenPropsFromChannelModule)(key, channelModule));
+            }
+          }
+        }, channel => {
           this.setState({
             channel
           });
@@ -95,7 +97,7 @@ function through(store, screenProps, ScreenComponent) {
         } = navigation.state;
         this.observer.dispose();
         store.dispatch({
-          type: _store.ACTIONS.UNINSTALL_SCREEN_PROPS,
+          type: _store.ACTIONS.UNINSTALL_CHANNEL,
           key
         });
         this.observer = null;
