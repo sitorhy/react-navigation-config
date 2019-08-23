@@ -526,6 +526,19 @@ const { ... } = stackChannels;
 
 <br>
 
+### **getAllChannels**
+merge channels of state, fields of channels with the same name will be overridden.
+##### Parameters
++ `<void>`
+##### Return Value
++ `<Array<object>>`
+```
+const [stackChannels] = navigator.getAllChannels();
+const { ... } = stackChannels;
+```
+
+<br>
+
 # Decorator
 ### **navigationOptions(options)**
 set static navigationOptions variable in subclass.
