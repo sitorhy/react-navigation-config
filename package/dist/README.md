@@ -497,6 +497,7 @@ class ScreenB extend React.Component
 + `<Object | null>`
 
 <br>
+
 ### **updateChannel**
 ##### Parameters
 + `<String | null > key` - required
@@ -505,6 +506,7 @@ class ScreenB extend React.Component
 + `<Boolean>`
 
 <br>
+
 ### **removeChannel**
 ##### Parameters
 + `<String | null > key` - required
@@ -521,19 +523,6 @@ merge channels of state, fields of channels with the same name will be overridde
 + `<Array<object>>`
 ```
 const [stackChannels] = navigator.mergeChannels();
-const { ... } = stackChannels;
-```
-
-<br>
-
-### **getAllChannels**
-merge channels of state, fields of channels with the same name will be overridden.
-##### Parameters
-+ `<void>`
-##### Return Value
-+ `<Array<object>>`
-```
-const [stackChannels] = navigator.getAllChannels();
 const { ... } = stackChannels;
 ```
 
