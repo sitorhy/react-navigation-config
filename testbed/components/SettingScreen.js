@@ -6,6 +6,7 @@ export default class extends React.Component {
   componentDidMount() {
     console.log(this.props);
     console.log(navigator.getChannel());
+    console.log(navigator.mergeChannels());
     console.log(navigator.getParams());
   }
 
@@ -36,15 +37,34 @@ export default class extends React.Component {
     navigator.popToTop();
   };
 
+  updateChannel = () => {
+    navigator.updateChannel(null,{
+      text: "中文Abc123"
+    });
+  };
+
+  removeChannel = () => {
+    navigator.removeChannel();
+  };
+
+  getParams = () => {
+    console.log(this.props);
+    console.log(navigator.mergeChannels());
+    console.log(navigator.getChannel());
+  };
+
   render() {
     return (
       <View>
         <Text>Setting</Text>
+        <Button title="Get Params" onPress={this.getParams} />
         <Button title="Push Test" onPress={this.pushTest} />
         <Button title="Change Title" onPress={this.changeTitle} />
         <Button title="ReLaunch Test" onPress={this.reLaunch} />
         <Button title="Pop Test" onPress={this.pop} />
         <Button title="PopToTop Test" onPress={this.toTop} />
+        <Button title="Update Channel Test" onPress={this.updateChannel} />
+        <Button title="Remove Channel Test" onPress={this.removeChannel} />
       </View>
     );
   }

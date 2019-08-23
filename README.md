@@ -102,15 +102,15 @@ AppRegistry.registerComponent(name, () => App);
 
 + `<String>` `name` - route name, optional, use random name if not specified, for use **this.props.navigation.navigate(routeName)**, is not necessary when **app** is `"true"`
 
-= `<String>` `path` - optional, deep linking
++ `<String>` `path` - optional, deep linking
 
-+ `<Object>` `routerConfig` - read document related to **StackNavigatorConfig**,**SwitchNavigatorConfig** ,**StackNavigatorConfig** ...
++ `<Object>` `routerConfig` - read document related to **StackNavigatorConfig**,**SwitchNavigatorConfig**...
 
 + `<Object>` `navigationOptions` - set parameter **navigationOptions** in **RouteConfigs** when injectNavigationOptions not specified
 
 + `<Object>` `screenProps` - route meta fields,will be integrated into **screenProps**
 
-+ `<Function>` `creator` - other container creator,use default setting if null
++ `<Function>` `creator` - other container creator, use default setting if null.
 ```
 import { createMaterialBottomTabNavigator } from "react-navigation-material-bottom-tabs";
 
@@ -223,10 +223,10 @@ export default class extends React.Component {
 ### **Default Navigator**
 -----------------------------
 ```
-import router from "react-navigation-config/router"
-```
-```
 export default wrappedNavigatorRef(renderNavigation(routes));
+```
+```
+import router from "react-navigation-config/router"
 ```
 
 ### **Navigator API**
@@ -239,7 +239,7 @@ update the navigation state with the given name and options.
 ##### **options**
 > - `<Object> params` - optional, the params field of navigation prop state  
 >
-> - `<Object> channel` - optional, will be integrated to  screenProps, can pass any objects, including functions that interact between screens, but it is very danger for some pop actions.
+> - `<Object> channel` - optional, will be integrated to  screenProps, can pass any objects, including functions that interact between screens, but use for pop action may be very dangerous.
 >
 > - `<String>` `routeKey` - optional
 ##### Return Value
@@ -363,8 +363,8 @@ low-level method, update navigation current state with the given action.
 
 <br>
 
-### **getCurrentParams**
-get params of current navigation state.
+### **getParams**
++ `<String> key` - optional , get params of current route if not specified
 ##### Parameters
 + `void`
 ##### Return Value
@@ -390,7 +390,7 @@ get route params by key.
 
 <br>
 
-### **getAllParams**
+### **mergeParams**
 get all params of the stack.
 ##### Parameters
 + `<void> key`
@@ -405,7 +405,7 @@ get route params by key.
 + `<String> key` - required
 + `<String> params` - required
 ##### Return Value
-+ `<Object | null>`
++ `<Promise>`
 
 <br>
 
@@ -495,6 +495,34 @@ class ScreenB extend React.Component
 ```
 ##### Return Value
 + `<Object | null>`
+
+<br>
+### **updateChannel**
+##### Parameters
++ `<String | null > key` - required
++ `<Object> channel`  - required
+##### Return Value
++ `<Boolean>`
+
+<br>
+### **removeChannel**
+##### Parameters
++ `<String | null > key` - required
+##### Return Value
++ `<void>`
+
+<br>
+
+### **mergeChannels**
+merge channels of state, fields of channels with the same name will be overridden.
+##### Parameters
++ `<void>`
+##### Return Value
++ `<Array<object>>`
+```
+const [stackChannels] = navigator.mergeChannels();
+const { ... } = stackChannels;
+```
 
 <br>
 

@@ -102,15 +102,15 @@ AppRegistry.registerComponent(name, () => App);
 
 + `<String>` `name` - route name, optional, use random name if not specified, for use **this.props.navigation.navigate(routeName)**, is not necessary when **app** is `"true"`
 
-= `<String>` `path` - optional, deep linking
++ `<String>` `path` - optional, deep linking
 
-+ `<Object>` `routerConfig` - read document related to **StackNavigatorConfig**,**SwitchNavigatorConfig** ,**StackNavigatorConfig** ...
++ `<Object>` `routerConfig` - read document related to **StackNavigatorConfig**,**SwitchNavigatorConfig**...
 
 + `<Object>` `navigationOptions` - set parameter **navigationOptions** in **RouteConfigs** when injectNavigationOptions not specified
 
 + `<Object>` `screenProps` - route meta fields,will be integrated into **screenProps**
 
-+ `<Function>` `creator` - other container creator,use default setting if null
++ `<Function>` `creator` - other container creator, use default setting if null.
 ```
 import { createMaterialBottomTabNavigator } from "react-navigation-material-bottom-tabs";
 
@@ -133,8 +133,9 @@ import { createMaterialBottomTabNavigator } from "react-navigation-material-bott
 
 only one of following options can be choose:
 + `Array<Route>` `children` - create as **StackNavigator**
-+ `Array<Route>` `all` - create **BottomTabNavigator** default
++ `Array<Route>` `all` - create **BottomTabNavigator**
 + `Array<Route>` `oneOf` - create as **SwitchNavigator**
++ `Array<Route>` `drawer` - create as **DrawerNavigator**
 
 <br>
 
@@ -222,10 +223,10 @@ export default class extends React.Component {
 ### **Default Navigator**
 -----------------------------
 ```
-import router from "react-navigation-config/router"
-```
-```
 export default wrappedNavigatorRef(renderNavigation(routes));
+```
+```
+import router from "react-navigation-config/router"
 ```
 
 ### **Navigator API**
@@ -238,7 +239,7 @@ update the navigation state with the given name and options.
 ##### **options**
 > - `<Object> params` - optional, the params field of navigation prop state  
 >
-> - `<Object> channel` - optional, will be integrated to  screenProps,can pass any objects from parent, recommend functions for interaction in navigation stack, but it is danger  during any pop operation.
+> - `<Object> channel` - optional, will be integrated to  screenProps, can pass any objects, including functions that interact between screens, but use for pop action may be very dangerous.
 >
 > - `<String>` `routeKey` - optional
 ##### Return Value
@@ -262,8 +263,7 @@ navigator.navigateTo("Profile",{}).then(()=>{
 <br>
 
 ### **reLaunch**
-wipes the whole navigation state .
-`options.channel` is invalid.
+wipes the whole navigation state.
 ##### Parameters
 + `<String> name` - required, route name that will replace first screen.
 + `<Object> options` - optional
@@ -277,15 +277,6 @@ replace the route at the given name with another.
 ##### Parameters
 + `<String> name` - required
 + `<Object> options` - optional
-##### Return Value
-+ `<Promise>`
-
-<br>
-
-### **navigateBack**
-go back to previous screen and close current screen.
-##### Parameters
-+ `<Object>` `options` - optional
 ##### Return Value
 + `<Promise>`
 
@@ -366,14 +357,14 @@ redirect to child route when `action.routeName` not equal to the state resolved.
 low-level method, update navigation current state with the given action.
 ##### Parameters
 + `<Object> action` - navigation action
-+ `<Object> options` - optional, not sure fully effective.
++ `<Object> options` - optional, not sure all fields effective.
 ##### Return Value
 + `<Promise>`
 
 <br>
 
-### **getCurrentParams**
-get params of current navigation state.
+### **getParams**
++ `<String> key` - optional , get params of current route if not specified
 ##### Parameters
 + `void`
 ##### Return Value
@@ -391,20 +382,30 @@ get current route key.
 <br>
 
 ### **getParams**
-get all params from the stack.
+get route params by key.
 ##### Parameters
-+ `void`
++ `<String> key` - optional, return current route params if not specified
 ##### Return Value
 + `<Object | null>`
 
 <br>
 
-### **getRouteParams**
-get params by route key.
+### **mergeParams**
+get all params of the stack.
 ##### Parameters
-+ `<String> key` - required
++ `<void> key`
 ##### Return Value
 + `<Object | null>`
+
+<br>
+
+### **setParams**
+get route params by key.
+##### Parameters
++ `<String> key` - required
++ `<String> params` - required
+##### Return Value
++ `<Promise>`
 
 <br>
 
@@ -434,7 +435,7 @@ get params by route key.
 
 ### **pop**
 takes you back to a previous screen in the stack.
-`options.params` is not supported.
+`options.params` is not supported in any go back action.
 ##### Parameters
 + `<Object> n` - the number of screens
 + `<Object | null> options` - optional
@@ -451,10 +452,19 @@ takes you back to the first screen in the stack.
 + `<Promise>`
 
 <br>
+
+### **navigateBack**
+go back to previous screen and close current screen.
+##### Parameters
++ `<Object>` `options` - optional
+##### Return Value
++ `<Promise>`
+
+<br>
   
 ### **getChannel**
 ##### Parameters
-+  `void`
++  `<String> key` - optional
 ```
 class ScreenA extends React.Component
 {
@@ -485,6 +495,34 @@ class ScreenB extend React.Component
 ```
 ##### Return Value
 + `<Object | null>`
+
+<br>
+### **updateChannel**
+##### Parameters
++ `<String | null > key` - required
++ `<Object> channel`  - required
+##### Return Value
++ `<Boolean>`
+
+<br>
+### **removeChannel**
+##### Parameters
++ `<String | null > key` - required
+##### Return Value
++ `<void>`
+
+<br>
+
+### **mergeChannels**
+merge channels of state, fields of channels with the same name will be overridden.
+##### Parameters
++ `<void>`
+##### Return Value
++ `<Array<object>>`
+```
+const [stackChannels] = navigator.mergeChannels();
+const { ... } = stackChannels;
+```
 
 <br>
 

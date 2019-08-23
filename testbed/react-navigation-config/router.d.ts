@@ -3,11 +3,17 @@ declare namespace router {
 
     function getActiveKey(): string | null;
 
-    function getAllParams(): object | null;
+    function mergeParams(): object | null;
 
     function getParams(key: string | null | undefined): object | null;
 
     function getChannel(): object | null;
+
+    function updateChannel(key: string, channel: object): boolean;
+
+    function mergeChannels(): Array<object>;
+
+    function removeChannel(key: string): void;
 
     function navigateTo(name: string, options: object): Promise<object>;
 

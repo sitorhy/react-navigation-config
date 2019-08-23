@@ -1,4 +1,4 @@
-import createStore, {ACTIONS} from "./store";
+import createStore from "./store";
 import {
     removeEmpty,
     uuid,
@@ -9,9 +9,10 @@ import {
     getScreenPropsFromChannelModule,
     getNavigationModule,
     getKeyFromNavigationModule,
-    getChannelModule
+    getChannelModule, mergeChannel
 } from "./common";
 import {NavigationActions, StackActions, DrawerActions} from "react-navigation";
+import {depositChannel, dumpChannel, installChannel, uninstallChannel} from "./actions";
 
 export class Navigator
 {
@@ -129,69 +130,68 @@ export class Navigator
                 }
             };
             const store = this.getStore();
-            store.dispatch({
-                type: ACTIONS.DEPOSIT_CHANNEL,
-                channel
-            });
+            store.dispatch(depositChannel(channel));
             this.container._listen(observer);
             if (!doTask())
             {
-                store.dispatch({
-                    type: ACTIONS.DUMP_CHANNEL
-                });
+                store.dispatch(dumpChannel());
                 this.container._remove(id);
                 reject();
             }
         });
     }
 
-    getAllParams()
+    mergeParams()
     {
         return getNavState(this.navigator.state.nav);
     }
 
     getParams(routeKey)
     {
-        if (routeKey)
+        const key = routeKey || this.getActiveKey();
+        if (key)
         {
-            const route = matchRoute(this.navigator.state.nav, routeKey);
+            const route = matchRoute(this.navigator.state.nav, key);
             if (route)
             {
                 return route.params;
             }
         }
-        else
-        {
-            const navigation = getNavigationModule(this.getStore().getState());
-            const key = getKeyFromNavigationModule(navigation);
-            if (key)
-            {
-                const route = matchRoute(this.navigator.state.nav, key);
-                if (route)
-                {
-                    return route.params;
-                }
-            }
-        }
         return null;
+    }
+
+    updateChannel(routeKey, channel)
+    {
+        let key = routeKey || this.getActiveKey();
+        if (key)
+        {
+            this.getStore().dispatch(installChannel(key, channel));
+            return true;
+        }
+        return false;
     }
 
     getChannel(routeKey)
     {
         const state = this.getStore().getState();
-        if (routeKey)
+        const key = routeKey || this.getActiveKey();
+        if (key)
         {
-            return getScreenPropsFromChannelModule(routeKey, getChannelModule(state));
-        }
-        else
-        {
-            const key = getKeyFromNavigationModule(getNavigationModule(state));
-            if (key)
-            {
-                return getScreenPropsFromChannelModule(key, getChannelModule(state));
-            }
+            return getScreenPropsFromChannelModule(key, getChannelModule(state));
         }
         return null;
+    }
+
+    mergeChannels()
+    {
+        const state = this.getStore().getState();
+        return mergeChannel(getChannelModule(state));
+    }
+
+    removeChannel(routeKey)
+    {
+        const key = routeKey || this.getActiveKey();
+        this.getStore().dispatch(uninstallChannel(key));
     }
 
     getActiveKey()

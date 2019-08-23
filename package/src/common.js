@@ -142,6 +142,28 @@ export function getNavState(nav)
     return [params, scopeParams];
 }
 
+export function mergeChannel(channelModule)
+{
+    const channels = {};
+    const scopeChannels = {};
+    Object.keys(channelModule).map(key =>
+    {
+        const module = channelModule[key];
+        Object.assign(scopeChannels, {
+            [key]: module.channel
+        });
+        return module;
+    }).sort((i, j) =>
+    {
+        return i.timestamp - j.timestamp;
+    }).forEach((module) =>
+    {
+        const {channel} = module;
+        Object.assign(channels, channel);
+    });
+    return [channels, scopeChannels];
+}
+
 export function getActiveRoute(nav)
 {
     const {routes, index} = nav;
@@ -232,7 +254,8 @@ export function getScreenPropsFromChannelModule(key, state)
     {
         return null;
     }
-    return state[key];
+    const module = state[key];
+    return module ? module.channel : undefined;
 }
 
 export function getChannelModule(state)

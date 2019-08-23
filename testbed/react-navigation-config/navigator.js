@@ -9,7 +9,7 @@ var _router = _interopRequireDefault(require("./router"));
 
 var _common = require("./common");
 
-var _store = require("./store");
+var _actions = require("./actions");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -105,14 +105,8 @@ function _default(AppContainer, navigator, options) {
         routeName
       } = activeRoute;
       var store = navigator.getStore();
-      store.dispatch({
-        type: _store.ACTIONS.SET_ROUTE_KEY,
-        key
-      });
-      store.dispatch({
-        type: _store.ACTIONS.SET_ROUTE_NAME,
-        routeName
-      });
+      store.dispatch((0, _actions.setNavigationRouteKey)(key));
+      store.dispatch((0, _actions.setNavigationRouteName)(routeName));
 
       if (AppContainer.CHANNEL_ACTIONS.includes(type)) {
         var _state = store.getState();
@@ -120,17 +114,11 @@ function _default(AppContainer, navigator, options) {
         var channel = (0, _common.getChannelFromStageModule)((0, _common.getStageModule)(_state));
 
         if (channel) {
-          store.dispatch({
-            type: _store.ACTIONS.INSTALL_CHANNEL,
-            key,
-            channel
-          });
+          store.dispatch((0, _actions.installChannel)(key, channel));
         }
       }
 
-      store.dispatch({
-        type: _store.ACTIONS.DUMP_CHANNEL
-      });
+      store.dispatch((0, _actions.dumpChannel)());
       return state;
     };
   }

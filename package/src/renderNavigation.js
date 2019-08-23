@@ -10,7 +10,7 @@ import {
 import defaultNavigator from "./router";
 import * as decorators from "./decorators";
 import {getChannelModule, getScreenPropsFromChannelModule, ObserveStore, randomString, removeEmpty} from "./common";
-import {ACTIONS} from "./store";
+import {uninstallChannel} from "./actions";
 
 const creator = {
     children: createStackNavigator,
@@ -72,12 +72,9 @@ function through(store, screenProps, ScreenComponent)
                     const {navigation} = this.props;
                     const {key} = navigation.state;
                     const channelModule = getChannelModule(state);
-                    if (Object.hasOwnProperty.call(channelModule, key))
+                    if (!(!Object.hasOwnProperty.call(channelModule, key) && this.state.channel === undefined) && typeof call === "function")
                     {
-                        if (typeof call === "function")
-                        {
-                            call(getScreenPropsFromChannelModule(key, channelModule));
-                        }
+                        call(getScreenPropsFromChannelModule(key, channelModule));
                     }
                 }, (channel) =>
                 {
@@ -95,10 +92,7 @@ function through(store, screenProps, ScreenComponent)
                 const {navigation} = this.props;
                 const {key} = navigation.state;
                 this.observer.dispose();
-                store.dispatch({
-                    type: ACTIONS.UNINSTALL_CHANNEL,
-                    key
-                });
+                store.dispatch(uninstallChannel(key));
                 this.observer = null;
             }
         }

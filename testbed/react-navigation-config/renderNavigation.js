@@ -13,7 +13,7 @@ var decorators = _interopRequireWildcard(require("./decorators"));
 
 var _common = require("./common");
 
-var _store = require("./store");
+var _actions = require("./actions");
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
@@ -74,10 +74,8 @@ function through(store, screenProps, ScreenComponent) {
           } = navigation.state;
           var channelModule = (0, _common.getChannelModule)(state);
 
-          if (Object.hasOwnProperty.call(channelModule, key)) {
-            if (typeof call === "function") {
-              call((0, _common.getScreenPropsFromChannelModule)(key, channelModule));
-            }
+          if (!(!Object.hasOwnProperty.call(channelModule, key) && this.state.channel === undefined) && typeof call === "function") {
+            call((0, _common.getScreenPropsFromChannelModule)(key, channelModule));
           }
         }, channel => {
           this.setState({
@@ -96,10 +94,7 @@ function through(store, screenProps, ScreenComponent) {
           key
         } = navigation.state;
         this.observer.dispose();
-        store.dispatch({
-          type: _store.ACTIONS.UNINSTALL_CHANNEL,
-          key
-        });
+        store.dispatch((0, _actions.uninstallChannel)(key));
         this.observer = null;
       }
     }

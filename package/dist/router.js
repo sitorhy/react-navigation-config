@@ -3,13 +3,15 @@
 exports.__esModule = true;
 exports.default = exports.Navigator = void 0;
 
-var _store = _interopRequireWildcard(require("./store"));
+var _store = _interopRequireDefault(require("./store"));
 
 var _common = require("./common");
 
 var _reactNavigation = require("react-navigation");
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+var _actions = require("./actions");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
@@ -107,12 +109,11 @@ class Navigator {
     this.container = container;
   }
 
-  _asyncNavigate(doTask, screenProps) {
+  _asyncNavigate(doTask, channel) {
     return new Promise((resolve, reject) => {
       var id = (0, _common.uuid)();
       var observer = {
         id,
-        screenProps,
 
         callback(obj) {
           resolve(obj);
@@ -120,17 +121,12 @@ class Navigator {
 
       };
       var store = this.getStore();
-      store.dispatch({
-        type: _store.ACTIONS.\\,
-        screenProps
-      });
+      store.dispatch((0, _actions.depositChannel)(channel));
 
       this.container._listen(observer);
 
       if (!doTask()) {
-        store.dispatch({
-          type: _store.ACTIONS.DUMP_SCREEN_PROPS
-        });
+        store.dispatch((0, _actions.dumpChannel)());
 
         this.container._remove(id);
 
@@ -139,66 +135,59 @@ class Navigator {
     });
   }
 
-  getAllParams() {
+  mergeParams() {
     return (0, _common.getNavState)(this.navigator.state.nav);
   }
 
   getParams(routeKey) {
-    if (routeKey) {
-      var route = (0, _common.matchRoute)(this.navigator.state.nav, routeKey);
+    var key = routeKey || this.getActiveKey();
+
+    if (key) {
+      var route = (0, _common.matchRoute)(this.navigator.state.nav, key);
 
       if (route) {
         return route.params;
       }
-    } else {
-      var {
-        navigation
-      } = this.getStore().getState();
-      var {
-        key
-      } = navigation;
-
-      if (key) {
-        var _route = (0, _common.matchRoute)(this.navigator.state.nav, key);
-
-        if (_route) {
-          return _route.params;
-        }
-      }
     }
 
     return null;
+  }
+
+  updateChannel(routeKey, channel) {
+    var key = routeKey || this.getActiveKey();
+
+    if (key) {
+      this.getStore().dispatch((0, _actions.installChannel)(key, channel));
+      return true;
+    }
+
+    return false;
   }
 
   getChannel(routeKey) {
-    var {
-      navigation,
-      screenProps
-    } = this.getStore().getState();
+    var state = this.getStore().getState();
+    var key = routeKey || this.getActiveKey();
 
-    if (routeKey) {
-      return (0, _common.getScreenPropsFormCollection)(routeKey, screenProps);
-    } else {
-      var {
-        key
-      } = navigation;
-
-      if (key) {
-        return (0, _common.getScreenPropsFormCollection)(key, screenProps);
-      }
+    if (key) {
+      return (0, _common.getScreenPropsFromChannelModule)(key, (0, _common.getChannelModule)(state));
     }
 
     return null;
   }
 
+  mergeChannels() {
+    var state = this.getStore().getState();
+    return (0, _common.mergeChannel)((0, _common.getChannelModule)(state));
+  }
+
+  removeChannel(routeKey) {
+    var key = routeKey || this.getActiveKey();
+    this.getStore().dispatch((0, _actions.uninstallChannel)(key));
+  }
+
   getActiveKey() {
-    var {
-      navigation
-    } = this.getStore().getState();
-    var {
-      key
-    } = navigation;
-    return key;
+    var navigation = (0, _common.getNavigationModule)(this.getStore().getState());
+    return (0, _common.getKeyFromNavigationModule)(navigation);
   }
 
   setParams(routeKey, params) {

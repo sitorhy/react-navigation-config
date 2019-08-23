@@ -3,17 +3,15 @@
 exports.__esModule = true;
 exports.default = _default;
 
-var _react = _interopRequireWildcard(require("react"));
+var _react = _interopRequireDefault(require("react"));
 
 var _router = _interopRequireDefault(require("./router"));
 
 var _common = require("./common");
 
-var _store = require("./store");
+var _actions = require("./actions");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -107,35 +105,20 @@ function _default(AppContainer, navigator, options) {
         routeName
       } = activeRoute;
       var store = navigator.getStore();
-      store.dispatch({
-        type: _store.ACTIONS.SET_ROUTE_KEY,
-        key
-      });
-      store.dispatch({
-        type: _store.ACTIONS.SET_ROUTE_NAME,
-        routeName
-      });
+      store.dispatch((0, _actions.setNavigationRouteKey)(key));
+      store.dispatch((0, _actions.setNavigationRouteName)(routeName));
 
       if (AppContainer.CHANNEL_ACTIONS.includes(type)) {
-        var {
-          stage
-        } = store.getState();
-        var {
-          screenProps
-        } = stage;
+        var _state = store.getState();
 
-        if (screenProps) {
-          store.dispatch({
-            type: _store.ACTIONS.INSTALL_CHANNEL,
-            key,
-            screenProps
-          });
+        var channel = (0, _common.getChannelFromStageModule)((0, _common.getStageModule)(_state));
+
+        if (channel) {
+          store.dispatch((0, _actions.installChannel)(key, channel));
         }
       }
 
-      store.dispatch({
-        type: _store.ACTIONS.DUMP_CHANNEL
-      });
+      store.dispatch((0, _actions.dumpChannel)());
       return state;
     };
   }
@@ -213,10 +196,10 @@ function _default(AppContainer, navigator, options) {
       var {
         uriPrefix
       } = this.props;
-      return _react.default.createElement(_react.Fragment, null, _react.default.createElement(WrappedAppContainer, {
+      return _react.default.createElement(WrappedAppContainer, {
         uriPrefix: uriPrefix,
         onNavigationStateChange: this.onNavigationStateChange
-      }));
+      });
     }
 
   }, _temp;

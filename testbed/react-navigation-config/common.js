@@ -5,6 +5,7 @@ exports.removeEmpty = removeEmpty;
 exports.randomString = randomString;
 exports.uuid = uuid;
 exports.getNavState = getNavState;
+exports.mergeChannel = mergeChannel;
 exports.getActiveRoute = getActiveRoute;
 exports.matchRoute = matchRoute;
 exports.getScreenPropsFromChannelModule = getScreenPropsFromChannelModule;
@@ -129,6 +130,26 @@ function getNavState(nav) {
   return [params, scopeParams];
 }
 
+function mergeChannel(channelModule) {
+  var channels = {};
+  var scopeChannels = {};
+  Object.keys(channelModule).map(key => {
+    var module = channelModule[key];
+    Object.assign(scopeChannels, {
+      [key]: module.channel
+    });
+    return module;
+  }).sort((i, j) => {
+    return i.timestamp - j.timestamp;
+  }).forEach(module => {
+    var {
+      channel
+    } = module;
+    Object.assign(channels, channel);
+  });
+  return [channels, scopeChannels];
+}
+
 function getActiveRoute(nav) {
   var {
     routes,
@@ -216,7 +237,8 @@ function getScreenPropsFromChannelModule(key, state) {
     return null;
   }
 
-  return state[key];
+  var module = state[key];
+  return module ? module.channel : undefined;
 }
 
 function getChannelModule(state) {

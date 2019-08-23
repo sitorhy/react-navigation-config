@@ -1,7 +1,7 @@
 import React from "react";
 import defaultNavigator from "./router";
 import {DEFAULT_CHANNEL_ACTIONS, getActiveRoute, getChannelFromStageModule, getStageModule} from "./common";
-import {ACTIONS} from "./store";
+import {dumpChannel, installChannel, setNavigationRouteKey, setNavigationRouteName} from "./actions";
 
 export default function (AppContainer, navigator = defaultNavigator, options = {})
 {
@@ -93,15 +93,9 @@ export default function (AppContainer, navigator = defaultNavigator, options = {
 
             const store = navigator.getStore();
 
-            store.dispatch({
-                type: ACTIONS.SET_ROUTE_KEY,
-                key
-            });
+            store.dispatch(setNavigationRouteKey(key));
 
-            store.dispatch({
-                type: ACTIONS.SET_ROUTE_NAME,
-                routeName
-            });
+            store.dispatch(setNavigationRouteName(routeName));
 
             if (AppContainer.CHANNEL_ACTIONS.includes(type))
             {
@@ -109,17 +103,11 @@ export default function (AppContainer, navigator = defaultNavigator, options = {
                 const channel = getChannelFromStageModule(getStageModule(state));
                 if (channel)
                 {
-                    store.dispatch({
-                        type: ACTIONS.INSTALL_CHANNEL,
-                        key,
-                        channel
-                    });
+                    store.dispatch(installChannel(key, channel));
                 }
             }
 
-            store.dispatch({
-                type: ACTIONS.DUMP_CHANNEL
-            });
+            store.dispatch(dumpChannel());
 
             return state;
         };
