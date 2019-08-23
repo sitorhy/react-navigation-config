@@ -363,15 +363,6 @@ low-level method, update navigation current state with the given action.
 
 <br>
 
-### **getParams**
-+ `<String> key` - optional , get params of current route if not specified
-##### Parameters
-+ `void`
-##### Return Value
-+ `<Object | null>`
-
-<br>
-
 ### **getActiveKey**
 get current route key.
 ##### Parameters

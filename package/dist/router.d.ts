@@ -35,6 +35,8 @@ declare namespace router {
 
     function closeDrawer(options: object | null): Promise<object>;
 
+	function setParams(key: string, params: object): Promise<object>;
+
     function getParams(): Array<object>;
 
     function dispatchAction(action: object, options: object);
