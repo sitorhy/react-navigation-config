@@ -33,13 +33,14 @@ function removeEmpty(obj, options) {
   }
 
   var omitZero = options.omitZero === true;
+  var omitEmptyString = options.omitEmptyString === true;
   var ignore = options.ignore || [];
   var accepts = {};
   Object.keys(obj).forEach(key => {
     if (ignore.includes(key)) {
       accepts[key] = obj[key];
     } else {
-      if (!(obj[key] === null || obj[key] === undefined || obj[key] === 0 && omitZero)) {
+      if (!(obj[key] === null || obj[key] === undefined || obj[key] === 0 && omitZero || obj[key] === "" && omitEmptyString)) {
         accepts[key] = obj[key];
       }
     }

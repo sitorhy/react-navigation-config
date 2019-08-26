@@ -110,7 +110,7 @@ AppRegistry.registerComponent(name, () => App);
 
 + `<Object>` `screenProps` - route meta fields,will be integrated into **screenProps**
 
-+ `<Function>` `creator` - other container creator, use default setting if null.
++ `<Function>` `use` - other container creator, use default setting if null.
 ```
 import { createMaterialBottomTabNavigator } from "react-navigation-material-bottom-tabs";
 

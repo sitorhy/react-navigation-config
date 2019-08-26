@@ -62,11 +62,12 @@ const routes = {
           username: "anonymous"
         }
       },
+      path: "main",
       children: [
         {
           name: "main",
           material: false,
-          //    creator: createMaterialBottomTabNavigator,
+          //    use: createMaterialBottomTabNavigator,
           navigationOptions: {
             header: null
           },
@@ -74,6 +75,7 @@ const routes = {
             {
               name: "home",
               component: HomeScreen,
+              path: "home",
               injectNavigationOptions: true,
               screenProps: {
                 meta: {
@@ -98,6 +100,7 @@ const routes = {
             {
               name: "mine",
               component: MineScreen,
+              path: "mine/:user",
               navigationOptions: {
                 title: "Mine",
                 tabBarLabel: "Mine",

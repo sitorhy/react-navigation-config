@@ -34,6 +34,7 @@ export function removeEmpty(obj, options = {})
         return obj;
     }
     const omitZero = options.omitZero === true;
+    const omitEmptyString = options.omitEmptyString === true;
     const ignore = options.ignore || [];
     const accepts = {};
     Object.keys(obj).forEach((key) =>
@@ -44,7 +45,7 @@ export function removeEmpty(obj, options = {})
         }
         else
         {
-            if (!(obj[key] === null || obj[key] === undefined || (obj[key] === 0 && omitZero)))
+            if (!(obj[key] === null || obj[key] === undefined || (obj[key] === 0 && omitZero) || (obj[key] === "" && omitEmptyString)))
             {
                 accepts[key] = obj[key];
             }

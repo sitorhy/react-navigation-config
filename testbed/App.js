@@ -1,4 +1,9 @@
 import React from "react";
 import Router from "./router";
+import { Platform } from "react-native";
 
-export default Router;
+const prefix = Platform.OS == "android" ? "mychat://" : "mychat://";
+
+export default () => {
+  return <Router uriPrefix={prefix} />;
+};

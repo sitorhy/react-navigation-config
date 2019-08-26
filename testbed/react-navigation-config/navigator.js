@@ -194,9 +194,11 @@ function _default(AppContainer, navigator, options) {
 
     render() {
       var {
-        uriPrefix
+        uriPrefix,
+        enableURLHandling = false
       } = this.props;
       return _react.default.createElement(WrappedAppContainer, {
+        enableURLHandling: enableURLHandling,
         uriPrefix: uriPrefix,
         onNavigationStateChange: this.onNavigationStateChange
       });

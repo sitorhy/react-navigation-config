@@ -43,6 +43,10 @@ export default class extends React.Component {
     password: ""
   };
 
+  componentDidMount() {
+    console.log(this);
+  }
+
   onUserTextChange = () => {};
 
   onPasswordTextChange = () => {};

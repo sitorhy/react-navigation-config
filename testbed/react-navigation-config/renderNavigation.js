@@ -133,7 +133,7 @@ var map = function map(route, navigator) {
     routerConfig,
     screenProps,
     path,
-    creator: customCreator = null
+    use
   } = route;
   var {
     name
@@ -157,8 +157,8 @@ var map = function map(route, navigator) {
 
     var containerCreator;
 
-    if (typeof customCreator === "function") {
-      containerCreator = customCreator;
+    if (typeof use === "function") {
+      containerCreator = use;
     } else {
       containerCreator = creator[prop];
     }
@@ -175,6 +175,8 @@ var map = function map(route, navigator) {
           screen: inject(injectNavigationOptions, navigationOptions, screen),
           path,
           navigationOptions: injectNavigationOptions ? null : navigationOptions
+        }, {
+          omitEmptyString: true
         })
       };
     }
@@ -194,6 +196,8 @@ var map = function map(route, navigator) {
         navigationOptions: injectNavigationOptions ? {
           header: null
         } : navigationOptions
+      }, {
+        omitEmptyString: true
       })
     };
   }

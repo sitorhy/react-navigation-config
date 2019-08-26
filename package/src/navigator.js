@@ -180,9 +180,11 @@ export default function (AppContainer, navigator = defaultNavigator, options = {
 
         render()
         {
-            const {uriPrefix} = this.props;
+            const {uriPrefix, enableURLHandling = false} = this.props;
             return (
-                <WrappedAppContainer uriPrefix={uriPrefix} onNavigationStateChange={this.onNavigationStateChange}/>
+                <WrappedAppContainer enableURLHandling={enableURLHandling}
+                                     uriPrefix={uriPrefix}
+                                     onNavigationStateChange={this.onNavigationStateChange}/>
             );
         }
     }
