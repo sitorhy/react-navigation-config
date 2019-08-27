@@ -131,11 +131,12 @@ const map = function (route, navigator)
 
     let {name} = route;
 
-    const prop = ["children", "all", "oneOf", "drawer", "app"].find(j => !!route[j]);
+    const prop = ["children", "all", "oneOf", "drawer"].find(j => !!route[j]);
 
     if (app !== true && !name)
     {
         name = `anonymous-${randomString(8)}-${Date.now()}`;
+        route.name = name;
     }
 
     if (!name && app !== true)
@@ -207,5 +208,9 @@ const map = function (route, navigator)
 
 export default function (config, navigator = defaultNavigator)
 {
+    if (navigator)
+    {
+        navigator._setRoutes(config);
+    }
     return map(config, navigator);
 }

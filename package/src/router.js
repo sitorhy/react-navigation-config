@@ -9,14 +9,18 @@ import {
     getScreenPropsFromChannelModule,
     getNavigationModule,
     getKeyFromNavigationModule,
-    getChannelModule, mergeChannel
+    getChannelModule, mergeChannel, routeFind, pathToRegex, mergeActionParams
 } from "./common";
 import {NavigationActions, StackActions, DrawerActions} from "react-navigation";
 import {depositChannel, dumpChannel, installChannel, uninstallChannel} from "./actions";
 
 export class Navigator
 {
+    _routes = [];
+
     _store = createStore();
+
+    _beforeResolveHandler = null;
 
     _beforeEachHandler = null;
 
@@ -27,6 +31,21 @@ export class Navigator
     _preventDefaultActionFix = true;
 
     _ignoreActions = DEFAULT_IGNORE_ACTIONS;
+
+    _setRoutes(routes = [])
+    {
+        this._routes = routes;
+    }
+
+    _bindBeforeResolve(action, path, params)
+    {
+        if (typeof this._beforeResolveHandler === "function")
+        {
+            const actionParams = mergeActionParams(action);
+            const handler = this._beforeResolveHandler;
+            handler(action, path, actionParams);
+        }
+    }
 
     _bindBeforeEach(action, toState, fromState)
     {
@@ -39,7 +58,7 @@ export class Navigator
 
         let fixed = false;
         let nextAction = null;
-        let customAction = null;
+        let rewriteAction = null;
 
         const to = getActiveRoute(toState);
 
@@ -58,16 +77,14 @@ export class Navigator
 
             const handler = this._beforeEachHandler;
 
-            function _rewriteAction(routeName, params = null)
+            function _rewriteAction(routeName, params = undefined)
             {
                 if (routeName)
                 {
-                    customAction = {
+                    rewriteAction = {
                         ...action,
                         routeName,
-                        ...removeEmpty({
-                            params
-                        })
+                        ...params === undefined ? null : {params}
                     };
                 }
             }
@@ -79,7 +96,7 @@ export class Navigator
             }), _rewriteAction);
         }
 
-        return nextAction || customAction || (fixed && action);
+        return nextAction || rewriteAction || (fixed && action);
     }
 
     _bindAfterEach(action, toState, fromState)
@@ -363,6 +380,14 @@ export class Navigator
     preventDefaultActionFix(disabled = true)
     {
         this._preventDefaultActionFix = disabled === true;
+    }
+
+    beforeResolve(callback)
+    {
+        if (typeof callback === "function")
+        {
+            this._beforeResolveHandler = callback;
+        }
     }
 
     beforeEach(callback, options = {})

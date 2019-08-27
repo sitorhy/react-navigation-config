@@ -42,7 +42,16 @@ export default function (AppContainer, navigator = defaultNavigator, options = {
 
         AppContainer.router.getActionForPathAndParams = function (path, params)
         {
-            return WrappedAppContainer.router.getActionForPathAndParams(path, params);
+            const action = WrappedAppContainer.router.getActionForPathAndParams(path, params);
+            if (action)
+            {
+                const nextAction = navigator._bindBeforeResolve(action, path, params);
+                if (nextAction)
+                {
+                    return nextAction;
+                }
+            }
+            return action;
         };
 
         AppContainer.router.getComponentForRouteName = function (routeName)
@@ -57,6 +66,7 @@ export default function (AppContainer, navigator = defaultNavigator, options = {
 
         AppContainer.router.getPathAndParamsForState = function (state)
         {
+            console.log(668);
             return WrappedAppContainer.router.getPathAndParamsForState(state);
         };
 
@@ -175,6 +185,7 @@ export default function (AppContainer, navigator = defaultNavigator, options = {
                 navigator.onReady(null);
                 navigator.beforeEach(null);
                 navigator.afterEach(null);
+                navigator._setRoutes([]);
             }
         }
 

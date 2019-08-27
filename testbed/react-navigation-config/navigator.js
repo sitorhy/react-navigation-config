@@ -57,7 +57,17 @@ function _default(AppContainer, navigator, options) {
     };
 
     AppContainer.router.getActionForPathAndParams = function (path, params) {
-      return WrappedAppContainer.router.getActionForPathAndParams(path, params);
+      var action = WrappedAppContainer.router.getActionForPathAndParams(path, params);
+
+      if (action) {
+        var nextAction = navigator._bindBeforeResolve(action, path, params);
+
+        if (nextAction) {
+          return nextAction;
+        }
+      }
+
+      return action;
     };
 
     AppContainer.router.getComponentForRouteName = function (routeName) {
@@ -69,6 +79,7 @@ function _default(AppContainer, navigator, options) {
     };
 
     AppContainer.router.getPathAndParamsForState = function (state) {
+      console.log(668);
       return WrappedAppContainer.router.getPathAndParamsForState(state);
     };
 
@@ -189,6 +200,8 @@ function _default(AppContainer, navigator, options) {
         navigator.onReady(null);
         navigator.beforeEach(null);
         navigator.afterEach(null);
+
+        navigator._setRoutes([]);
       }
     }
 

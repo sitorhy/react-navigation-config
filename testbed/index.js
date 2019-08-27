@@ -17,7 +17,7 @@ import {
 import { renderNavigation } from "./react-navigation-config";
 
 import { Tab1, Tab3, Tab2, Login } from "./testComponents";
-import { TestRouter } from "./router";
+// import { TestRouter } from "./router";
 
 const Home = createBottomTabNavigator({
   tab1: {
@@ -55,42 +55,42 @@ class NativeApp extends React.Component {
 
 /////////////////////////
 
-const routes = {
-  app: true,
-  oneOf: [
-    {
-      name: "main",
-      path: "main",
-      all: [
-        {
-          name: "tab1",
-          component: Tab1,
-          path: "home"
-        },
-        {
-          name: "tab2",
-          component: Tab2,
-          path: "mine/:user"
-        },
-        {
-          name: "tab3",
-          component: Tab3,
-          path: "setting"
-        }
-      ]
-    },
-    {
-      name: "login",
-      component: Login
-    }
-  ]
-};
+// const routes = {
+//   app: true,
+//   oneOf: [
+//     {
+//       name: "main",
+//       path: "main",
+//       all: [
+//         {
+//           name: "tab1",
+//           component: Tab1,
+//           path: "home"
+//         },
+//         {
+//           name: "tab2",
+//           component: Tab2,
+//           path: "mine/:user"
+//         },
+//         {
+//           name: "tab3",
+//           component: Tab3,
+//           path: "setting"
+//         }
+//       ]
+//     },
+//     {
+//       name: "login",
+//       component: Login
+//     }
+//   ]
+// };
 
-const TestApp = renderNavigation(routes);
+// const TestApp = renderNavigation(routes);
 
-const RouterApp = () => {
-  return <TestRouter uriPrefix="mychat://" />;
-};
+// const RouterApp = () => {
+//   return <TestRouter uriPrefix="mychat://" />;
+// };
 
 AppRegistry.registerComponent(appName, () => App);
 

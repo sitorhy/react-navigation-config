@@ -35,11 +35,13 @@ declare namespace router {
 
     function closeDrawer(options: object | null): Promise<object>;
 
-	function setParams(key: string, params: object): Promise<object>;
+    function setParams(key: string, params: object): Promise<object>;
 
     function getParams(): Array<object>;
 
     function dispatchAction(action: object, options: object);
+
+    function beforeResolve(callback: (action: object, path: string, params: object) => object);
 
     function beforeEach(callback: (action: object, to: object, from: object, next: (routeName: string) => object | null) => void, options: object | null | undefined);
 

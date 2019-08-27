@@ -19,7 +19,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 class Navigator {
   constructor() {
+    _defineProperty(this, "_routes", []);
+
     _defineProperty(this, "_store", (0, _store.default)());
+
+    _defineProperty(this, "_beforeResolveHandler", null);
 
     _defineProperty(this, "_beforeEachHandler", null);
 
@@ -30,6 +34,22 @@ class Navigator {
     _defineProperty(this, "_preventDefaultActionFix", true);
 
     _defineProperty(this, "_ignoreActions", _common.DEFAULT_IGNORE_ACTIONS);
+  }
+
+  _setRoutes(routes) {
+    if (routes === void 0) {
+      routes = [];
+    }
+
+    this._routes = routes;
+  }
+
+  _bindBeforeResolve(action, path, params) {
+    if (typeof this._beforeResolveHandler === "function") {
+      var actionParams = (0, _common.mergeActionParams)(action);
+      var handler = this._beforeResolveHandler;
+      handler(action, path, actionParams);
+    }
   }
 
   _bindBeforeEach(action, toState, fromState) {
@@ -43,7 +63,7 @@ class Navigator {
 
     var fixed = false;
     var nextAction = null;
-    var customAction = null;
+    var rewriteAction = null;
     var to = (0, _common.getActiveRoute)(toState);
 
     if (this._preventDefaultActionFix !== true) {
@@ -59,15 +79,15 @@ class Navigator {
 
       function _rewriteAction(routeName, params) {
         if (params === void 0) {
-          params = null;
+          params = undefined;
         }
 
         if (routeName) {
-          customAction = _extends({}, action, {
+          rewriteAction = _extends({}, action, {
             routeName
-          }, (0, _common.removeEmpty)({
+          }, params === undefined ? null : {
             params
-          }));
+          });
         }
       }
 
@@ -78,7 +98,7 @@ class Navigator {
       }), _rewriteAction);
     }
 
-    return nextAction || customAction || fixed && action;
+    return nextAction || rewriteAction || fixed && action;
   }
 
   _bindAfterEach(action, toState, fromState) {
@@ -367,6 +387,12 @@ class Navigator {
     }
 
     this._preventDefaultActionFix = disabled === true;
+  }
+
+  beforeResolve(callback) {
+    if (typeof callback === "function") {
+      this._beforeResolveHandler = callback;
+    }
   }
 
   beforeEach(callback, options) {

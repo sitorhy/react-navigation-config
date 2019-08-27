@@ -37,6 +37,10 @@ router.afterEach((action, to, from) => {
 });
 */
 
+router.beforeResolve(() => {
+
+});
+
 import { Image } from "react-native";
 import {
   renderNavigation,
@@ -45,7 +49,7 @@ import {
 
 import iconTodo from "../images/todo.png";
 import iconMine from "../images/mine.png";
-import { Login, Tab1, Tab2, Tab3 } from '../testComponents';
+// import { Login, Tab1, Tab2, Tab3 } from '../testComponents';
 
 const routes = {
   app: true,
@@ -206,37 +210,37 @@ const routes = {
   ]
 };
 
-export const TestRouter = wrappedNavigatorRef(
-  renderNavigation({
-    app: true,
-    oneOf: [
-      {
-        name: "main",
-        path: "main",
-        all: [
-          {
-            name: "tab1",
-            component: HomeScreen,
-            path: "home"
-          },
-          {
-            name: "tab2",
-            component: MineScreen,
-            path: "mine/:user"
-          },
-          {
-            name: "tab3",
-            component: SettingScreen,
-            path: "setting"
-          }
-        ]
-      },
-      {
-        name: "login",
-        component: Login
-      }
-    ]
-  })
-);
+// export const TestRouter = wrappedNavigatorRef(
+//   renderNavigation({
+//     app: true,
+//     oneOf: [
+//       {
+//         name: "main",
+//         path: "main",
+//         all: [
+//           {
+//             name: "tab1",
+//             component: HomeScreen,
+//             path: "home"
+//           },
+//           {
+//             name: "tab2",
+//             component: MineScreen,
+//             path: "mine/:user"
+//           },
+//           {
+//             name: "tab3",
+//             component: SettingScreen,
+//             path: "setting"
+//           }
+//         ]
+//       },
+//       {
+//         name: "login",
+//         component: Login
+//       }
+//     ]
+//   })
+// );
 
 export default wrappedNavigatorRef(renderNavigation(routes));

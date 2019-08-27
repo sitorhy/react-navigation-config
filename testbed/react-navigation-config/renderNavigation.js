@@ -138,10 +138,11 @@ var map = function map(route, navigator) {
   var {
     name
   } = route;
-  var prop = ["children", "all", "oneOf", "drawer", "app"].find(j => !!route[j]);
+  var prop = ["children", "all", "oneOf", "drawer"].find(j => !!route[j]);
 
   if (app !== true && !name) {
     name = "anonymous-" + (0, _common.randomString)(8) + "-" + Date.now();
+    route.name = name;
   }
 
   if (!name && app !== true) {
@@ -206,6 +207,10 @@ var map = function map(route, navigator) {
 function _default(config, navigator) {
   if (navigator === void 0) {
     navigator = _router.default;
+  }
+
+  if (navigator) {
+    navigator._setRoutes(config);
   }
 
   return map(config, navigator);

@@ -27,6 +27,35 @@ export const DEFAULT_CHANNEL_ACTIONS = [
     "Navigation/RESET"
 ];
 
+export function pathToRegex(path = "")
+{
+    const str = path.replace(/:[^/:]+/g, "(.+)");
+    return new RegExp(str);
+}
+
+function _merge(action, result)
+{
+    if (action)
+    {
+        const {params, action: nextAction} = action;
+        if (params)
+        {
+            Object.assign(result, params);
+        }
+        if (nextAction)
+        {
+            _merge(nextAction, result);
+        }
+    }
+}
+
+export function mergeActionParams(action)
+{
+    const result = {};
+    _merge(action, result);
+    return result;
+}
+
 export function removeEmpty(obj, options = {})
 {
     if (!obj)
@@ -52,6 +81,61 @@ export function removeEmpty(obj, options = {})
         }
     });
     return accepts;
+}
+
+function _find(route, config)
+{
+    const {forKey, value, match, getResult} = config;
+
+    const prop = ["children", "all", "oneOf", "drawer"].find(j => !!route[j]);
+
+    if (Array.isArray(route[prop]))
+    {
+        for (const i of route[prop])
+        {
+            const j = _find(i, config);
+            if (j)
+            {
+                return j;
+            }
+        }
+    }
+
+    if (route.hasOwnProperty(forKey))
+    {
+        if (typeof match === "function")
+        {
+            if (match(route, forKey, route[forKey]))
+            {
+                return getResult(route);
+            }
+        }
+        else
+        {
+            if (route[forKey] === value)
+            {
+                return getResult(route);
+            }
+        }
+    }
+
+    return undefined;
+}
+
+export function routeFind(
+    route = {},
+    config = {}
+)
+{
+    const _cfg = {
+        forKey: "name",
+        value: undefined,
+        match: null,
+        getResult: r => r,
+        ...config
+    };
+
+    return _find(route, _cfg);
 }
 
 const uuid_chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".split("");

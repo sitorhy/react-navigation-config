@@ -1,7 +1,10 @@
 "use strict";
 
 exports.__esModule = true;
+exports.pathToRegex = pathToRegex;
+exports.mergeActionParams = mergeActionParams;
 exports.removeEmpty = removeEmpty;
+exports.routeFind = routeFind;
 exports.randomString = randomString;
 exports.uuid = uuid;
 exports.getNavState = getNavState;
@@ -22,6 +25,40 @@ var DEFAULT_IGNORE_ACTIONS = ["Navigation/COMPLETE_TRANSITION", "Navigation/BACK
 exports.DEFAULT_IGNORE_ACTIONS = DEFAULT_IGNORE_ACTIONS;
 var DEFAULT_CHANNEL_ACTIONS = ["Navigation/REPLACE", "Navigation/PUSH", "Navigation/NAVIGATE", "Navigation/POP", "Navigation/POP_TO_TOP", "Navigation/BACK", "Navigation/OPEN_DRAWER", "Navigation/CLOSE_DRAWER", "Navigation/TOGGLE_DRAWER", "Navigation/RESET"];
 exports.DEFAULT_CHANNEL_ACTIONS = DEFAULT_CHANNEL_ACTIONS;
+
+function pathToRegex(path) {
+  if (path === void 0) {
+    path = "";
+  }
+
+  var str = path.replace(/:[^/:]+/g, "(.+)");
+  return new RegExp(str);
+}
+
+function _merge(action, result) {
+  if (action) {
+    var {
+      params,
+      action: nextAction
+    } = action;
+
+    if (params) {
+      Object.assign(result, params);
+    }
+
+    if (nextAction) {
+      _merge(nextAction, result);
+    }
+  }
+}
+
+function mergeActionParams(action) {
+  var result = {};
+
+  _merge(action, result);
+
+  return result;
+}
 
 function removeEmpty(obj, options) {
   if (options === void 0) {
@@ -46,6 +83,59 @@ function removeEmpty(obj, options) {
     }
   });
   return accepts;
+}
+
+function _find(route, config) {
+  var {
+    forKey,
+    value,
+    match,
+    getResult
+  } = config;
+  var prop = ["children", "all", "oneOf", "drawer"].find(j => !!route[j]);
+
+  if (Array.isArray(route[prop])) {
+    for (var i of route[prop]) {
+      var j = _find(i, config);
+
+      if (j) {
+        return j;
+      }
+    }
+  }
+
+  if (route.hasOwnProperty(forKey)) {
+    if (typeof match === "function") {
+      if (match(route, forKey, route[forKey])) {
+        return getResult(route);
+      }
+    } else {
+      if (route[forKey] === value) {
+        return getResult(route);
+      }
+    }
+  }
+
+  return undefined;
+}
+
+function routeFind(route, config) {
+  if (route === void 0) {
+    route = {};
+  }
+
+  if (config === void 0) {
+    config = {};
+  }
+
+  var _cfg = _extends({
+    forKey: "name",
+    value: undefined,
+    match: null,
+    getResult: r => r
+  }, config);
+
+  return _find(route, _cfg);
 }
 
 var uuid_chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".split("");

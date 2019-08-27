@@ -298,7 +298,9 @@ router.beforeEach((to, from, next) => {
 > + `<Object>` `action` - navigation action
 > + `<Object>` `to` - route state
 > + `<Object>` `from` - current route state
-> + `<Function>` `next(routeName,params)` - may change target route, if parameter `params` is null or empty,it will be ignored and unchanged.
+> + `<Function>` `next(routeName,params)` - may change target route, if parameter `params` is undefined,it will be ignored and unchanged.
+##### Return Value
++ `<Action>` - return a navigation action that own highest priority
 
 <br>
 
