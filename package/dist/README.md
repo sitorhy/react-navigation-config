@@ -110,7 +110,7 @@ AppRegistry.registerComponent(name, () => App);
 
 + `<Object>` `screenProps` - route meta fields,will be integrated into **screenProps**
 
-+ `<Function>` `creator` - other container creator, use default setting if null.
++ `<Function>` `use` - other container creator, use default setting if null.
 ```
 import { createMaterialBottomTabNavigator } from "react-navigation-material-bottom-tabs";
 
@@ -290,7 +290,7 @@ register interceptor before state change.
 router.beforeEach((to, from, next) => {
   if(from.routeName==="main")
   {
-    next("home",{});
+    next("home",{}); // or try to return NavigationActions.navigate(....)
   }
 });
 ```
@@ -298,7 +298,26 @@ router.beforeEach((to, from, next) => {
 > + `<Object>` `action` - navigation action
 > + `<Object>` `to` - route state
 > + `<Object>` `from` - current route state
-> + `<Function>` `next(routeName,params)` - may change target route, if parameter `params` is null or empty,it will be ignored and unchanged.
+> + `<Function>` `next(routeName,options)` - action create helper, if parameter `options.params` is undefined,it will be ignored and unchanged.
+
+##### Return Value
++ `<Action>` - return a navigation action that own highest priority
+
+<br>
+
+### **beforeResolve**
+handle URIs from browser.
+##### Parameters
++ `<Function>` - callback
+##### **callback**
+> + `<Object>` `nextState`
+> + `<Object>` `toAction`
+> + `<String>` `path` - deep link path
+> + `<String` `options`
+> + `<Object>` `next(routeName,options)` - action rewrite helper
+
+##### Return Value
++ `<Action>`
 
 <br>
 
@@ -341,6 +360,36 @@ navigate to route `A` ,actually redirect to `B` ,but params `xyz` passed to rout
 get params from `this.props.navigation.state` is always `undefinded` in component `B`.
 #### Fixed
 redirect to child route when `action.routeName` not equal to the state resolved.
+
+
+<br>
+
+### **preventDefaultURIResolveFix**
+##### Parameters
++ `<Boolean>` `disabled`
+
+try call `preventDefaultURIResolveFix(false)` to enable it.
+
+#### Problem
+path params will not merge to route params.
+```
+// browser
+<a href="mychat://main/tab/mine/tom?country=China">Mine</a>
+
+// app route config
+createStackNavigator({
+  mine: {
+      path: 'mine/:user',
+    }),
+  },
+
+  ...MyOtherRoutes,
+});
+```
+path paramter `tom` will not appear in `route.params` in navigation prop.
+
+#### Fixed
+force merge path paramters.
 
 <br>
 

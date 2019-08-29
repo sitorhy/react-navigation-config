@@ -2,6 +2,10 @@
 
 exports.__esModule = true;
 exports.pathToRegex = pathToRegex;
+exports.addContainerEventListener = addContainerEventListener;
+exports.removeContainerEventListener = removeContainerEventListener;
+exports.createOptionAction = createOptionAction;
+exports.getDeepestActionState = getDeepestActionState;
 exports.mergeActionParams = mergeActionParams;
 exports.removeEmpty = removeEmpty;
 exports.routeFind = routeFind;
@@ -17,7 +21,9 @@ exports.getKeyFromNavigationModule = getKeyFromNavigationModule;
 exports.getNavigationModule = getNavigationModule;
 exports.getStageModule = getStageModule;
 exports.getChannelFromStageModule = getChannelFromStageModule;
-exports.ObserveStore = exports.DEFAULT_CHANNEL_ACTIONS = exports.DEFAULT_IGNORE_ACTIONS = void 0;
+exports.ObserveStore = exports.CONTAINER_EVENT = exports.DEFAULT_CHANNEL_ACTIONS = exports.DEFAULT_IGNORE_ACTIONS = void 0;
+
+var _reactNavigation = require("react-navigation");
 
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
@@ -25,6 +31,10 @@ var DEFAULT_IGNORE_ACTIONS = ["Navigation/COMPLETE_TRANSITION", "Navigation/BACK
 exports.DEFAULT_IGNORE_ACTIONS = DEFAULT_IGNORE_ACTIONS;
 var DEFAULT_CHANNEL_ACTIONS = ["Navigation/REPLACE", "Navigation/PUSH", "Navigation/NAVIGATE", "Navigation/POP", "Navigation/POP_TO_TOP", "Navigation/BACK", "Navigation/OPEN_DRAWER", "Navigation/CLOSE_DRAWER", "Navigation/TOGGLE_DRAWER", "Navigation/RESET"];
 exports.DEFAULT_CHANNEL_ACTIONS = DEFAULT_CHANNEL_ACTIONS;
+var CONTAINER_EVENT = {
+  STATE_CHANGE: "STATE_CHANGE"
+};
+exports.CONTAINER_EVENT = CONTAINER_EVENT;
 
 function pathToRegex(path) {
   if (path === void 0) {
@@ -35,7 +45,69 @@ function pathToRegex(path) {
   return new RegExp(str);
 }
 
-function _merge(action, result) {
+function addContainerEventListener(container, options) {
+  if (options === void 0) {
+    options = {};
+  }
+
+  container._listen({
+    type: options.type || CONTAINER_EVENT.STATE_CHANGE,
+    id: options.id || uuid(),
+    callback: options.callback
+  });
+}
+
+function removeContainerEventListener(container, _ref) {
+  var {
+    id
+  } = _ref;
+
+  container._remove(id);
+}
+
+function _overrideCreateOptionAction(options) {
+  if (options === void 0) {
+    options = {};
+  }
+
+  var {
+    action,
+    routeName,
+    params
+  } = options;
+
+  var basicAction = _reactNavigation.NavigationActions.navigate(_extends({
+    routeName
+  }, params === undefined ? {} : {
+    params
+  }));
+
+  return _extends({}, basicAction, {}, action);
+}
+
+function createOptionAction(routeNameOrOptions, options) {
+  if (arguments.length > 1) {
+    return _overrideCreateOptionAction(_extends({
+      routeName: routeNameOrOptions
+    }, options));
+  } else {
+    return _overrideCreateOptionAction(routeNameOrOptions);
+  }
+}
+
+function getDeepestActionState(resolveAction) {
+  if (resolveAction.action) {
+    var next = getDeepestActionState(resolveAction.action);
+
+    if (next) {
+      return next;
+    }
+  }
+
+  return resolveAction;
+}
+
+function _mergeActionParams(action, result) {
   if (action) {
     var {
       params,
@@ -47,7 +119,7 @@ function _merge(action, result) {
     }
 
     if (nextAction) {
-      _merge(nextAction, result);
+      _mergeActionParams(nextAction, result);
     }
   }
 }
@@ -55,7 +127,7 @@ function _merge(action, result) {
 function mergeActionParams(action) {
   var result = {};
 
-  _merge(action, result);
+  _mergeActionParams(action, result);
 
   return result;
 }
@@ -85,7 +157,7 @@ function removeEmpty(obj, options) {
   return accepts;
 }
 
-function _find(route, config) {
+function _findRoute(route, config) {
   var {
     forKey,
     value,
@@ -96,7 +168,7 @@ function _find(route, config) {
 
   if (Array.isArray(route[prop])) {
     for (var i of route[prop]) {
-      var j = _find(i, config);
+      var j = _findRoute(i, config);
 
       if (j) {
         return j;
@@ -135,7 +207,7 @@ function routeFind(route, config) {
     getResult: r => r
   }, config);
 
-  return _find(route, _cfg);
+  return _findRoute(route, _cfg);
 }
 
 var uuid_chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".split("");

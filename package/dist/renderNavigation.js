@@ -133,15 +133,16 @@ var map = function map(route, navigator) {
     routerConfig,
     screenProps,
     path,
-    creator: customCreator = null
+    use
   } = route;
   var {
     name
   } = route;
-  var prop = ["children", "all", "oneOf", "drawer", "app"].find(j => !!route[j]);
+  var prop = ["children", "all", "oneOf", "drawer"].find(j => !!route[j]);
 
   if (app !== true && !name) {
     name = "anonymous-" + (0, _common.randomString)(8) + "-" + Date.now();
+    route.name = name;
   }
 
   if (!name && app !== true) {
@@ -157,8 +158,8 @@ var map = function map(route, navigator) {
 
     var containerCreator;
 
-    if (typeof customCreator === "function") {
-      containerCreator = customCreator;
+    if (typeof use === "function") {
+      containerCreator = use;
     } else {
       containerCreator = creator[prop];
     }
@@ -175,6 +176,8 @@ var map = function map(route, navigator) {
           screen: inject(injectNavigationOptions, navigationOptions, screen),
           path,
           navigationOptions: injectNavigationOptions ? null : navigationOptions
+        }, {
+          omitEmptyString: true
         })
       };
     }
@@ -194,6 +197,8 @@ var map = function map(route, navigator) {
         navigationOptions: injectNavigationOptions ? {
           header: null
         } : navigationOptions
+      }, {
+        omitEmptyString: true
       })
     };
   }
@@ -202,6 +207,10 @@ var map = function map(route, navigator) {
 function _default(config, navigator) {
   if (navigator === void 0) {
     navigator = _router.default;
+  }
+
+  if (navigator) {
+    navigator._setRoutes(config);
   }
 
   return map(config, navigator);

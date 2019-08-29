@@ -13,10 +13,14 @@ import DrawerContentScreen from "../components/DrawerContentScreen";
 
 import router from "../react-navigation-config/router";
 
+import { NavigationActions } from "react-navigation";
+
 // import { createMaterialTopTabNavigator } from "react-navigation";
 // import { createMaterialBottomTabNavigator } from "react-navigation-material-bottom-tabs";
 
 router.preventDefaultActionFix(false);
+router.preventDefaultURIResolveFix(false);
+
 /*
 router.onReady(() => {
   console.log("初始化完毕");
@@ -37,9 +41,18 @@ router.afterEach((action, to, from) => {
 });
 */
 
-router.beforeResolve(() => {
-
-});
+// router.beforeResolve((state, action, path, params, next) => {
+//   next(action.routeName, {
+//     params: {
+//       ...params
+//     },
+//     channel: {
+//       testFunction() {
+//         console.log("test");
+//       }
+//     }
+//   });
+// });
 
 import { Image } from "react-native";
 import {

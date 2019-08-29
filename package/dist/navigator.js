@@ -30,8 +30,8 @@ function _default(AppContainer, navigator, options) {
     channelActions
   } = options || {};
   var WrappedAppContainer = class extends AppContainer {
-    constructor() {
-      super(...arguments);
+    constructor(props) {
+      super(props);
 
       if (navigator) {
         navigator._setNavigator(this);
@@ -56,8 +56,22 @@ function _default(AppContainer, navigator, options) {
       return WrappedAppContainer.router.getActionCreators(route, stateKey);
     };
 
+    AppContainer.router.getPathAndParamsForState = function (state) {
+      return WrappedAppContainer.router.getPathAndParamsForState(state);
+    };
+
     AppContainer.router.getActionForPathAndParams = function (path, params) {
-      return WrappedAppContainer.router.getActionForPathAndParams(path, params);
+      var action = WrappedAppContainer.router.getActionForPathAndParams(path, params);
+
+      if (action) {
+        var nextAction = navigator._bindBeforeResolve(action, path, params);
+
+        if (nextAction) {
+          return nextAction;
+        }
+      }
+
+      return action;
     };
 
     AppContainer.router.getComponentForRouteName = function (routeName) {
@@ -66,10 +80,6 @@ function _default(AppContainer, navigator, options) {
 
     AppContainer.router.getComponentForState = function (state) {
       return WrappedAppContainer.router.getComponentForState(state);
-    };
-
-    AppContainer.router.getPathAndParamsForState = function (state) {
-      return WrappedAppContainer.router.getPathAndParamsForState(state);
     };
 
     AppContainer.router.getScreenOptions = function (navigation, screenProps) {
@@ -189,14 +199,18 @@ function _default(AppContainer, navigator, options) {
         navigator.onReady(null);
         navigator.beforeEach(null);
         navigator.afterEach(null);
+
+        navigator._setRoutes([]);
       }
     }
 
     render() {
       var {
-        uriPrefix
+        uriPrefix,
+        enableURLHandling = true
       } = this.props;
       return _react.default.createElement(WrappedAppContainer, {
+        enableURLHandling: enableURLHandling,
         uriPrefix: uriPrefix,
         onNavigationStateChange: this.onNavigationStateChange
       });

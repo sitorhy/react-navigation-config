@@ -20,11 +20,17 @@ function channels(state = {}, action)
                 throw new Error("missing route key of channel install action.");
                 return state;
             }
+
+            const keep = state[action.key];
+
             return {
                 ...state,
                 [action.key]: {
                     timestamp: Date.now(),
-                    channel: action.channel
+                    channel: {
+                        ...keep,
+                        ...action.channel
+                    }
                 }
             };
         }
@@ -58,10 +64,17 @@ function stage(state = {}, action)
     {
         case ACTIONS.DEPOSIT_CHANNEL:
         {
-            return {
-                ...state,
-                channel: action.channel
-            };
+            if (action.channel !== state.channel)
+            {
+                return {
+                    ...state,
+                    channel: action.channel
+                };
+            }
+            else
+            {
+                return state;
+            }
         }
             break;
         case ACTIONS.DUMP_CHANNEL:

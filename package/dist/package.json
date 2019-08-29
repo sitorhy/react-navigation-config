@@ -1,12 +1,8 @@
 {
   "name": "react-navigation-config",
-  "version": "0.0.20",
+  "version": "0.0.25",
   "description": "static route configuration helpers for react-navigation 3.x.",
   "main": "index.js",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/sitorhy/react-navigation-config.git"
-  },
   "keywords": [
     "react-navigation",
     "react-native"

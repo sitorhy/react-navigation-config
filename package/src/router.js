@@ -9,10 +9,25 @@ import {
     getScreenPropsFromChannelModule,
     getNavigationModule,
     getKeyFromNavigationModule,
-    getChannelModule, mergeChannel, routeFind, pathToRegex, mergeActionParams
+    getChannelModule,
+    mergeChannel,
+    getDeepestActionState,
+    createOptionAction, addContainerEventListener, removeContainerEventListener
 } from "./common";
 import {NavigationActions, StackActions, DrawerActions} from "react-navigation";
 import {depositChannel, dumpChannel, installChannel, uninstallChannel} from "./actions";
+
+function effectOptionsActionCreate(effect = () =>
+{
+}, ...args)
+{
+    const action = createOptionAction(...args);
+    const {routeName} = action;
+    if (routeName)
+    {
+        effect(action, args.length === 1 ? (args[0] || {}).channel : (args[1] || {}).channel);
+    }
+}
 
 export class Navigator
 {
@@ -30,7 +45,11 @@ export class Navigator
 
     _preventDefaultActionFix = true;
 
-    _ignoreActions = DEFAULT_IGNORE_ACTIONS;
+    _preventDefaultURIResolveFix = true;
+
+    _ignoreRouteActions = [...DEFAULT_IGNORE_ACTIONS];
+
+    _ignoreURIActions = [...DEFAULT_IGNORE_ACTIONS];
 
     _setRoutes(routes = [])
     {
@@ -39,19 +58,51 @@ export class Navigator
 
     _bindBeforeResolve(action, path, params)
     {
+        let nextAction = null;
+        let rewriteAction = null;
+
+        const actionTo = getDeepestActionState(action);
+
+        if (this._preventDefaultURIResolveFix !== true)
+        {
+            action.params = {
+                ...action.params,
+                ...actionTo.params
+            };
+        }
+
         if (typeof this._beforeResolveHandler === "function")
         {
-            const actionParams = mergeActionParams(action);
+            const {type} = actionTo;
+
+            if (this._ignoreURIActions.includes(type))
+            {
+                return null;
+            }
+
+            const actionParams = actionTo.params;
+
+            const _createAction = (...args) =>
+            {
+                effectOptionsActionCreate((optionsAction, channel) =>
+                {
+                    rewriteAction = optionsAction;
+                    this.getStore().dispatch(depositChannel(channel));
+                }, ...args);
+            };
+
             const handler = this._beforeResolveHandler;
-            handler(action, path, actionParams);
+            nextAction = handler(action, actionTo, path, actionParams, _createAction);
         }
+
+        return nextAction || rewriteAction;
     }
 
     _bindBeforeEach(action, toState, fromState)
     {
         const {type} = action;
 
-        if (this._ignoreActions.includes(type))
+        if (this._ignoreRouteActions.includes(type))
         {
             return null;
         }
@@ -77,17 +128,15 @@ export class Navigator
 
             const handler = this._beforeEachHandler;
 
-            function _rewriteAction(routeName, params = undefined)
+            const _rewriteAction = (...args) =>
             {
-                if (routeName)
+                effectOptionsActionCreate((optionsAction, channel) =>
                 {
-                    rewriteAction = {
-                        ...action,
-                        routeName,
-                        ...params === undefined ? null : {params}
-                    };
-                }
-            }
+                    rewriteAction = optionsAction;
+                    this.getStore().dispatch(depositChannel(channel));
+
+                }, ...args);
+            };
 
             nextAction = handler(action, to, removeEmpty({
                 key: form.key,
@@ -139,20 +188,19 @@ export class Navigator
         return new Promise((resolve, reject) =>
         {
             const id = uuid();
-            const observer = {
+            const store = this.getStore();
+            this.getStore().dispatch(depositChannel(channel));
+            addContainerEventListener(this.container, {
                 id,
                 callback(obj)
                 {
                     resolve(obj);
                 }
-            };
-            const store = this.getStore();
-            store.dispatch(depositChannel(channel));
-            this.container._listen(observer);
+            });
             if (!doTask())
             {
                 store.dispatch(dumpChannel());
-                this.container._remove(id);
+                removeContainerEventListener(this.container, {id});
                 reject();
             }
         });
@@ -382,8 +430,21 @@ export class Navigator
         this._preventDefaultActionFix = disabled === true;
     }
 
-    beforeResolve(callback)
+    preventDefaultURIResolveFix(disabled = true)
     {
+        this._preventDefaultURIResolveFix = disabled === true;
+    }
+
+    beforeResolve(callback, options = {})
+    {
+        if (options)
+        {
+            const {ignoreActions} = options;
+            if (Array.isArray(ignoreActions))
+            {
+                this.setIgnoreURIActions(ignoreActions);
+            }
+        }
         if (typeof callback === "function")
         {
             this._beforeResolveHandler = callback;
@@ -397,7 +458,7 @@ export class Navigator
             const {ignoreActions} = options;
             if (Array.isArray(ignoreActions))
             {
-                this._ignoreActions = ignoreActions;
+                this.setIgnoreRouteActions(ignoreActions);
             }
         }
         if (typeof callback === "function")
@@ -425,6 +486,26 @@ export class Navigator
     getStore()
     {
         return this._store;
+    }
+
+    getIgnoreRouteActions()
+    {
+        return this._ignoreRouteActions;
+    }
+
+    getIgnoreURIActions()
+    {
+        return this._ignoreURIActions;
+    }
+
+    setIgnoreRouteActions(actions = [])
+    {
+        this._ignoreRouteActions = actions;
+    }
+
+    setIgnoreURIActions(actions = [])
+    {
+        this._ignoreURIActions = actions;
     }
 }
 

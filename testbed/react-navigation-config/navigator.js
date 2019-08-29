@@ -30,8 +30,8 @@ function _default(AppContainer, navigator, options) {
     channelActions
   } = options || {};
   var WrappedAppContainer = class extends AppContainer {
-    constructor() {
-      super(...arguments);
+    constructor(props) {
+      super(props);
 
       if (navigator) {
         navigator._setNavigator(this);
@@ -56,6 +56,10 @@ function _default(AppContainer, navigator, options) {
       return WrappedAppContainer.router.getActionCreators(route, stateKey);
     };
 
+    AppContainer.router.getPathAndParamsForState = function (state) {
+      return WrappedAppContainer.router.getPathAndParamsForState(state);
+    };
+
     AppContainer.router.getActionForPathAndParams = function (path, params) {
       var action = WrappedAppContainer.router.getActionForPathAndParams(path, params);
 
@@ -76,11 +80,6 @@ function _default(AppContainer, navigator, options) {
 
     AppContainer.router.getComponentForState = function (state) {
       return WrappedAppContainer.router.getComponentForState(state);
-    };
-
-    AppContainer.router.getPathAndParamsForState = function (state) {
-      console.log(668);
-      return WrappedAppContainer.router.getPathAndParamsForState(state);
     };
 
     AppContainer.router.getScreenOptions = function (navigation, screenProps) {

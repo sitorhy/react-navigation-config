@@ -41,7 +41,7 @@ declare namespace router {
 
     function dispatchAction(action: object, options: object);
 
-    function beforeResolve(callback: (action: object, path: string, params: object) => object);
+    function beforeResolve(callback: (nextState: object, toAction: object, path: string, params: object, next: (routeName: string) => object | null) => object, options: object | null | undefined);
 
     function beforeEach(callback: (action: object, to: object, from: object, next: (routeName: string) => object | null) => void, options: object | null | undefined);
 
@@ -50,6 +50,16 @@ declare namespace router {
     function onReady(callback: () => void);
 
     function preventDefaultActionFix(disabled: boolean);
+
+    function preventDefaultURIResolveFix(disabled: boolean);
+
+    function getIgnoreRouteActions(): void;
+
+    function getIgnoreURIActions(): void;
+
+    function setIgnoreRouteActions(actions: Array<string>): void;
+
+    function setIgnoreURIActions(actions: Array<string>): void;
 }
 
 export default router;

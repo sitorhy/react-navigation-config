@@ -1,3 +1,5 @@
+import {NavigationActions} from "react-navigation";
+
 export const DEFAULT_IGNORE_ACTIONS = [
     "Navigation/COMPLETE_TRANSITION",
     "Navigation/BACK",
@@ -27,13 +29,79 @@ export const DEFAULT_CHANNEL_ACTIONS = [
     "Navigation/RESET"
 ];
 
+export const CONTAINER_EVENT = {
+    STATE_CHANGE: "STATE_CHANGE"
+};
+
 export function pathToRegex(path = "")
 {
     const str = path.replace(/:[^/:]+/g, "(.+)");
     return new RegExp(str);
 }
 
-function _merge(action, result)
+export function addContainerEventListener(container, options = {})
+{
+    container._listen(
+        {
+            type: options.type || CONTAINER_EVENT.STATE_CHANGE,
+            id: options.id || uuid(),
+            callback: options.callback
+        }
+    );
+}
+
+export function removeContainerEventListener(container,{id})
+{
+    container._remove(id);
+}
+
+function _overrideCreateOptionAction(options = {})
+{
+    const {action, routeName, params} = options;
+    const basicAction = NavigationActions.navigate(
+        {
+            routeName,
+            ...params === undefined ? {} : {params}
+        }
+    );
+
+    return {
+        ...basicAction,
+        ...action
+    };
+}
+
+export function createOptionAction(routeNameOrOptions, options)
+{
+    if (arguments.length > 1)
+    {
+        return _overrideCreateOptionAction(
+            {
+                routeName: routeNameOrOptions,
+                ...options
+            }
+        );
+    }
+    else
+    {
+        return _overrideCreateOptionAction(routeNameOrOptions);
+    }
+}
+
+export function getDeepestActionState(resolveAction)
+{
+    if (resolveAction.action)
+    {
+        const next = getDeepestActionState(resolveAction.action);
+        if (next)
+        {
+            return next;
+        }
+    }
+    return resolveAction;
+}
+
+function _mergeActionParams(action, result)
 {
     if (action)
     {
@@ -44,7 +112,7 @@ function _merge(action, result)
         }
         if (nextAction)
         {
-            _merge(nextAction, result);
+            _mergeActionParams(nextAction, result);
         }
     }
 }
@@ -52,7 +120,7 @@ function _merge(action, result)
 export function mergeActionParams(action)
 {
     const result = {};
-    _merge(action, result);
+    _mergeActionParams(action, result);
     return result;
 }
 
@@ -83,7 +151,7 @@ export function removeEmpty(obj, options = {})
     return accepts;
 }
 
-function _find(route, config)
+function _findRoute(route, config)
 {
     const {forKey, value, match, getResult} = config;
 
@@ -93,7 +161,7 @@ function _find(route, config)
     {
         for (const i of route[prop])
         {
-            const j = _find(i, config);
+            const j = _findRoute(i, config);
             if (j)
             {
                 return j;
@@ -135,7 +203,7 @@ export function routeFind(
         ...config
     };
 
-    return _find(route, _cfg);
+    return _findRoute(route, _cfg);
 }
 
 const uuid_chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".split("");

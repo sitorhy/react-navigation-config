@@ -10,9 +10,9 @@ export default function (AppContainer, navigator = defaultNavigator, options = {
     const WrappedAppContainer = (
         class extends AppContainer
         {
-            constructor(...args)
+            constructor(props)
             {
-                super(...args);
+                super(props);
                 if (navigator)
                 {
                     navigator._setNavigator(this);
@@ -40,12 +40,18 @@ export default function (AppContainer, navigator = defaultNavigator, options = {
             return WrappedAppContainer.router.getActionCreators(route, stateKey);
         };
 
+        AppContainer.router.getPathAndParamsForState = function (state)
+        {
+            return WrappedAppContainer.router.getPathAndParamsForState(state);
+        };
+
         AppContainer.router.getActionForPathAndParams = function (path, params)
         {
             const action = WrappedAppContainer.router.getActionForPathAndParams(path, params);
             if (action)
             {
                 const nextAction = navigator._bindBeforeResolve(action, path, params);
+
                 if (nextAction)
                 {
                     return nextAction;
@@ -62,12 +68,6 @@ export default function (AppContainer, navigator = defaultNavigator, options = {
         AppContainer.router.getComponentForState = function (state)
         {
             return WrappedAppContainer.router.getComponentForState(state);
-        };
-
-        AppContainer.router.getPathAndParamsForState = function (state)
-        {
-            console.log(668);
-            return WrappedAppContainer.router.getPathAndParamsForState(state);
         };
 
         AppContainer.router.getScreenOptions = function (navigation, screenProps)

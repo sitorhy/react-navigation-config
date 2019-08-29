@@ -31,10 +31,11 @@ function channels(state, action) {
           return state;
         }
 
+        var keep = state[action.key];
         return _extends({}, state, {
           [action.key]: {
             timestamp: Date.now(),
-            channel: action.channel
+            channel: _extends({}, keep, {}, action.channel)
           }
         });
       }
@@ -70,9 +71,13 @@ function stage(state, action) {
   switch (action.type) {
     case ACTIONS.DEPOSIT_CHANNEL:
       {
-        return _extends({}, state, {
-          channel: action.channel
-        });
+        if (action.channel !== state.channel) {
+          return _extends({}, state, {
+            channel: action.channel
+          });
+        } else {
+          return state;
+        }
       }
       break;
 
