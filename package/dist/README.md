@@ -313,8 +313,8 @@ handle URIs from browser.
 > + `<Object>` `nextState`
 > + `<Object>` `toAction`
 > + `<String>` `path` - deep link path
-> + `<String` `options`
-> + `<Object>` `next(routeName,options)` - action rewrite helper
+> + `<String>` `params`
+> + `<Object>` `next(routeName,params)` - action rewrite helper
 
 ##### Return Value
 + `<Action>`
