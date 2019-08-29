@@ -119,7 +119,7 @@ import { createMaterialBottomTabNavigator } from "react-navigation-material-bott
 {
           name: "tab",
           material: false,
-          creator: createMaterialBottomTabNavigator,
+          use: createMaterialBottomTabNavigator,
           navigationOptions: {
             header: null
           },
@@ -298,26 +298,49 @@ router.beforeEach((to, from, next) => {
 > + `<Object>` `action` - navigation action
 > + `<Object>` `to` - route state
 > + `<Object>` `from` - current route state
-> + `<Function>` `next(routeName,options)` - action create helper, if parameter `options.params` is undefined,it will be ignored and unchanged.
+> + `<Function>` `next(routeName,options)` - action create helper, if parameter `params` of parameter options is `undefined`,it will be ignored and unchanged.
+>      - `options.routeName` - optional
+>      - `options.action` - optional, NavigationActions.navigate(...)
+>      - `options.params` - optional
+>      - `options.channel` - optional, not recommended
 
-##### Return Value
-+ `<Action>` - return a navigation action that own highest priority
+##### **<Function> next**
+> - `next()` - nothing happen
+> - `next(false)` - abort current navigation
+> - `next(routeName:String,options:Object)` - navigate to new one
+> - `next(options:Object)` - navigate to new one, omit the parameter routeName, but need to specific action or routeName of parameter options
+
 
 <br>
 
 ### **beforeResolve**
-handle URIs from browser.
+handle URIs event.
 ##### Parameters
 + `<Function>` - callback
 ##### **callback**
-> + `<Object>` `nextState`
-> + `<Object>` `toAction`
-> + `<String>` `path` - deep link path
+> + `<Object>` `action`
+> + `<Object>` `to`
+> + `<String>` `path` - deep-link path
 > + `<String>` `params`
 > + `<Object>` `next(routeName,params)` - action rewrite helper
 
-##### Return Value
-+ `<Action>`
+```
+router.beforeResolve((state, action, path, params, next) => {
+  // authorization code here ....
+  
+  next(action.routeName, {
+    params: {
+      ...params
+    }
+  });
+});
+```
+
+##### **<Function> next**
+> - `next()` - nothing happen
+> - `next(false)` - stay at the route entrance
+> - `next(routeName:String,options:Object)`
+> - `next(options:Object)`
 
 <br>
 

@@ -17,7 +17,7 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-function effectOptionsActionCreate(effect) {
+function effectOfActionCreate(effect) {
   if (effect === void 0) {
     effect = () => {};
   }
@@ -26,7 +26,7 @@ function effectOptionsActionCreate(effect) {
     args[_key - 1] = arguments[_key];
   }
 
-  var action = (0, _common.createOptionAction)(...args);
+  var action = (0, _common.rewriteAction)(...args);
   var {
     routeName
   } = action;
@@ -70,13 +70,13 @@ class Navigator {
   _bindBeforeResolve(action, path, params) {
     var _this = this;
 
-    var nextAction = null;
-    var rewriteAction = null;
     var actionTo = (0, _common.getDeepestActionState)(action);
 
     if (this._preventDefaultURIResolveFix !== true) {
       action.params = _extends({}, action.params, {}, actionTo.params);
     }
+
+    var nextAction = null;
 
     if (typeof this._beforeResolveHandler === "function") {
       var {
@@ -94,18 +94,30 @@ class Navigator {
           args[_key2] = arguments[_key2];
         }
 
-        effectOptionsActionCreate((optionsAction, channel) => {
-          rewriteAction = optionsAction;
+        if (args.length) {
+          if (args.length && args[0] === false) {
+            nextAction = false;
+          } else {
+            effectOfActionCreate((actionRewrite, channel) => {
+              nextAction = actionRewrite;
 
-          _this.getStore().dispatch((0, _actions.depositChannel)(channel));
-        }, ...args);
+              _this.getStore().dispatch((0, _actions.depositChannel)(channel));
+            }, ...args);
+          }
+        }
       };
 
       var handler = this._beforeResolveHandler;
-      nextAction = handler(action, actionTo, path, actionParams, _createAction);
+      handler(action, actionTo, path, actionParams, _createAction);
     }
 
-    return nextAction || rewriteAction;
+    if (nextAction !== null && nextAction !== undefined) {
+      if (nextAction && nextAction !== true || nextAction === false) {
+        return nextAction;
+      }
+    }
+
+    return null;
   }
 
   _bindBeforeEach(action, toState, fromState) {
@@ -121,7 +133,6 @@ class Navigator {
 
     var fixed = false;
     var nextAction = null;
-    var rewriteAction = null;
     var to = (0, _common.getActiveRoute)(toState);
 
     if (this._preventDefaultActionFix !== true) {
@@ -132,7 +143,7 @@ class Navigator {
     }
 
     if (typeof this._beforeEachHandler === "function") {
-      var form = (0, _common.getActiveRoute)(fromState);
+      var from = (0, _common.getActiveRoute)(fromState);
       var handler = this._beforeEachHandler;
 
       var _rewriteAction = function _rewriteAction() {
@@ -140,21 +151,35 @@ class Navigator {
           args[_key3] = arguments[_key3];
         }
 
-        effectOptionsActionCreate((optionsAction, channel) => {
-          rewriteAction = optionsAction;
+        if (!args.length) {
+          return;
+        }
 
-          _this2.getStore().dispatch((0, _actions.depositChannel)(channel));
-        }, ...args);
+        if (args.length && args[0] === false) {
+          nextAction = false;
+        } else {
+          effectOfActionCreate((actionRewrite, channel) => {
+            nextAction = actionRewrite;
+
+            _this2.getStore().dispatch((0, _actions.depositChannel)(channel));
+          }, ...args);
+        }
       };
 
-      nextAction = handler(action, to, (0, _common.removeEmpty)({
-        key: form.key,
-        params: form.params,
-        routeName: form.routeName
+      handler(action, to, (0, _common.removeEmpty)({
+        key: from.key,
+        params: from.params,
+        routeName: from.routeName
       }), _rewriteAction);
     }
 
-    return nextAction || rewriteAction || fixed && action;
+    if (nextAction !== null && nextAction !== undefined) {
+      if (nextAction && nextAction !== true || nextAction === false) {
+        return nextAction;
+      }
+    }
+
+    return fixed ? action : null;
   }
 
   _bindAfterEach(action, toState, fromState) {

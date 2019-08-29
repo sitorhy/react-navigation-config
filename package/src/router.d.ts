@@ -39,19 +39,19 @@ declare namespace router {
 
     function getParams(): Array<object>;
 
-    function dispatchAction(action: object, options: object);
+    function dispatchAction(action: object, options: object): Promise<object>;
 
-    function beforeResolve(callback: (nextState: object, toAction: object, path: string, params: object, next: (routeName: string) => object | null) => object, options: object | null | undefined);
+    function beforeResolve(callback: (nextState: object, toAction: object, path: string, params: object, next: (routeName: string) => object | null) => object, options: object | null | undefined): void;
 
-    function beforeEach(callback: (action: object, to: object, from: object, next: (routeName: string) => object | null) => void, options: object | null | undefined);
+    function beforeEach(callback: (action: object, to: object, from: object, next: (routeName: string) => object | null) => void, options: object | null | undefined): void;
 
-    function afterEach(callback: (action: object, to: object, from: object) => void);
+    function afterEach(callback: (action: object, to: object, from: object) => void): void;
 
-    function onReady(callback: () => void);
+    function onReady(callback: () => void): void;
 
-    function preventDefaultActionFix(disabled: boolean);
+    function preventDefaultActionFix(disabled: boolean): void;
 
-    function preventDefaultURIResolveFix(disabled: boolean);
+    function preventDefaultURIResolveFix(disabled: boolean): void;
 
     function getIgnoreRouteActions(): void;
 

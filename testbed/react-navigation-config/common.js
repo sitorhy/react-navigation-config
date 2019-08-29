@@ -4,7 +4,7 @@ exports.__esModule = true;
 exports.pathToRegex = pathToRegex;
 exports.addContainerEventListener = addContainerEventListener;
 exports.removeContainerEventListener = removeContainerEventListener;
-exports.createOptionAction = createOptionAction;
+exports.rewriteAction = rewriteAction;
 exports.getDeepestActionState = getDeepestActionState;
 exports.mergeActionParams = mergeActionParams;
 exports.removeEmpty = removeEmpty;
@@ -65,7 +65,7 @@ function removeContainerEventListener(container, _ref) {
   container._remove(id);
 }
 
-function _overrideCreateOptionAction(options) {
+function _overrideRewriteAction(options) {
   if (options === void 0) {
     options = {};
   }
@@ -73,25 +73,28 @@ function _overrideCreateOptionAction(options) {
   var {
     action,
     routeName,
-    params
+    params,
+    routeKey
   } = options;
 
   var basicAction = _reactNavigation.NavigationActions.navigate(_extends({
     routeName
   }, params === undefined ? {} : {
     params
-  }));
+  }, {}, removeEmpty({
+    key: routeKey
+  })));
 
   return _extends({}, basicAction, {}, action);
 }
 
-function createOptionAction(routeNameOrOptions, options) {
+function rewriteAction(routeNameOrOptions, options) {
   if (arguments.length > 1) {
-    return _overrideCreateOptionAction(_extends({
+    return _overrideRewriteAction(_extends({
       routeName: routeNameOrOptions
     }, options));
   } else {
-    return _overrideCreateOptionAction(routeNameOrOptions);
+    return _overrideRewriteAction(routeNameOrOptions);
   }
 }
 

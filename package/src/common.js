@@ -50,18 +50,21 @@ export function addContainerEventListener(container, options = {})
     );
 }
 
-export function removeContainerEventListener(container,{id})
+export function removeContainerEventListener(container, {id})
 {
     container._remove(id);
 }
 
-function _overrideCreateOptionAction(options = {})
+function _overrideRewriteAction(options = {})
 {
-    const {action, routeName, params} = options;
+    const {action, routeName, params, routeKey} = options;
     const basicAction = NavigationActions.navigate(
         {
             routeName,
-            ...params === undefined ? {} : {params}
+            ...params === undefined ? {} : {params},
+            ...removeEmpty({
+                key: routeKey
+            })
         }
     );
 
@@ -71,11 +74,11 @@ function _overrideCreateOptionAction(options = {})
     };
 }
 
-export function createOptionAction(routeNameOrOptions, options)
+export function rewriteAction(routeNameOrOptions, options)
 {
     if (arguments.length > 1)
     {
-        return _overrideCreateOptionAction(
+        return _overrideRewriteAction(
             {
                 routeName: routeNameOrOptions,
                 ...options
@@ -84,7 +87,7 @@ export function createOptionAction(routeNameOrOptions, options)
     }
     else
     {
-        return _overrideCreateOptionAction(routeNameOrOptions);
+        return _overrideRewriteAction(routeNameOrOptions);
     }
 }
 

@@ -12,16 +12,18 @@ import {
     getChannelModule,
     mergeChannel,
     getDeepestActionState,
-    createOptionAction, addContainerEventListener, removeContainerEventListener
+    rewriteAction,
+    addContainerEventListener,
+    removeContainerEventListener
 } from "./common";
 import {NavigationActions, StackActions, DrawerActions} from "react-navigation";
 import {depositChannel, dumpChannel, installChannel, uninstallChannel} from "./actions";
 
-function effectOptionsActionCreate(effect = () =>
+function effectOfActionCreate(effect = () =>
 {
 }, ...args)
 {
-    const action = createOptionAction(...args);
+    const action = rewriteAction(...args);
     const {routeName} = action;
     if (routeName)
     {
@@ -58,9 +60,6 @@ export class Navigator
 
     _bindBeforeResolve(action, path, params)
     {
-        let nextAction = null;
-        let rewriteAction = null;
-
         const actionTo = getDeepestActionState(action);
 
         if (this._preventDefaultURIResolveFix !== true)
@@ -70,6 +69,8 @@ export class Navigator
                 ...actionTo.params
             };
         }
+
+        let nextAction = null;
 
         if (typeof this._beforeResolveHandler === "function")
         {
@@ -84,18 +85,36 @@ export class Navigator
 
             const _createAction = (...args) =>
             {
-                effectOptionsActionCreate((optionsAction, channel) =>
+                if (args.length)
                 {
-                    rewriteAction = optionsAction;
-                    this.getStore().dispatch(depositChannel(channel));
-                }, ...args);
+                    if (args.length && args[0] === false)
+                    {
+                        nextAction = false;
+                    }
+                    else
+                    {
+                        effectOfActionCreate((actionRewrite, channel) =>
+                        {
+                            nextAction = actionRewrite;
+                            this.getStore().dispatch(depositChannel(channel));
+                        }, ...args);
+                    }
+                }
             };
 
             const handler = this._beforeResolveHandler;
-            nextAction = handler(action, actionTo, path, actionParams, _createAction);
+            handler(action, actionTo, path, actionParams, _createAction);
         }
 
-        return nextAction || rewriteAction;
+        if (nextAction !== null && nextAction !== undefined)
+        {
+            if ((nextAction && nextAction !== true) || nextAction === false)
+            {
+                return nextAction;
+            }
+        }
+
+        return null;
     }
 
     _bindBeforeEach(action, toState, fromState)
@@ -109,7 +128,6 @@ export class Navigator
 
         let fixed = false;
         let nextAction = null;
-        let rewriteAction = null;
 
         const to = getActiveRoute(toState);
 
@@ -124,28 +142,46 @@ export class Navigator
 
         if (typeof this._beforeEachHandler === "function")
         {
-            const form = getActiveRoute(fromState);
+            const from = getActiveRoute(fromState);
 
             const handler = this._beforeEachHandler;
 
             const _rewriteAction = (...args) =>
             {
-                effectOptionsActionCreate((optionsAction, channel) =>
+                if (!args.length)
                 {
-                    rewriteAction = optionsAction;
-                    this.getStore().dispatch(depositChannel(channel));
-
-                }, ...args);
+                    return;
+                }
+                if (args.length && args[0] === false)
+                {
+                    nextAction = false;
+                }
+                else
+                {
+                    effectOfActionCreate((actionRewrite, channel) =>
+                    {
+                        nextAction = actionRewrite;
+                        this.getStore().dispatch(depositChannel(channel));
+                    }, ...args);
+                }
             };
 
-            nextAction = handler(action, to, removeEmpty({
-                key: form.key,
-                params: form.params,
-                routeName: form.routeName
+            handler(action, to, removeEmpty({
+                key: from.key,
+                params: from.params,
+                routeName: from.routeName
             }), _rewriteAction);
         }
 
-        return nextAction || rewriteAction || (fixed && action);
+        if (nextAction !== null && nextAction !== undefined)
+        {
+            if ((nextAction && nextAction !== true) || nextAction === false)
+            {
+                return nextAction;
+            }
+        }
+
+        return fixed ? action : null;
     }
 
     _bindAfterEach(action, toState, fromState)

@@ -41,18 +41,20 @@ router.afterEach((action, to, from) => {
 });
 */
 
-// router.beforeResolve((state, action, path, params, next) => {
-//   next(action.routeName, {
-//     params: {
-//       ...params
-//     },
-//     channel: {
-//       testFunction() {
-//         console.log("test");
-//       }
-//     }
-//   });
-// });
+/*
+router.beforeResolve((state, action, path, params, next) => {
+  next(action.routeName, {
+    params: {
+      ...params
+    },
+    channel: {
+      testFunction() {
+        console.log("test");
+      }
+    }
+  });
+});
+*/
 
 import { Image } from "react-native";
 import {

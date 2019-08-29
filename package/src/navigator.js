@@ -52,8 +52,13 @@ export default function (AppContainer, navigator = defaultNavigator, options = {
             {
                 const nextAction = navigator._bindBeforeResolve(action, path, params);
 
-                if (nextAction)
+                if (nextAction !== null && nextAction !== undefined)
                 {
+                    if (nextAction === false)
+                    {
+                        return null;
+                    }
+
                     return nextAction;
                 }
             }
@@ -92,8 +97,12 @@ export default function (AppContainer, navigator = defaultNavigator, options = {
             if (inputState)
             {
                 const nextAction = navigator._bindBeforeEach(action, state, inputState);
-                if (nextAction)
+                if (nextAction !== null && nextAction !== undefined)
                 {
+                    if (nextAction === false)
+                    {
+                        return null;
+                    }
                     state = WrappedAppContainer.router.getStateForAction(nextAction, inputState);
                 }
             }

@@ -66,7 +66,11 @@ function _default(AppContainer, navigator, options) {
       if (action) {
         var nextAction = navigator._bindBeforeResolve(action, path, params);
 
-        if (nextAction) {
+        if (nextAction !== null && nextAction !== undefined) {
+          if (nextAction === false) {
+            return null;
+          }
+
           return nextAction;
         }
       }
@@ -104,7 +108,11 @@ function _default(AppContainer, navigator, options) {
       if (inputState) {
         var nextAction = navigator._bindBeforeEach(action, state, inputState);
 
-        if (nextAction) {
+        if (nextAction !== null && nextAction !== undefined) {
+          if (nextAction === false) {
+            return null;
+          }
+
           state = WrappedAppContainer.router.getStateForAction(nextAction, inputState);
         }
       }
