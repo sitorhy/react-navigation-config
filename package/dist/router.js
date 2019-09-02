@@ -289,6 +289,11 @@ class Navigator {
     return (0, _common.getKeyFromNavigationModule)(navigation);
   }
 
+  getActiveName() {
+    var navigation = (0, _common.getNavigationModule)(this.getStore().getState());
+    return (0, _common.getNameFromNavigationModule)(navigation);
+  }
+
   setParams(routeKey, params) {
     return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.NavigationActions.setParams({
       params: params,

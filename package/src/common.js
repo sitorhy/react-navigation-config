@@ -428,11 +428,19 @@ export function getKeyFromNavigationModule(state)
     return state.key;
 }
 
+export function getNameFromNavigationModule(state)
+{
+    if (!state)
+    {
+        return null;
+    }
+    return state.routeName;
+}
+
 export function getNavigationModule(state)
 {
     return state.navigation;
 }
-
 
 export function getStageModule(state)
 {

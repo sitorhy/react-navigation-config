@@ -409,7 +409,7 @@ createStackNavigator({
   ...MyOtherRoutes,
 });
 ```
-path paramter `tom` will not appear in `route.params` in navigation prop.
+path paramter `tom` will not appear in `route.params` of navigation prop.
 
 #### Fixed
 force merge path paramters.
@@ -437,6 +437,15 @@ low-level method, update navigation current state with the given action.
 
 ### **getActiveKey**
 get current route key.
+##### Parameters
++ `void`
+##### Return Value
++ `<String| null>`
+
+<br>
+
+### **getActiveName**
+get current route name.
 ##### Parameters
 + `void`
 ##### Return Value

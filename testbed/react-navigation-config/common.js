@@ -18,6 +18,7 @@ exports.matchRoute = matchRoute;
 exports.getScreenPropsFromChannelModule = getScreenPropsFromChannelModule;
 exports.getChannelModule = getChannelModule;
 exports.getKeyFromNavigationModule = getKeyFromNavigationModule;
+exports.getNameFromNavigationModule = getNameFromNavigationModule;
 exports.getNavigationModule = getNavigationModule;
 exports.getStageModule = getStageModule;
 exports.getChannelFromStageModule = getChannelFromStageModule;
@@ -417,6 +418,14 @@ function getKeyFromNavigationModule(state) {
   }
 
   return state.key;
+}
+
+function getNameFromNavigationModule(state) {
+  if (!state) {
+    return null;
+  }
+
+  return state.routeName;
 }
 
 function getNavigationModule(state) {

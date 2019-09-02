@@ -32,7 +32,7 @@ gulp.task("default", async () =>
     delete json.scripts;
     delete json.homepage;
     delete json.bugs;
-    delete json.repository;
+    // delete json.repository;
     if (!fs.existsSync("./dist"))
     {
         fs.mkdirSync("./dist");

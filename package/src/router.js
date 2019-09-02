@@ -9,6 +9,7 @@ import {
     getScreenPropsFromChannelModule,
     getNavigationModule,
     getKeyFromNavigationModule,
+    getNameFromNavigationModule,
     getChannelModule,
     mergeChannel,
     getDeepestActionState,
@@ -299,6 +300,12 @@ export class Navigator
     {
         const navigation = getNavigationModule(this.getStore().getState());
         return getKeyFromNavigationModule(navigation);
+    }
+
+    getActiveName()
+    {
+        const navigation = getNavigationModule(this.getStore().getState());
+        return getNameFromNavigationModule(navigation);
     }
 
     setParams(routeKey, params)

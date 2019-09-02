@@ -1,12 +1,13 @@
 {
   "name": "react-navigation-config",
-  "version": "0.0.27",
+  "version": "0.0.28",
   "description": "static route configuration helpers for react-navigation 3.x.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "gulp",
-    "dev": "gulp dev"
+    "dev": "gulp dev",
+    "deploy": "gulp deploy"
   },
   "repository": {
     "type": "git",

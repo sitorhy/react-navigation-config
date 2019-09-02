@@ -3,6 +3,8 @@ declare namespace router {
 
     function getActiveKey(): string | null;
 
+    function getActiveName(): string | null;
+
     function mergeParams(): object | null;
 
     function getParams(key: string | null | undefined): object | null;
