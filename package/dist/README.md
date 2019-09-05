@@ -1,5 +1,5 @@
 # React Navigation Config
-configuration helpers for react-navigation 3.x.
+configuration helpers for react-navigation.
 
 <br>
 
@@ -110,7 +110,7 @@ AppRegistry.registerComponent(name, () => App);
 
 + `<Object>` `screenProps` - route meta fields,will be integrated into **screenProps**
 
-+ `<Function>` `use` - other container creator, use default setting if null.
++ `<Function>` `use` - other navigation container creator, use default setting if null.
 ```
 import { createMaterialBottomTabNavigator } from "react-navigation-material-bottom-tabs";
 
@@ -173,6 +173,22 @@ receive a navigator that can navigate to specified route anywhere.
 ##### Parameters
 + `Array<Route>` AppContainer - from call **renderNavigation**
 + `<Navigator> navigator` - the navigator that will be initialized
+
+<br>
+
+### **linkNavigatorProvider**
+default navigation container creator
+##### Parameters
++ `<String>` type - config field name of navigator creator
++ `<Navigator> navigator` - the navigator create function
+
+```
+// for 4.x basic
+
+import { createStackNavigator } from 'react-navigation-stack';
+
+linkNavigatorProvider("all", createStackNavigator);
+```
 
 <br>
 

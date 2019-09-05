@@ -17,7 +17,8 @@ import {
     addContainerEventListener,
     removeContainerEventListener
 } from "./common";
-import {NavigationActions, StackActions, DrawerActions} from "react-navigation";
+import {NavigationActions, StackActions} from "react-navigation";
+import {DrawerActions} from "react-navigation-drawer";
 import {depositChannel, dumpChannel, installChannel, uninstallChannel} from "./actions";
 
 function effectOfActionCreate(effect = () =>

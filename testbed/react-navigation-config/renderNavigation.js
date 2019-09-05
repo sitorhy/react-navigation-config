@@ -16,6 +16,12 @@ var _common = require("./common");
 
 var _actions = require("./actions");
 
+var _reactNavigationStack = require("react-navigation-stack");
+
+var _reactNavigationDrawer = require("react-navigation-drawer");
+
+var _reactNavigationTabs = require("react-navigation-tabs");
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -25,10 +31,10 @@ function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) r
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
 var creator = {
-  children: null,
-  all: null,
+  children: _reactNavigationStack.createStackNavigator,
+  all: _reactNavigationTabs.createBottomTabNavigator,
   oneOf: _reactNavigation.createSwitchNavigator,
-  drawer: null,
+  drawer: _reactNavigationDrawer.createDrawerNavigator,
   app: _reactNavigation.createAppContainer
 };
 
@@ -217,10 +223,6 @@ function _default(config, navigator) {
   if (navigator === void 0) {
     navigator = _router.default;
   }
-
-  var xxx = require("xxx");
-
-  console.log(xxx);
 
   if (navigator) {
     navigator._setRoutes(config);

@@ -183,6 +183,8 @@ default navigation container creator
 + `<Navigator> navigator` - the navigator create function
 
 ```
+// for 4.x basic
+
 import { createStackNavigator } from 'react-navigation-stack';
 
 linkNavigatorProvider("all", createStackNavigator);

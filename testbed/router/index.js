@@ -12,11 +12,23 @@ import DrawerScreen from "../components/DrawerScreen";
 import DrawerContentScreen from "../components/DrawerContentScreen";
 
 import router from "../react-navigation-config/router";
+import { linkNavigatorProvider } from "../react-navigation-config";
 
 import { NavigationActions } from "react-navigation";
 
+import { createStackNavigator } from "react-navigation-stack";
+import { createDrawerNavigator } from "react-navigation-drawer";
+import {
+  createBottomTabNavigator,
+  createMaterialTopTabNavigator
+} from "react-navigation-tabs";
+
 // import { createMaterialTopTabNavigator } from "react-navigation";
 // import { createMaterialBottomTabNavigator } from "react-navigation-material-bottom-tabs";
+
+// linkNavigatorProvider("all", createBottomTabNavigator);
+// linkNavigatorProvider("children", createStackNavigator);
+// linkNavigatorProvider("drawer", createDrawerNavigator);
 
 router.preventDefaultActionFix(false);
 router.preventDefaultURIResolveFix(false);

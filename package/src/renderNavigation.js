@@ -9,11 +9,15 @@ import * as decorators from "./decorators";
 import {getChannelModule, getScreenPropsFromChannelModule, ObserveStore, randomString, removeEmpty} from "./common";
 import {uninstallChannel} from "./actions";
 
+import {createStackNavigator} from "react-navigation-stack";
+import {createDrawerNavigator} from "react-navigation-drawer";
+import {createBottomTabNavigator} from "react-navigation-tabs";
+
 const creator = {
-    children: null,
-    all: null,
+    children: createStackNavigator,
+    all: createBottomTabNavigator,
     oneOf: createSwitchNavigator,
-    drawer: null,
+    drawer: createDrawerNavigator,
     app: createAppContainer
 };
 

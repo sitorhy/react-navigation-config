@@ -20,6 +20,10 @@ export interface Config extends Route {
     app?: boolean;
 }
 
+export function filterNavigation(routes: Array<object>, allows: Array<object>);
+
+export function linkNavigatorProvider(type: string, provider: () => React.Component);
+
 export function renderNavigation(config: Config, navigator?: object): React.Component;
 
 export function wrappedNavigatorRef(AppContainer: React.Component, navigator?: object, options?: object): React.Component;
