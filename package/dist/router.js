@@ -9,6 +9,8 @@ var _common = require("./common");
 
 var _reactNavigation = require("react-navigation");
 
+var _reactNavigationDrawer = require("react-navigation-drawer");
+
 var _actions = require("./actions");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -442,7 +444,7 @@ class Navigator {
       channel = options.channel;
     }
 
-    return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.DrawerActions.toggleDrawer()), channel);
+    return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigationDrawer.DrawerActions.toggleDrawer()), channel);
   }
 
   openDrawer(options) {
@@ -452,7 +454,7 @@ class Navigator {
       channel = options.channel;
     }
 
-    return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.DrawerActions.openDrawer()), channel);
+    return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigationDrawer.DrawerActions.openDrawer()), channel);
   }
 
   closeDrawer(options) {
@@ -462,7 +464,7 @@ class Navigator {
       channel = options.channel;
     }
 
-    return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.DrawerActions.closeDrawer()), channel);
+    return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigationDrawer.DrawerActions.closeDrawer()), channel);
   }
 
   preventDefaultActionFix(disabled) {

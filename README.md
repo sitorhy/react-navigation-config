@@ -1,5 +1,5 @@
 # React Navigation Config
-configuration helpers for react-navigation.
+configuration helpers for react-navigation 4.x.
 
 <br>
 
@@ -7,6 +7,9 @@ configuration helpers for react-navigation.
 + react
 + redux
 + react-navigation
++ react-navigation-drawer
++ react-navigation-stack
++ react-navigation-tabs
 
 <br>
 
@@ -177,14 +180,12 @@ receive a navigator that can navigate to specified route anywhere.
 <br>
 
 ### **linkNavigatorProvider**
-default navigation container creator
+4.x preview, default navigation container constructor.
 ##### Parameters
-+ `<String>` type - config field name of navigator creator
-+ `<Navigator> navigator` - the navigator create function
++ `<String>` type - config field name of navigator constructor
++ `<Navigator> navigator` - constructor
 
 ```
-// for 4.x basic
-
 import { createStackNavigator } from 'react-navigation-stack';
 
 linkNavigatorProvider("all", createStackNavigator);
