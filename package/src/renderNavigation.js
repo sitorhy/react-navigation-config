@@ -1,10 +1,7 @@
 import React from "react";
 import {
     createAppContainer,
-    createStackNavigator,
-    createSwitchNavigator,
-    createBottomTabNavigator,
-    createDrawerNavigator
+    createSwitchNavigator
 } from "react-navigation";
 
 import defaultNavigator from "./router";
@@ -13,12 +10,18 @@ import {getChannelModule, getScreenPropsFromChannelModule, ObserveStore, randomS
 import {uninstallChannel} from "./actions";
 
 const creator = {
-    children: createStackNavigator,
-    all: createBottomTabNavigator,
+    children: null,
+    all: null,
     oneOf: createSwitchNavigator,
-    drawer: createDrawerNavigator,
+    drawer: null,
     app: createAppContainer
 };
+
+
+export function linkNavigatorProvider(type, provider)
+{
+    creator[type] = provider;
+}
 
 function inject(injectNavigationOptions, navigationOptions, component)
 {
@@ -161,6 +164,11 @@ const map = function (route, navigator)
         else
         {
             containerCreator = creator[prop];
+        }
+
+        if (!containerCreator)
+        {
+            throw new Error("unidentified navigator provider");
         }
 
         let navigation = containerCreator(routeConfigs, routerConfig);

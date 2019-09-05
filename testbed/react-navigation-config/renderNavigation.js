@@ -1,6 +1,7 @@
 "use strict";
 
 exports.__esModule = true;
+exports.linkNavigatorProvider = linkNavigatorProvider;
 exports.default = _default;
 
 var _react = _interopRequireDefault(require("react"));
@@ -24,12 +25,16 @@ function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) r
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
 var creator = {
-  children: _reactNavigation.createStackNavigator,
-  all: _reactNavigation.createBottomTabNavigator,
+  children: null,
+  all: null,
   oneOf: _reactNavigation.createSwitchNavigator,
-  drawer: _reactNavigation.createDrawerNavigator,
+  drawer: null,
   app: _reactNavigation.createAppContainer
 };
+
+function linkNavigatorProvider(type, provider) {
+  creator[type] = provider;
+}
 
 function inject(injectNavigationOptions, navigationOptions, component) {
   if (injectNavigationOptions) {
@@ -164,6 +169,10 @@ var map = function map(route, navigator) {
       containerCreator = creator[prop];
     }
 
+    if (!containerCreator) {
+      throw new Error("unidentified navigator provider");
+    }
+
     var navigation = containerCreator(routeConfigs, routerConfig);
     var ScreenComponent = navigation;
     var screen = through(navigator ? navigator.getStore() : null, screenProps, ScreenComponent);
@@ -208,6 +217,10 @@ function _default(config, navigator) {
   if (navigator === void 0) {
     navigator = _router.default;
   }
+
+  var xxx = require("xxx");
+
+  console.log(xxx);
 
   if (navigator) {
     navigator._setRoutes(config);
