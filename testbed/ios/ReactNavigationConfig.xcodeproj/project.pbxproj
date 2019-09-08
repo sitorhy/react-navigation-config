@@ -194,7 +194,6 @@
 				793096030C0E59EECEBA0E28 /* Pods-ReactNavigationConfigTests.debug.xcconfig */,
 				F6AF76E1C12DE668E2D4EF96 /* Pods-ReactNavigationConfigTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -309,6 +308,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);

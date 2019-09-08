@@ -11,6 +11,7 @@ import {
 import imgTask from "../images/task.png";
 import toDoList from "./todo.json";
 import navigator from "../react-navigation-config/router";
+import { SafeAreaView } from "react-navigation";
 
 const styles = StyleSheet.create({
   todo: {},
@@ -19,7 +20,8 @@ const styles = StyleSheet.create({
     paddingTop: 15,
     paddingBottom: 15,
     paddingLeft: 10,
-    paddingRight: 10
+    paddingRight: 10,
+    backgroundColor: "white"
   },
   itemLeft: {
     width: 48,
@@ -71,7 +73,8 @@ export default class extends React.Component {
           width: "86%",
           borderBottomWidth: 1,
           borderBottomColor: "lightgrey",
-          marginLeft: "14%"
+          marginLeft: "14%",
+          backgroundColor: "white"
         }}
       />
     );
@@ -87,12 +90,16 @@ export default class extends React.Component {
     const { data } = this.state;
 
     return (
-      <View style={styles.todo}>
-        <FlatList
-          data={data}
-          renderItem={this.renderItem}
-          ItemSeparatorComponent={this.renderSeparator}
-        />
+      <View style={{ backgroundColor: "white", flex: 1 }}>
+        <SafeAreaView>
+          <View style={styles.todo}>
+            <FlatList
+              data={data}
+              renderItem={this.renderItem}
+              ItemSeparatorComponent={this.renderSeparator}
+            />
+          </View>
+        </SafeAreaView>
       </View>
     );
   }

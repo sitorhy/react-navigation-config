@@ -11,6 +11,7 @@ import {
 import navigator from "../react-navigation-config/router";
 
 import imgAvatar from "../images/avatar.png";
+import { SafeAreaView } from "react-navigation";
 
 const styles = StyleSheet.create({
   header: {
@@ -28,7 +29,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1
   },
   mine: {
-    backgroundColor: "#eeeeee"
+    backgroundColor: "#eeeeee",
+    height: "100%"
   }
 });
 
@@ -149,11 +151,15 @@ export default class extends React.Component {
     const { sections } = this.state;
 
     return (
-      <View style={styles.mine}>
-        <View style={styles.header}>
-          <Image style={{ width: 128, height: 128 }} source={imgAvatar} />
-        </View>
-        <SectionList renderItem={this.renderItem} sections={sections} />
+      <View style={{ backgroundColor: "#a6cdff", flex: 1 }}>
+        <SafeAreaView>
+          <View style={styles.mine}>
+            <View style={styles.header}>
+              <Image style={{ width: 128, height: 128 }} source={imgAvatar} />
+            </View>
+            <SectionList renderItem={this.renderItem} sections={sections} />
+          </View>
+        </SafeAreaView>
       </View>
     );
   }

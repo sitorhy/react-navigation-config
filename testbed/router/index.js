@@ -118,7 +118,6 @@ const routes = {
               navigationOptions: {
                 title: "Home",
                 tabBarLabel: "Home",
-                header: null,
                 tabBarIcon: ({ focused, tintColor }) => (
                   <Image
                     style={[
@@ -137,7 +136,6 @@ const routes = {
               navigationOptions: {
                 title: "Mine",
                 tabBarLabel: "Mine",
-                header: null,
                 tabBarIcon: ({ focused, tintColor }) => (
                   <Image
                     style={[
