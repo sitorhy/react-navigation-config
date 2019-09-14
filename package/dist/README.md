@@ -175,12 +175,12 @@ create navigation components with config.
 receive a navigator that can navigate to specified route anywhere.
 ##### Parameters
 + `Array<Route>` AppContainer - from call **renderNavigation**
-+ `<Navigator> navigator` - the navigator that will be initialized
++ `<Navigator> navigator` - optional, the navigator that will be initialized, use default navigator if not specify
 
 <br>
 
 ### **linkNavigatorProvider**
-4.x preview, default navigation container constructor.
+4.x preview, define navigation container constructor.
 ##### Parameters
 + `<String>` type - config field name of navigator constructor
 + `<Navigator> navigator` - constructor
@@ -200,7 +200,7 @@ send some frequent actions to router use the method provided by the navigator.
 + create and export a navigator object
 ```
 // navigator.js
-import { Navigator } from "../react-navigation-config";
+import { Navigator } from "react-navigation-config";
 
 export default new Navigator();
 ```
@@ -209,6 +209,8 @@ export default new Navigator();
 import navigator from "./navigator"; // navigator.js
 
 // ....config
+
+const routes = { ... };
 
 export default wrappedNavigatorRef(renderNavigation(routes,navigator), navigator);
 ```
@@ -244,6 +246,15 @@ export default wrappedNavigatorRef(renderNavigation(routes));
 ```
 ```
 import router from "react-navigation-config/router"
+
+export default class extend React.Component
+{
+    handleEvent()
+    {
+          router.navigateTo(.....);
+    }
+    ...
+}
 ```
 
 ### **Navigator API**
@@ -304,7 +315,7 @@ register interceptor before state change.
 ##### Parameters
 + `<Function>` - callback
 ```
-router.beforeEach((to, from, next) => {
+router.beforeEach((action, to, from, next) => {
   if(from.routeName==="main")
   {
     next("home",{}); // or try to return NavigationActions.navigate(....)
@@ -315,17 +326,17 @@ router.beforeEach((to, from, next) => {
 > + `<Object>` `action` - navigation action
 > + `<Object>` `to` - route state
 > + `<Object>` `from` - current route state
-> + `<Function>` `next(routeName,options)` - action create helper, if parameter `params` of parameter options is `undefined`,it will be ignored and unchanged.
+> + `<Function>` `next(routeName,options)` - action create helper, if field `params` of parameter options is `undefined`,it will be ignored and unchanged.
 >      - `options.routeName` - optional
 >      - `options.action` - optional, NavigationActions.navigate(...)
 >      - `options.params` - optional
->      - `options.channel` - optional, not recommended
+>      - `options.channel` - optional, not recommended here
 
-##### **<Function> next**
+##### **<Function> next** - action create helper
 > - `next()` - nothing happen
 > - `next(false)` - abort current navigation
 > - `next(routeName:String,options:Object)` - navigate to new one
-> - `next(options:Object)` - navigate to new one, omit the parameter routeName, but need to specific action or routeName of parameter options
+> - `next(options:Object)` - navigate to new one, omit the parameter routeName, but need to specific action or routeName in parameter `options`
 
 
 <br>
@@ -335,14 +346,14 @@ handle URIs event.
 ##### Parameters
 + `<Function>` - callback
 ##### **callback**
-> + `<Object>` `action`
+> + `<Object>` `state`
 > + `<Object>` `to`
-> + `<String>` `path` - deep-link path
-> + `<String>` `params`
+> + `<String>` `path` - deep link path
+> + `<String>` `params` - query param and path param
 > + `<Object>` `next(routeName,params)` - action rewrite helper
 
 ```
-router.beforeResolve((state, action, path, params, next) => {
+router.beforeResolve((state, to, path, params, next) => {
   // authorization code here ....
   
   next(action.routeName, {
@@ -353,9 +364,9 @@ router.beforeResolve((state, action, path, params, next) => {
 });
 ```
 
-##### **<Function> next**
+##### **<Function> next** - action rewrite helper
 > - `next()` - nothing happen
-> - `next(false)` - stay at the route entrance
+> - `next(false)` - stay at the screen specified by the router entrance
 > - `next(routeName:String,options:Object)`
 > - `next(options:Object)`
 
