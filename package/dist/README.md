@@ -121,7 +121,6 @@ import { createMaterialBottomTabNavigator } from "react-navigation-material-bott
 
 {
           name: "tab",
-          material: false,
           use: createMaterialBottomTabNavigator,
           navigationOptions: {
             header: null
