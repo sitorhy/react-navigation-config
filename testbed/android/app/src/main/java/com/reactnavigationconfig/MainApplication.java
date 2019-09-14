@@ -11,6 +11,7 @@ import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.soloader.SoLoader;
 import com.sitorhy.test.MessageBoxPackage;
+import com.sitorhy.test.NativeToJSPackage;
 
 import java.util.List;
 
@@ -30,6 +31,7 @@ public class MainApplication extends Application implements ReactApplication {
       // packages.add(new MyReactNativePackage());
 
       packages.add(new MessageBoxPackage());
+      packages.add(new NativeToJSPackage());
 
       return packages;
     }

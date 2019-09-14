@@ -1,5 +1,5 @@
 # React Navigation Config
-configuration helpers for react-navigation 4.x.
+configuration helpers for [react-navigation 4.x](https://reactnavigation.org/).
 
 <br>
 
