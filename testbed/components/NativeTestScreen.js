@@ -1,7 +1,9 @@
 import React from "react";
 import { View, Button, Text } from "react-native";
 import { MessageBox, NativeToJS } from "../plugins";
-import { DeviceEventEmitter } from "react-native";
+import { NativeEventEmitter } from "react-native";
+
+const nativeToJSEmitter = new NativeEventEmitter(NativeToJS);
 
 export default class extends React.Component {
   state = {
@@ -19,7 +21,7 @@ export default class extends React.Component {
   };
 
   componentDidMount() {
-    this.subscription = DeviceEventEmitter.addListener("recite", (e) => {
+    this.subscription = nativeToJSEmitter.addListener("recite", (e) => {
       this.setState({ ...e });
     });
   }

@@ -17,6 +17,8 @@
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2DCD954D1E0B4F2C00145EB5 /* ReactNavigationConfigTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* ReactNavigationConfigTests.m */; };
 		41913E3A23269F5500356020 /* MessageBox.m in Sources */ = {isa = PBXBuildFile; fileRef = 41913E3923269F5500356020 /* MessageBox.m */; };
+		41BDFC1D232E982300A3A07D /* bundle in Resources */ = {isa = PBXBuildFile; fileRef = 41BDFC1C232E982300A3A07D /* bundle */; };
+		41F4717C232E74B600BAA7B9 /* NativeToJS.m in Sources */ = {isa = PBXBuildFile; fileRef = 41F4717B232E74B600BAA7B9 /* NativeToJS.m */; };
 		8E52802E411B8B46F0E4F8DF /* libPods-ReactNavigationConfig-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CA21682EC352E03DB07510B /* libPods-ReactNavigationConfig-tvOS.a */; };
 		8EB6656426F763AEA9E04537 /* libPods-ReactNavigationConfig.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 437FF6739943D88DCE4E9DB5 /* libPods-ReactNavigationConfig.a */; };
 		C4F677643C522FD29324BD97 /* libPods-ReactNavigationConfigTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6B382A68357D6D9F1F6EE12F /* libPods-ReactNavigationConfigTests.a */; };
@@ -59,6 +61,9 @@
 		3CA21682EC352E03DB07510B /* libPods-ReactNavigationConfig-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ReactNavigationConfig-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		41913E3823269F5500356020 /* MessageBox.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MessageBox.h; sourceTree = "<group>"; };
 		41913E3923269F5500356020 /* MessageBox.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MessageBox.m; sourceTree = "<group>"; };
+		41BDFC1C232E982300A3A07D /* bundle */ = {isa = PBXFileReference; lastKnownFileType = folder; path = bundle; sourceTree = "<group>"; };
+		41F4717A232E74B600BAA7B9 /* NativeToJS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NativeToJS.h; sourceTree = "<group>"; };
+		41F4717B232E74B600BAA7B9 /* NativeToJS.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NativeToJS.m; sourceTree = "<group>"; };
 		437FF6739943D88DCE4E9DB5 /* libPods-ReactNavigationConfig.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ReactNavigationConfig.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6B382A68357D6D9F1F6EE12F /* libPods-ReactNavigationConfigTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ReactNavigationConfigTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		793096030C0E59EECEBA0E28 /* Pods-ReactNavigationConfigTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ReactNavigationConfigTests.debug.xcconfig"; path = "Target Support Files/Pods-ReactNavigationConfigTests/Pods-ReactNavigationConfigTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -128,6 +133,7 @@
 		13B07FAE1A68108700A75B9A /* ReactNavigationConfig */ = {
 			isa = PBXGroup;
 			children = (
+				41BDFC1C232E982300A3A07D /* bundle */,
 				41913E3723269C1100356020 /* native */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -158,6 +164,8 @@
 			children = (
 				41913E3823269F5500356020 /* MessageBox.h */,
 				41913E3923269F5500356020 /* MessageBox.m */,
+				41F4717A232E74B600BAA7B9 /* NativeToJS.h */,
+				41F4717B232E74B600BAA7B9 /* NativeToJS.m */,
 			);
 			path = native;
 			sourceTree = "<group>";
@@ -305,6 +313,9 @@
 						CreatedOnToolsVersion = 6.2;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
+					13B07F861A680F5B00A75B9A = {
+						DevelopmentTeam = RP3WW638G3;
+					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
 						ProvisioningStyle = Automatic;
@@ -351,6 +362,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				41BDFC1D232E982300A3A07D /* bundle in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -592,6 +604,7 @@
 			files = (
 				41913E3A23269F5500356020 /* MessageBox.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
+				41F4717C232E74B600BAA7B9 /* NativeToJS.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -691,6 +704,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
+				DEVELOPMENT_TEAM = RP3WW638G3;
 				INFOPLIST_FILE = ReactNavigationConfig/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -710,6 +724,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = RP3WW638G3;
 				INFOPLIST_FILE = ReactNavigationConfig/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (

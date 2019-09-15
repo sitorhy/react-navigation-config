@@ -1,0 +1,50 @@
+[
+  {
+    "key": "1",
+    "title": "Sleep"
+  },
+  {
+    "key": "2",
+    "title": "Eat"
+  },
+  {
+    "key": "3",
+    "title": "Drink"
+  },
+  {
+    "key": "4",
+    "title": "Game"
+  },
+  {
+    "key": "5",
+    "title": "Shop"
+  },
+  {
+    "key": "6",
+    "title": "Run"
+  },
+  {
+    "key": "7",
+    "title": "Clean"
+  },
+  {
+    "key": "8",
+    "title": "Battle"
+  },
+  {
+    "key": "9",
+    "title": "Shoot"
+  },
+  {
+    "key": "10",
+    "title": "Swim"
+  },
+  {
+    "key": "11",
+    "title": "Waste"
+  },
+  {
+    "key": "12",
+    "title": "Play"
+  }
+]

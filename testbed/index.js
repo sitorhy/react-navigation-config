@@ -89,6 +89,15 @@ class NativeApp extends React.Component {
 //   return <TestRouter uriPrefix="mychat://" />;
 // };
 
+if (!__DEV__) {
+  global.console = {
+    info: () => {},
+    log: () => {},
+    warn: () => {},
+    error: () => {}
+  };
+}
+
 AppRegistry.registerComponent(appName, () => App);
 
 // AppRegistry.registerComponent(appName, () => RouterApp);

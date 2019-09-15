@@ -44,7 +44,7 @@ export default class extends React.Component {
   };
 
   componentDidMount() {
-    console.log(this);
+  //  console.log(this);
   }
 
   onUserTextChange = () => {};
