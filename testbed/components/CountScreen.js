@@ -35,7 +35,7 @@ export default class extends React.Component {
     }
   };
 
-  componentWillUnmount(): void {
+  componentWillUnmount() {
     this.stopCount();
   }
 
