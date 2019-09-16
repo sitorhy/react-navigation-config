@@ -22,7 +22,8 @@ export default class extends React.Component {
   };
 
   changeTitle = () => {
-    this.props.navigation.setParams({ headerTitle: "力微任重久神疲" });
+ //   this.props.navigation.setParams({ headerTitle: "力微任重久神疲" });
+    navigator.setParams(null,{ headerTitle: "力微任重久神疲" });
   };
 
   reLaunch = () => {

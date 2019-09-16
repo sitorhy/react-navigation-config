@@ -311,10 +311,11 @@ export class Navigator
 
     setParams(routeKey, params)
     {
+        const key = routeKey || this.getActiveKey();
         return this._asyncNavigate(() => this.navigator.dispatch(
             NavigationActions.setParams({
                 params: params,
-                key: routeKey
+                key
             })
         ))
     }

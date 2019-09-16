@@ -1,5 +1,5 @@
 # React Navigation Config
-configuration helpers for react-navigation 4.x.
+configuration helpers for [react-navigation 4.x](https://reactnavigation.org/).
 
 <br>
 
@@ -263,10 +263,10 @@ update the navigation state with the given name and options.
 ##### Parameters
 + `<String> name` - required
 + `<Object> options` - optional
-##### **options**
+##### **options** - following navigator methods are the same
 > - `<Object> params` - optional, the params field of navigation prop state  
 >
-> - `<Object> channel` - optional, will be integrated to  screenProps, can pass any objects, including functions that interact between screens, but use for pop action may be very dangerous.
+> - `<Object> channel` - optional, will be integrated to `screenProps`, can pass any objects, including functions that interact between screens, but use for pop action may be very dangerous.
 >
 > - `<String>` `routeKey` - optional
 ##### Return Value
@@ -317,7 +317,7 @@ register interceptor before state change.
 router.beforeEach((action, to, from, next) => {
   if(from.routeName==="main")
   {
-    next("home",{}); // or try to return NavigationActions.navigate(....)
+    next("home",{});
   }
 });
 ```
@@ -406,8 +406,8 @@ this.props.navigation.disptach(
   NavigationActions.navigate({ routeName: 'A',params:{xyz:100} })
 );
 ```
-navigate to route `A` ,actually redirect to `B` ,but params `xyz` passed to route `A`.
-get params from `this.props.navigation.state` is always `undefinded` in component `B`.
+navigate to route `A`, actually redirect to `B` ,but params `"xyz"` passed to route `A`.
+get params from `props.navigation.state` is always `undefinded` in component `B`.
 #### Fixed
 redirect to child route when `action.routeName` not equal to the state resolved.
 
@@ -430,16 +430,16 @@ path params will not merge to route params.
 createStackNavigator({
   mine: {
       path: 'mine/:user',
-    }),
+    })
   },
 
   ...MyOtherRoutes,
 });
 ```
-path paramter `tom` will not appear in `route.params` of navigation prop.
+path paramter `"tom"` will not appear in `route.params` of navigation prop.
 
 #### Fixed
-force merge path paramters.
+force merge path params to `route.params`.
 
 <br>
 
@@ -499,9 +499,9 @@ get all params of the stack.
 <br>
 
 ### **setParams**
-get route params by key.
+set route params by key.
 ##### Parameters
-+ `<String> key` - required
++ `<String> key` - optional, use active key if null
 + `<String> params` - required
 ##### Return Value
 + `<Promise>`
@@ -560,7 +560,7 @@ go back to previous screen and close current screen.
 + `<Promise>`
 
 <br>
-  
+
 ### **getChannel**
 ##### Parameters
 +  `<String> key` - optional

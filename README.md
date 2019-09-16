@@ -501,7 +501,7 @@ get all params of the stack.
 ### **setParams**
 set route params by key.
 ##### Parameters
-+ `<String> key` - required
++ `<String> key` - optional, use active key if null
 + `<String> params` - required
 ##### Return Value
 + `<Promise>`
@@ -560,7 +560,7 @@ go back to previous screen and close current screen.
 + `<Promise>`
 
 <br>
-  
+
 ### **getChannel**
 ##### Parameters
 +  `<String> key` - optional

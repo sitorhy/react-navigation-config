@@ -297,9 +297,10 @@ class Navigator {
   }
 
   setParams(routeKey, params) {
+    var key = routeKey || this.getActiveKey();
     return this._asyncNavigate(() => this.navigator.dispatch(_reactNavigation.NavigationActions.setParams({
       params: params,
-      key: routeKey
+      key
     })));
   }
 
