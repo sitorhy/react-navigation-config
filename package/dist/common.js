@@ -7,7 +7,6 @@ exports.removeContainerEventListener = removeContainerEventListener;
 exports.rewriteAction = rewriteAction;
 exports.getDeepestActionState = getDeepestActionState;
 exports.mergeActionParams = mergeActionParams;
-exports.removeEmpty = removeEmpty;
 exports.routeFind = routeFind;
 exports.randomString = randomString;
 exports.uuid = uuid;
@@ -145,15 +144,24 @@ function removeEmpty(obj, options) {
     return obj;
   }
 
-  var omitZero = options.omitZero === true;
-  var omitEmptyString = options.omitEmptyString === true;
+  var omitZero = true;
+  var omitEmptyString = false;
+
+  if (options && typeof options.omitZero === "boolean") {
+    omitZero = options.omitZero;
+  }
+
+  if (options && typeof options.omitEmptyString === "boolean") {
+    omitEmptyString = options.omitEmptyString;
+  }
+
   var ignore = options.ignore || [];
   var accepts = {};
   Object.keys(obj).forEach(key => {
     if (ignore.includes(key)) {
       accepts[key] = obj[key];
     } else {
-      if (!(obj[key] === null || obj[key] === undefined || obj[key] === 0 && omitZero || obj[key] === "" && omitEmptyString)) {
+      if (!(obj[key] === null || obj[key] === undefined || obj[key] === "" && !omitEmptyString || obj[key] === 0 && !omitZero)) {
         accepts[key] = obj[key];
       }
     }
