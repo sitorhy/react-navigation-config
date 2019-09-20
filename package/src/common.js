@@ -127,14 +127,22 @@ export function mergeActionParams(action)
     return result;
 }
 
-export function removeEmpty(obj, options = {})
+function removeEmpty(obj, options = {})
 {
     if (!obj)
     {
         return obj;
     }
-    const omitZero = options.omitZero !== false;
-    const omitEmptyString = options.omitEmptyString !== false;
+    let omitZero = true;
+    let omitEmptyString = false;
+    if (options && typeof options.omitZero === "boolean")
+    {
+        omitZero = options.omitZero;
+    }
+    if (options && typeof options.omitEmptyString === "boolean")
+    {
+        omitEmptyString = options.omitEmptyString;
+    }
     const ignore = options.ignore || [];
     const accepts = {};
     Object.keys(obj).forEach((key) =>
