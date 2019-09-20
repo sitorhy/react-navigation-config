@@ -145,7 +145,7 @@ export function removeEmpty(obj, options = {})
         }
         else
         {
-            if (obj[key] !== null || obj[key] !== undefined || (obj[key] === 0 && !omitZero) || (obj[key] === "" && !omitEmptyString))
+            if (!(obj[key] === null || obj[key] === undefined || (obj[key] === "" && !omitEmptyString) || (obj[key] === 0 && !omitZero)))
             {
                 accepts[key] = obj[key];
             }
