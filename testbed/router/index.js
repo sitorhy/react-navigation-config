@@ -94,6 +94,11 @@ const routes = {
           username: "anonymous"
         }
       },
+      routerConfig: {
+        defaultNavigationOptions:{
+          headerBackTitle: "返回"
+        }
+      },
       path: "main",
       children: [
         {
@@ -169,7 +174,8 @@ const routes = {
           name: "count",
           component: CountScreen,
           navigationOptions: {
-            headerTitle: "Count"
+            headerTitle: "Count",
+            headerBackTitle: "上一级"
           }
         },
         {

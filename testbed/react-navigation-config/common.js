@@ -7,6 +7,7 @@ exports.removeContainerEventListener = removeContainerEventListener;
 exports.rewriteAction = rewriteAction;
 exports.getDeepestActionState = getDeepestActionState;
 exports.mergeActionParams = mergeActionParams;
+exports.removeEmpty = removeEmpty;
 exports.routeFind = routeFind;
 exports.randomString = randomString;
 exports.uuid = uuid;

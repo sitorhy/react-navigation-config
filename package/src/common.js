@@ -127,7 +127,7 @@ export function mergeActionParams(action)
     return result;
 }
 
-function removeEmpty(obj, options = {})
+export function removeEmpty(obj, options = {})
 {
     if (!obj)
     {
