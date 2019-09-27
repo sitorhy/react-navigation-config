@@ -13,10 +13,35 @@ export default function (AppContainer, navigator = defaultNavigator, options = {
             constructor(props)
             {
                 super(props);
+                this._bindNavigator();
+            }
+
+            _bindNavigator()
+            {
                 if (navigator)
                 {
                     navigator._setNavigator(this);
                 }
+            }
+
+            _unbindNavigator()
+            {
+                if (navigator)
+                {
+                    navigator._setNavigator(null);
+                }
+            }
+
+            componentDidMount()
+            {
+                this._bindNavigator();
+                super.componentDidMount();
+            }
+
+            componentWillUnmount()
+            {
+                this._unbindNavigator();
+                super.componentWillUnmount();
             }
         }
     );
@@ -139,9 +164,22 @@ export default function (AppContainer, navigator = defaultNavigator, options = {
         constructor(...args)
         {
             super(...args);
+            this._bindContainer();
+        }
+
+        _bindContainer()
+        {
             if (navigator)
             {
                 navigator._setContainer(this);
+            }
+        }
+
+        _unbindContainer()
+        {
+            if (navigator)
+            {
+                navigator._setContainer(null);
             }
         }
 
@@ -185,17 +223,22 @@ export default function (AppContainer, navigator = defaultNavigator, options = {
             }
         };
 
+        componentDidMount()
+        {
+            this._bindContainer();
+        }
+
         componentWillUnmount()
         {
             if (navigator)
             {
-                navigator._setContainer(null);
-                navigator._setNavigator(null);
                 navigator.onReady(null);
-                navigator.beforeEach(null);
+                navigator.beforeEach(null, null);
                 navigator.afterEach(null);
                 navigator._setRoutes([]);
             }
+
+            this._unbindContainer();
         }
 
         render()

@@ -282,8 +282,8 @@ this.props.navigation.dispatch(NavigationActions.navigate({
 ```
 is similar with
 ```
-navigator.navigateTo("Profile",{}).then(()=>{
-    navigator.navigateTo("SubProfileRoute");
+navigator.navigateTo("Profile",{}).then(async ()=>{
+    await navigator.navigateTo("SubProfileRoute");
 });
 ```
 
