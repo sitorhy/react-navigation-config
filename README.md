@@ -147,6 +147,7 @@ remove route config by name where the array allows not contain.
 ##### Parameters
 + `Array<Route>` routes - the route configuration
 + `Array<String>` allows - route names that will be reserved
++ `Array<String>` - optional, container constructor fields, ["children", "all", "oneOf", "drawer", ...]
 
 ```
 filterNavigation(
@@ -167,7 +168,6 @@ create navigation components with config.
 ##### Parameters
 + `Array<Route>` routes - the route configuration
 + `<Navigator> navigator` - the navigator that will be initialized
-+ `Array<String>` - optional, container constructor fields, ["children", "all", "oneOf", "drawer", ...]
 
 <br>
 
