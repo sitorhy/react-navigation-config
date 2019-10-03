@@ -1,4 +1,4 @@
-export default function (routes = [], allows = [])
+export default function (routes = [], allows = [], fields = ["children", "all", "oneOf", "drawer"])
 {
     if (allows === true)
     {
@@ -10,7 +10,7 @@ export default function (routes = [], allows = [])
         for (const i of routes)
         {
             const {name} = i;
-            const prop = ["children", "all", "oneOf"].find(j => !!i[j]);
+            const prop = fields.find(j => !!i[j]);
             if (prop && Array.isArray(i[prop]) && i[prop].length)
             {
                 const arr = choose(i[prop], allows, []);

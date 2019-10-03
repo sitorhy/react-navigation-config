@@ -162,11 +162,12 @@ output:
 <br>
 
 
-### **renderNavigation(routes,navigator)**
+### **renderNavigation(routes,navigator,fields)**
 create navigation components with config.
 ##### Parameters
 + `Array<Route>` routes - the route configuration
 + `<Navigator> navigator` - the navigator that will be initialized
++ `Array<String>` - optional, container constructor fields, ["children", "all", "oneOf", "drawer", ...]
 
 <br>
 
