@@ -120,6 +120,11 @@ function through(store, screenProps, ScreenComponent)
         ThroughComponent.router = ScreenComponent.router;
     }
 
+    if (ScreenComponent.navigationOptions)
+    {
+        ThroughComponent.navigationOptions = ScreenComponent.navigationOptions;
+    }
+
     return ThroughComponent;
 }
 
