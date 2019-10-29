@@ -28,7 +28,7 @@ function channels(state = {}, action)
                 [action.key]: {
                     timestamp: Date.now(),
                     channel: {
-                        ...keep,
+                        ...(keep || {}).channel,
                         ...action.channel
                     }
                 }

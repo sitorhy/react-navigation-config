@@ -317,7 +317,7 @@ export class Navigator
                 params: params,
                 key
             })
-        ))
+        ));
     }
 
     reLaunch(name, options = {})

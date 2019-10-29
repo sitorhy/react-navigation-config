@@ -419,7 +419,10 @@ export function getScreenPropsFromChannelModule(key, state)
         return null;
     }
     const module = state[key];
-    return module ? module.channel : undefined;
+    if (!module)
+        return undefined;
+    const {timestamp, ...channel} = module.channel;
+    return channel;
 }
 
 export function getChannelModule(state)

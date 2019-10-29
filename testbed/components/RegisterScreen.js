@@ -1,5 +1,6 @@
 import React from "react";
 import { StyleSheet, View, TextInput, Text, Button } from "react-native";
+import router from "../react-navigation-config/router";
 
 const styles = StyleSheet.create({
   login: {
@@ -37,6 +38,32 @@ const styles = StyleSheet.create({
 });
 
 export default class extends React.Component {
+  static navigationOptions = () => {
+    const onPress = () => {
+      const channel = router.getChannel();
+      console.log(channel);
+      if (channel && channel.handleSave) {
+        channel.handleSave();
+      }
+      if (channel && channel.handleHeaderRight) {
+        channel.handleHeaderRight();
+      }
+    };
+
+    return {
+      headerTitle: "Register",
+      headerRight: <Button title={"Test"} onPress={onPress} />
+    };
+  };
+
+  componentDidMount() {
+    router.updateChannel(null, {
+      handleHeaderRight: () => {
+        console.log(this.state);
+      }
+    });
+  }
+
   state = {
     username: "",
     password: "",

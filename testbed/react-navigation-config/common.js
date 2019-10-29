@@ -26,6 +26,8 @@ exports.ObserveStore = exports.CONTAINER_EVENT = exports.DEFAULT_CHANNEL_ACTIONS
 
 var _reactNavigation = require("react-navigation");
 
+function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
+
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
 var DEFAULT_IGNORE_ACTIONS = ["Navigation/COMPLETE_TRANSITION", "Navigation/BACK", "Navigation/OPEN_DRAWER", "Navigation/MARK_DRAWER_SETTLING", "Navigation/MARK_DRAWER_IDLE", "Navigation/DRAWER_OPENED", "Navigation/CLOSE_DRAWER", "Navigation/DRAWER_CLOSED", "Navigation/TOGGLE_DRAWER", "Navigation/SET_PARAMS", "Navigation/RESET", "Navigation/POP", "Navigation/POP_TO_TOP"];
@@ -414,7 +416,12 @@ function getScreenPropsFromChannelModule(key, state) {
   }
 
   var module = state[key];
-  return module ? module.channel : undefined;
+  if (!module) return undefined;
+
+  var _module$channel = module.channel,
+      channel = _objectWithoutPropertiesLoose(_module$channel, ["timestamp"]);
+
+  return channel;
 }
 
 function getChannelModule(state) {

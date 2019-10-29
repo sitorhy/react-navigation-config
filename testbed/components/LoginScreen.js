@@ -68,8 +68,14 @@ export default class extends React.Component {
   };
 
   toRegister = () => {
-    const { navigation } = this.props;
-    navigation.navigate("register");
+    navigator.navigateTo("register", {
+      params: {
+        action: "register"
+      },
+      channel: {
+        handleSave: () => console.log("6666")
+      }
+    });
   };
 
   render() {

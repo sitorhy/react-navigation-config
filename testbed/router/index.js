@@ -231,10 +231,7 @@ const routes = {
         },
         {
           name: "register",
-          component: RegisterScreen,
-          navigationOptions: {
-            headerTitle: "Register"
-          }
+          component: RegisterScreen
         }
       ]
     }
