@@ -41,20 +41,22 @@ export default class extends React.Component {
   static navigationOptions = () => {
     const onPress = () => {
       const channel = router.getChannel();
-      console.log(channel);
-      if (channel && channel.handleSave) {
-        channel.handleSave();
-      }
-      if (channel && channel.handleHeaderRight) {
-        channel.handleHeaderRight();
-      }
+      channel.handleHeaderRight();
     };
 
     return {
-      headerTitle: "Register",
       headerRight: <Button title={"Test"} onPress={onPress} />
     };
   };
+
+  // constructor(props) {
+  //   super(props);
+  //   router.updateChannel(null, {
+  //     handleHeaderRight: () => {
+  //       console.log(this.state);
+  //     }
+  //   });
+  // }
 
   componentDidMount() {
     router.updateChannel(null, {

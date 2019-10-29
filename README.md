@@ -604,6 +604,30 @@ class ScreenB extend React.Component
 + `<Object> channel`  - required
 ##### Return Value
 + `<Boolean>`
+```
+import router from "react-navigation-config/router";
+import { Button } from "react-native";
+
+export default class A extends React.Component()
+{
+    static navigationOptions = () => {
+
+       const onPress = () => {
+                const channel = router.getChannel(); //  or use mergeChannels
+                channel.handleSave();
+       };
+
+       return {
+          headerRight: <Button title={"Save"} onPress={onPress} />
+       };
+    };
+
+    // set header button callback 
+     componentDidMount() {  // or constructor
+         router.updateChannel(null, { handleSave:()=>console.log("saved!") });
+    }
+}
+```
 
 <br>
 

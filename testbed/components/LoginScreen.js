@@ -68,6 +68,7 @@ export default class extends React.Component {
   };
 
   toRegister = () => {
+    console.log(navigator.mergeChannels());
     navigator.navigateTo("register", {
       params: {
         action: "register"
