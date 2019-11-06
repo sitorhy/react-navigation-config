@@ -3,6 +3,20 @@ import { View, Text, Button } from "react-native";
 import navigator from "../react-navigation-config/router";
 
 export default class extends React.Component {
+  static navigationOptions = ({ navigation }) => {
+    const Provider = navigator.channelProvider(navigation);
+    return {
+      headerRight: (
+        <Provider>
+          {props => {
+            const { text } = props;
+            return <Text>{text || ""}</Text>;
+          }}
+        </Provider>
+      )
+    };
+  };
+
   componentDidMount() {
     console.log(this.props);
     console.log(navigator.getChannel());
@@ -22,8 +36,8 @@ export default class extends React.Component {
   };
 
   changeTitle = () => {
- //   this.props.navigation.setParams({ headerTitle: "力微任重久神疲" });
-    navigator.setParams(null,{ headerTitle: "力微任重久神疲" });
+    //   this.props.navigation.setParams({ headerTitle: "力微任重久神疲" });
+    navigator.setParams(null, { headerTitle: "力微任重久神疲" });
   };
 
   reLaunch = () => {
@@ -39,8 +53,8 @@ export default class extends React.Component {
   };
 
   updateChannel = () => {
-    navigator.updateChannel(null,{
-      text: "中文Abc123"
+    navigator.updateChannel(null, {
+      text: new Date().toISOString()
     });
   };
 

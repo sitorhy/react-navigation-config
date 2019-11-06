@@ -652,6 +652,69 @@ const { ... } = stackChannels;
 
 <br>
 
+### **channelProvider**
+create a component that receive the channel data.
+##### Parameters
++ `navigation` - required
+##### Return Value
++ `React Component`
+
+```
+import router from "react-navigation-config/router";
+
+export default class extends React.Component {
+  static navigationOptions = ({ navigation }) => {
+    const onPress = () => {
+      const channel = router.getChannel();
+      channel.handleHeaderRight();
+    };
+    const ChannelProvider = router.channelProvider(navigation);
+
+    return {
+      headerRight: (
+        <ChannelProvider>
+          {props => {
+            const { showSaveBtn } = props;
+
+            // show or hide buttons based on channel data
+            return showSaveBtn ? (
+              <Button title={"Save"} onPress={onPress} />
+            ) : null;
+          }}
+        </ChannelProvider>
+      )
+    };
+  };
+
+  state = {
+       data: 100 
+  };
+
+  toggleHeaderButton = () => {
+    const channel = router.getChannel();
+    router.updateChannel(null, {
+      handleHeaderRight: () => {
+        console.log(this.state);
+      },
+      showSaveBtn: !channel.showSaveBtn
+    });
+  };
+
+  render() {
+    return (
+      <View>
+        <Button
+              title="Toggle Header Button"
+              onPress={this.toggleHeaderButton}
+        />
+      </View>
+    );
+  }
+}
+```
+
+<br>
+
 # Decorator
 ### **navigationOptions(options)**
 set static navigationOptions variable in subclass.

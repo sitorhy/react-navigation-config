@@ -62,6 +62,8 @@ declare namespace router {
     function setIgnoreRouteActions(actions: Array<string>): void;
 
     function setIgnoreURIActions(actions: Array<string>): void;
+
+    function channelProvider(navigation): Object;
 }
 
 export default router;

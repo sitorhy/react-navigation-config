@@ -38,14 +38,25 @@ const styles = StyleSheet.create({
 });
 
 export default class extends React.Component {
-  static navigationOptions = () => {
+  static navigationOptions = ({ navigation }) => {
     const onPress = () => {
       const channel = router.getChannel();
       channel.handleHeaderRight();
     };
+    const ChannelProvider = router.channelProvider(navigation);
 
     return {
-      headerRight: <Button title={"Test"} onPress={onPress} />
+      headerRight: (
+        <ChannelProvider>
+          {props => {
+            const { showSaveBtn } = props;
+
+            return showSaveBtn ? (
+              <Button title={"Save"} onPress={onPress} />
+            ) : null;
+          }}
+        </ChannelProvider>
+      )
     };
   };
 
@@ -58,25 +69,33 @@ export default class extends React.Component {
   //   });
   // }
 
-  componentDidMount() {
-    router.updateChannel(null, {
-      handleHeaderRight: () => {
-        console.log(this.state);
-      }
-    });
-  }
-
   state = {
     username: "",
     password: "",
     confirm: ""
   };
 
-  onUserTextChange = () => {};
+  onUserTextChange = username => {
+    this.setState({ username });
+  };
 
-  onPasswordTextChange = () => {};
+  onPasswordTextChange = password => {
+    this.setState({ password });
+  };
 
-  onConfirmPasswordTextChange = () => {};
+  onConfirmPasswordTextChange = confirm => {
+    this.setState({ confirm });
+  };
+
+  toggleHeaderButton = () => {
+    const channel = router.getChannel();
+    router.updateChannel(null, {
+      handleHeaderRight: () => {
+        console.log(this.state);
+      },
+      showSaveBtn: !channel.showSaveBtn
+    });
+  };
 
   toLogin = () => {
     const { navigation } = this.props;
@@ -128,6 +147,12 @@ export default class extends React.Component {
         <View style={styles.action}>
           <View style={styles.actionBtn}>
             <Button title="Register" onPress={this.toLogin} />
+          </View>
+          <View style={styles.actionBtn}>
+            <Button
+              title="Toggle Header Button"
+              onPress={this.toggleHeaderButton}
+            />
           </View>
         </View>
       </View>

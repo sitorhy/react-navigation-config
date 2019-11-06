@@ -20,6 +20,7 @@ import {
 import {NavigationActions, StackActions} from "react-navigation";
 import {DrawerActions} from "react-navigation-drawer";
 import {depositChannel, dumpChannel, installChannel, uninstallChannel} from "./actions";
+import createProvider from "./channelProvider";
 
 function effectOfActionCreate(effect = () =>
 {
@@ -551,6 +552,15 @@ export class Navigator
     setIgnoreURIActions(actions = [])
     {
         this._ignoreURIActions = actions;
+    }
+
+    channelProvider(navigation)
+    {
+        const {
+            state: {key}
+        } = navigation;
+
+        return createProvider(this.getStore(), key);
     }
 }
 
