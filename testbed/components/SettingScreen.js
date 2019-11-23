@@ -10,7 +10,12 @@ export default class extends React.Component {
         <Provider>
           {props => {
             const { text } = props;
-            return <Text>{text || ""}</Text>;
+            return (
+              <Text>
+                {text ||
+                  (navigator.hasPreviousNavigation(null, 1) ? "" : "LAST")}
+              </Text>
+            );
           }}
         </Provider>
       )
@@ -63,7 +68,7 @@ export default class extends React.Component {
   };
 
   getParams = () => {
-    console.log(this.props);
+    console.log(navigator.hasPreviousNavigation());
     console.log(navigator.mergeChannels());
     console.log(navigator.getChannel());
   };

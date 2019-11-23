@@ -64,6 +64,8 @@ declare namespace router {
     function setIgnoreURIActions(actions: Array<string>): void;
 
     function channelProvider(navigation): Object;
+
+    function hasPreviousNavigation(routeKey: String | null, depth: Number): Boolean;
 }
 
 export default router;

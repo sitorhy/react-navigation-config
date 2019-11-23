@@ -15,6 +15,7 @@ exports.getNavState = getNavState;
 exports.mergeChannel = mergeChannel;
 exports.getActiveRoute = getActiveRoute;
 exports.matchRoute = matchRoute;
+exports.matchRouteParent = matchRouteParent;
 exports.getScreenPropsFromChannelModule = getScreenPropsFromChannelModule;
 exports.getChannelModule = getChannelModule;
 exports.getKeyFromNavigationModule = getKeyFromNavigationModule;
@@ -372,6 +373,36 @@ function matchRoute(nav, key) {
   }
 
   return null;
+}
+
+function _matchRouteParent(key, nav, parent) {
+  var {
+    routes,
+    key: routeKey
+  } = nav;
+
+  if (routeKey === key) {
+    return {
+      current: nav,
+      parent
+    };
+  }
+
+  if (Array.isArray(routes) && routes.length) {
+    for (var i of routes) {
+      var j = _matchRouteParent(key, i, nav);
+
+      if (j) {
+        return j;
+      }
+    }
+  }
+
+  return null;
+}
+
+function matchRouteParent(nav, key) {
+  return _matchRouteParent(key, nav, null);
 }
 
 class ObserveStore {

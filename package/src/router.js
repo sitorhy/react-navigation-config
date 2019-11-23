@@ -4,6 +4,7 @@ import {
     uuid,
     getActiveRoute,
     matchRoute,
+    matchRouteParent,
     getNavState,
     DEFAULT_IGNORE_ACTIONS,
     getScreenPropsFromChannelModule,
@@ -561,6 +562,17 @@ export class Navigator
         } = navigation;
 
         return createProvider(this.getStore(), key);
+    }
+
+    hasPreviousNavigation(key, depth = 0)
+    {
+        const obj = matchRouteParent(this.navigator.state.nav, key || this.getActiveKey());
+        if (obj)
+        {
+            const {parent} = obj;
+            return parent.index > depth;
+        }
+        return false;
     }
 }
 

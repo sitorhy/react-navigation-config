@@ -575,6 +575,23 @@ class Navigator {
     return (0, _channelProvider.default)(this.getStore(), key);
   }
 
+  hasPreviousNavigation(key, depth) {
+    if (depth === void 0) {
+      depth = 0;
+    }
+
+    var obj = (0, _common.matchRouteParent)(this.navigator.state.nav, key || this.getActiveKey());
+
+    if (obj) {
+      var {
+        parent
+      } = obj;
+      return parent.index > depth;
+    }
+
+    return false;
+  }
+
 }
 
 exports.Navigator = Navigator;

@@ -371,6 +371,32 @@ export function matchRoute(nav, key)
     return null;
 }
 
+function _matchRouteParent(key, nav, parent)
+{
+    const {routes, key: routeKey} = nav;
+    if (routeKey === key)
+    {
+        return {current: nav, parent};
+    }
+    if (Array.isArray(routes) && routes.length)
+    {
+        for (const i of routes)
+        {
+            const j = _matchRouteParent(key, i, nav);
+            if (j)
+            {
+                return j;
+            }
+        }
+    }
+    return null;
+}
+
+export function matchRouteParent(nav, key)
+{
+    return _matchRouteParent(key, nav, null);
+}
+
 export class ObserveStore
 {
     constructor(store, onCreate)

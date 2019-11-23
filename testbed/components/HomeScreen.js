@@ -46,7 +46,7 @@ export default class extends React.Component {
   };
 
   test = () => {
-    // console.log(this);
+    console.log(navigator.hasPreviousNavigation());
     console.log(navigator.getStore().getState());
   };
 

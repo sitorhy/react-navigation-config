@@ -43,6 +43,11 @@ export default class extends React.Component {
     password: ""
   };
 
+  test = () => {
+    console.log(navigator.hasPreviousNavigation());
+    console.log(navigator);
+  };
+
   componentDidMount() {
   //  console.log(this);
   }
@@ -119,6 +124,10 @@ export default class extends React.Component {
 
           <View style={styles.actionBtn}>
             <Button title="To Count" onPress={this.toCount} />
+          </View>
+
+          <View style={styles.actionBtn}>
+            <Button title="Test" onPress={this.test} />
           </View>
         </View>
       </View>

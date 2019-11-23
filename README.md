@@ -283,8 +283,8 @@ this.props.navigation.dispatch(NavigationActions.navigate({
 ```
 is similar with
 ```
-navigator.navigateTo("Profile",{}).then(async ()=>{
-    await navigator.navigateTo("SubProfileRoute");
+router.navigateTo("Profile",{}).then(async ()=>{
+    await router.navigateTo("SubProfileRoute");
 });
 ```
 
@@ -566,13 +566,15 @@ go back to previous screen and close current screen.
 ##### Parameters
 +  `<String> key` - optional
 ```
+import router from "react-navigation-config/router";
+
 class ScreenA extends React.Component
 {
     state={n:0};
     add=()=>{ this.setState({n:this.state.n+1}) };
 
     onBtnNavigateClick=()=>{
-          navigator.navigateTo("B",{ channel:{ add:this.add } })
+          router.navigateTo("B",{ channel:{ add:this.add } })
     }
     ...
 }
@@ -582,7 +584,7 @@ class ScreenA extends React.Component
 class ScreenB extend React.Component
 {
     onTest=()=>{
-        const {add} = navigator.getChannel();
+        const {add} = router.getChannel();
         add(); // update ScreenA state
     }    
 
@@ -646,7 +648,7 @@ merge channels of state, fields of channels with the same name will be overridde
 ##### Return Value
 + `<Array<object>>`
 ```
-const [stackChannels] = navigator.mergeChannels();
+const [stackChannels] = router.mergeChannels();
 const { ... } = stackChannels;
 ```
 
@@ -710,6 +712,25 @@ export default class extends React.Component {
       </View>
     );
   }
+}
+```
+
+<br>
+
+### **hasPreviousNavigation**
+##### Parameters
++ `<String | null> routeKey` - required
++ `<Number> depth` - optional, stack depth for comparison , default 0
+##### Return Value
++ `Boolean`
+
+```
+import router from "react-navigation-config/router";
+
+// custom header shows or hides the back button automatically
+
+export default CustomerHeader = () => {
+    return {router.hasPreviousNavigation(null) ? <Icon type="MaterialIcons" name="arrow-back"/> : null}
 }
 ```
 
