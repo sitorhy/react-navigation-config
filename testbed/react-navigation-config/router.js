@@ -246,10 +246,12 @@ class Navigator {
     var key = routeKey || this.getActiveKey();
 
     if (key) {
-      var route = (0, _common.matchRoute)(this.navigator.state.nav, key);
+      if (this.navigator) {
+        var route = (0, _common.matchRoute)(this.navigator.state.nav, key);
 
-      if (route) {
-        return route.params;
+        if (route) {
+          return route.params;
+        }
       }
     }
 

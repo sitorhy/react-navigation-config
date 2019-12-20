@@ -256,10 +256,13 @@ export class Navigator
         const key = routeKey || this.getActiveKey();
         if (key)
         {
-            const route = matchRoute(this.navigator.state.nav, key);
-            if (route)
+            if (this.navigator)
             {
-                return route.params;
+                const route = matchRoute(this.navigator.state.nav, key);
+                if (route)
+                {
+                    return route.params;
+                }
             }
         }
         return null;
