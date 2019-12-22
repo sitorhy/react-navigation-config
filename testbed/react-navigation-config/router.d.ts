@@ -17,25 +17,25 @@ declare namespace router {
 
     function removeChannel(key: string): void;
 
-    function navigateTo(name: string, options: object): Promise<object>;
+    function navigateTo(name: string, options?: object): Promise<object>;
 
-    function push(name: string, options: object): Promise<object>;
+    function push(name: string, options?: object): Promise<object>;
 
-    function reLaunch(name: string, options: object): Promise<object>;
+    function reLaunch(name: string, options?: object): Promise<object>;
 
-    function redirectTo(name: string, options: object): Promise<object>;
+    function redirectTo(name: string, options?: object): Promise<object>;
 
-    function navigateBack(options: object): Promise<object>;
+    function navigateBack(options?: object): Promise<object>;
 
-    function popToTop(options: object | null);
+    function popToTop(options?: object | null);
 
-    function pop(n: number, options: object | null);
+    function pop(n?: number, options?: object | null);
 
-    function toggleDrawer(options: object | null): Promise<object>;
+    function toggleDrawer(options?: object | null): Promise<object>;
 
-    function openDrawer(options: object | null): Promise<object>;
+    function openDrawer(options?: object | null): Promise<object>;
 
-    function closeDrawer(options: object | null): Promise<object>;
+    function closeDrawer(options?: object | null): Promise<object>;
 
     function setParams(key: string, params: object): Promise<object>;
 
