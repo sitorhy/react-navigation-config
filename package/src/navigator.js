@@ -119,7 +119,7 @@ export default function (AppContainer, navigator = defaultNavigator, options = {
             }
             let state = WrappedAppContainer.router.getStateForAction(action, inputState);
 
-            if (inputState)
+            if (inputState && state)
             {
                 const nextAction = navigator._bindBeforeEach(action, state, inputState);
                 if (nextAction !== null && nextAction !== undefined)
@@ -132,26 +132,26 @@ export default function (AppContainer, navigator = defaultNavigator, options = {
                 }
             }
 
-            const activeRoute = getActiveRoute(state);
-            const {key, routeName} = activeRoute;
-
-            const store = navigator.getStore();
-
-            store.dispatch(setNavigationRouteKey(key));
-
-            store.dispatch(setNavigationRouteName(routeName));
-
-            if (AppContainer.CHANNEL_ACTIONS.includes(type))
+            if(state)
             {
-                const state = store.getState();
-                const channel = getChannelFromStageModule(getStageModule(state));
-                if (channel)
-                {
-                    store.dispatch(installChannel(key, channel));
-                }
-            }
+                const activeRoute = getActiveRoute(state);
+                const {key, routeName} = activeRoute;
+                const store = navigator.getStore();
 
-            store.dispatch(dumpChannel());
+                store.dispatch(setNavigationRouteKey(key));
+                store.dispatch(setNavigationRouteName(routeName));
+
+                if (AppContainer.CHANNEL_ACTIONS.includes(type))
+                {
+                    const state = store.getState();
+                    const channel = getChannelFromStageModule(getStageModule(state));
+                    if (channel)
+                    {
+                        store.dispatch(installChannel(key, channel));
+                    }
+                }
+                store.dispatch(dumpChannel());
+            }
 
             return state;
         };

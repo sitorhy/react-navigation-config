@@ -127,7 +127,7 @@ function _default(AppContainer, navigator, options) {
 
       var state = WrappedAppContainer.router.getStateForAction(action, inputState);
 
-      if (inputState) {
+      if (inputState && state) {
         var nextAction = navigator._bindBeforeEach(action, state, inputState);
 
         if (nextAction !== null && nextAction !== undefined) {
@@ -139,26 +139,29 @@ function _default(AppContainer, navigator, options) {
         }
       }
 
-      var activeRoute = (0, _common.getActiveRoute)(state);
-      var {
-        key,
-        routeName
-      } = activeRoute;
-      var store = navigator.getStore();
-      store.dispatch((0, _actions.setNavigationRouteKey)(key));
-      store.dispatch((0, _actions.setNavigationRouteName)(routeName));
+      if (state) {
+        var activeRoute = (0, _common.getActiveRoute)(state);
+        var {
+          key,
+          routeName
+        } = activeRoute;
+        var store = navigator.getStore();
+        store.dispatch((0, _actions.setNavigationRouteKey)(key));
+        store.dispatch((0, _actions.setNavigationRouteName)(routeName));
 
-      if (AppContainer.CHANNEL_ACTIONS.includes(type)) {
-        var _state = store.getState();
+        if (AppContainer.CHANNEL_ACTIONS.includes(type)) {
+          var _state = store.getState();
 
-        var channel = (0, _common.getChannelFromStageModule)((0, _common.getStageModule)(_state));
+          var channel = (0, _common.getChannelFromStageModule)((0, _common.getStageModule)(_state));
 
-        if (channel) {
-          store.dispatch((0, _actions.installChannel)(key, channel));
+          if (channel) {
+            store.dispatch((0, _actions.installChannel)(key, channel));
+          }
         }
+
+        store.dispatch((0, _actions.dumpChannel)());
       }
 
-      store.dispatch((0, _actions.dumpChannel)());
       return state;
     };
   }

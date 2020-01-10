@@ -85,6 +85,16 @@ export default class extends React.Component {
         <Button title="PopToTop Test" onPress={this.toTop} />
         <Button title="Update Channel Test" onPress={this.updateChannel} />
         <Button title="Remove Channel Test" onPress={this.removeChannel} />
+        <Button
+          title="Navigate Self Test"
+          onPress={() => {
+           // navigator.navigateTo("setting");
+            this.props.navigation.navigate({
+              routeName: "setting"
+            });
+         //   this.props.navigation.navigate()
+          }}
+        />
       </View>
     );
   }
