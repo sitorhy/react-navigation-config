@@ -54,7 +54,9 @@ export default class extends React.Component {
   };
 
   toTop = () => {
-    navigator.popToTop();
+    navigator.popToTop().then(() => {
+      console.log("popToTop");
+    });
   };
 
   updateChannel = () => {
@@ -88,11 +90,11 @@ export default class extends React.Component {
         <Button
           title="Navigate Self Test"
           onPress={() => {
-           // navigator.navigateTo("setting");
+            // navigator.navigateTo("setting");
             this.props.navigation.navigate({
               routeName: "setting"
             });
-         //   this.props.navigation.navigate()
+            //   this.props.navigation.navigate()
           }}
         />
       </View>
