@@ -47,6 +47,8 @@ declare namespace router {
 
     function beforeEach(callback: (action: object, to: object, from: object, next: (routeName: string) => object | null) => void, options: object | null | undefined): void;
 
+    function beforeBackward(callback: (action: object, to: object, from: object) => void): void;
+
     function afterEach(callback: (action: object, to: object, from: object) => void): void;
 
     function onReady(callback: () => void): void;

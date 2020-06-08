@@ -209,6 +209,7 @@ export default function (AppContainer, navigator = defaultNavigator, options = {
                     navigator._bindAfterEach(action, prevState, newState);
                 }
                 default:
+
                 {
                     this._observers.splice(0, this._observers.length).forEach(({callback}) =>
                     {

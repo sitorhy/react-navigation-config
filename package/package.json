@@ -1,6 +1,6 @@
 {
   "name": "react-navigation-config",
-  "version": "0.1.25",
+  "version": "0.2.1",
   "description": "route configuration helpers for react-navigation",
   "main": "index.js",
   "scripts": {

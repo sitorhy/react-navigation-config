@@ -364,6 +364,17 @@ router.beforeResolve((state, to, path, params, next) => {
 });
 ```
 
+### **beforeBackward**
+register listener for backward actions.
+##### Parameters
++ `<Function>` - callback
+```
+router.beforeBackward((action, to, from) => {
+  const {params, routeName} = from;
+  // do something
+});
+```
+
 ##### **<Function> next** - action rewrite helper
 > - `next()` - nothing happen
 > - `next(false)` - stay at the screen specified by the router entrance

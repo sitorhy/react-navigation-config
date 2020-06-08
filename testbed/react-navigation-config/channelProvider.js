@@ -45,7 +45,7 @@ function _default(store, routeKey) {
 
     render() {
       var Children = this.props.children;
-      return typeof Children === "function" ? _react.default.createElement(Children, this.state.channel) : Children;
+      return typeof Children === "function" ? /*#__PURE__*/_react.default.createElement(Children, this.state.channel) : Children;
     }
 
   };

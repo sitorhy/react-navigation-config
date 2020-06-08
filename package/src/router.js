@@ -7,6 +7,7 @@ import {
     matchRouteParent,
     getNavState,
     DEFAULT_IGNORE_ACTIONS,
+    BACKWARD_ACTIONS,
     getScreenPropsFromChannelModule,
     getNavigationModule,
     getKeyFromNavigationModule,
@@ -47,6 +48,8 @@ export class Navigator
 
     _afterEachHandler = null;
 
+    _beforeBackwardHandler = null;
+
     _readyHandler = null;
 
     _preventDefaultActionFix = true;
@@ -56,6 +59,8 @@ export class Navigator
     _ignoreRouteActions = [...DEFAULT_IGNORE_ACTIONS];
 
     _ignoreURIActions = [...DEFAULT_IGNORE_ACTIONS];
+
+    _backwareActions = [...BACKWARD_ACTIONS];
 
     _setRoutes(routes = [])
     {
@@ -124,6 +129,16 @@ export class Navigator
     _bindBeforeEach(action, toState, fromState)
     {
         const {type} = action;
+        const to = getActiveRoute(toState);
+        const from = getActiveRoute(fromState);
+
+        if(this._backwareActions.includes(type))
+        {
+            if(typeof this._beforeBackwardHandler === "function")
+            {
+                this._beforeBackwardHandler(action, to, from);
+            }
+        }
 
         if (this._ignoreRouteActions.includes(type))
         {
@@ -132,8 +147,6 @@ export class Navigator
 
         let fixed = false;
         let nextAction = null;
-
-        const to = getActiveRoute(toState);
 
         if (this._preventDefaultActionFix !== true)
         {
@@ -146,8 +159,6 @@ export class Navigator
 
         if (typeof this._beforeEachHandler === "function")
         {
-            const from = getActiveRoute(fromState);
-
             const handler = this._beforeEachHandler;
 
             const _rewriteAction = (...args) =>
@@ -525,6 +536,14 @@ export class Navigator
         }
     }
 
+    beforeBackward(callback)
+    {
+        if(typeof callback === "function")
+        {
+            this._beforeBackwardHandler = callback;
+        }
+    }
+
     onReady(callback)
     {
         if (typeof callback === "function")
@@ -556,6 +575,11 @@ export class Navigator
     setIgnoreURIActions(actions = [])
     {
         this._ignoreURIActions = actions;
+    }
+
+    setBeforeBackwardActions(actions = [])
+    {
+        this._backwareActions = actions;
     }
 
     channelProvider(navigation)

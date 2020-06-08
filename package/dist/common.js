@@ -23,7 +23,7 @@ exports.getNameFromNavigationModule = getNameFromNavigationModule;
 exports.getNavigationModule = getNavigationModule;
 exports.getStageModule = getStageModule;
 exports.getChannelFromStageModule = getChannelFromStageModule;
-exports.ObserveStore = exports.CONTAINER_EVENT = exports.DEFAULT_CHANNEL_ACTIONS = exports.DEFAULT_IGNORE_ACTIONS = void 0;
+exports.ObserveStore = exports.CONTAINER_EVENT = exports.DEFAULT_CHANNEL_ACTIONS = exports.BACKWARD_ACTIONS = exports.DEFAULT_IGNORE_ACTIONS = void 0;
 
 var _reactNavigation = require("react-navigation");
 
@@ -33,6 +33,8 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
 
 var DEFAULT_IGNORE_ACTIONS = ["Navigation/COMPLETE_TRANSITION", "Navigation/BACK", "Navigation/OPEN_DRAWER", "Navigation/MARK_DRAWER_SETTLING", "Navigation/MARK_DRAWER_IDLE", "Navigation/DRAWER_OPENED", "Navigation/CLOSE_DRAWER", "Navigation/DRAWER_CLOSED", "Navigation/TOGGLE_DRAWER", "Navigation/SET_PARAMS", "Navigation/RESET", "Navigation/POP", "Navigation/POP_TO_TOP"];
 exports.DEFAULT_IGNORE_ACTIONS = DEFAULT_IGNORE_ACTIONS;
+var BACKWARD_ACTIONS = ["Navigation/BACK", "Navigation/POP", "Navigation/POP_TO_TOP"];
+exports.BACKWARD_ACTIONS = BACKWARD_ACTIONS;
 var DEFAULT_CHANNEL_ACTIONS = ["Navigation/REPLACE", "Navigation/PUSH", "Navigation/NAVIGATE", "Navigation/POP", "Navigation/POP_TO_TOP", "Navigation/BACK", "Navigation/OPEN_DRAWER", "Navigation/CLOSE_DRAWER", "Navigation/TOGGLE_DRAWER", "Navigation/RESET"];
 exports.DEFAULT_CHANNEL_ACTIONS = DEFAULT_CHANNEL_ACTIONS;
 var CONTAINER_EVENT = {
@@ -85,11 +87,11 @@ function _overrideRewriteAction(options) {
     routeName
   }, params === undefined ? {} : {
     params
-  }, {}, removeEmpty({
+  }, removeEmpty({
     key: routeKey
   })));
 
-  return _extends({}, basicAction, {}, action);
+  return _extends({}, basicAction, action);
 }
 
 function rewriteAction(routeNameOrOptions, options) {
@@ -292,7 +294,7 @@ function _getState(nav, mergeParams, scopeParams) {
         };
       }
 
-      scopeParams[state.routeName].common = _extends({}, scopeParams[state.routeName].common, {}, state.params);
+      scopeParams[state.routeName].common = _extends({}, scopeParams[state.routeName].common, state.params);
     }
   }
 

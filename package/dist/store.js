@@ -35,7 +35,7 @@ function channels(state, action) {
         return _extends({}, state, {
           [action.key]: {
             timestamp: Date.now(),
-            channel: _extends({}, (keep || {}).channel, {}, action.channel)
+            channel: _extends({}, (keep || {}).channel, action.channel)
           }
         });
       }

@@ -16,6 +16,12 @@ export const DEFAULT_IGNORE_ACTIONS = [
     "Navigation/POP_TO_TOP"
 ];
 
+export const BACKWARD_ACTIONS = [
+    "Navigation/BACK",
+    "Navigation/POP",
+    "Navigation/POP_TO_TOP"
+];
+
 export const DEFAULT_CHANNEL_ACTIONS = [
     "Navigation/REPLACE",
     "Navigation/PUSH",

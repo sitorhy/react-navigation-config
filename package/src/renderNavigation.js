@@ -1,4 +1,4 @@
-import React from "react";
+import React, {Component} from "react";
 import {
     createAppContainer,
     createSwitchNavigator
@@ -22,23 +22,16 @@ const creator = {
 };
 
 
-export function linkNavigatorProvider(type, provider)
-{
+export function linkNavigatorProvider(type, provider) {
     creator[type] = provider;
 }
 
-function inject(injectNavigationOptions, navigationOptions, component)
-{
-    if (injectNavigationOptions)
-    {
-        if (injectNavigationOptions === "extend")
-        {
+function inject(injectNavigationOptions, navigationOptions, component) {
+    if (injectNavigationOptions) {
+        if (injectNavigationOptions === "extend") {
             return decorators.navigationOptions(navigationOptions)(component);
-        }
-        else
-        {
-            if (injectNavigationOptions === true)
-            {
+        } else {
+            if (injectNavigationOptions === true) {
                 component.navigationOptions = navigationOptions;
             }
         }
@@ -47,18 +40,13 @@ function inject(injectNavigationOptions, navigationOptions, component)
     return component;
 }
 
-function through(store, screenProps, ScreenComponent)
-{
-    const ThroughComponent = class extends React.Component
-    {
-        constructor(props)
-        {
+function through(store, screenProps, ScreenComponent) {
+    const ThroughComponent = class extends Component {
+        constructor(props) {
             super(props);
             const key = props.navigation.state.key;
-            if (store)
-            {
-                this.observer = new ObserveStore(store, (state) =>
-                {
+            if (store) {
+                this.observer = new ObserveStore(store, (state) => {
                     const channelModule = getChannelModule(state);
                     const channel = getScreenPropsFromChannelModule(key, channelModule);
                     this.state = {
@@ -70,21 +58,16 @@ function through(store, screenProps, ScreenComponent)
             }
         }
 
-        componentDidMount()
-        {
-            if (this.observer)
-            {
-                this.observer.start((state, call) =>
-                {
+        componentDidMount() {
+            if (this.observer) {
+                this.observer.start((state, call) => {
                     const {navigation} = this.props;
                     const {key} = navigation.state;
                     const channelModule = getChannelModule(state);
-                    if (!(!Object.hasOwnProperty.call(channelModule, key) && this.state.channel === undefined) && typeof call === "function")
-                    {
+                    if (!(!Object.hasOwnProperty.call(channelModule, key) && this.state.channel === undefined) && typeof call === "function") {
                         call(getScreenPropsFromChannelModule(key, channelModule));
                     }
-                }, (channel) =>
-                {
+                }, (channel) => {
                     this.setState({
                         channel
                     });
@@ -92,10 +75,8 @@ function through(store, screenProps, ScreenComponent)
             }
         }
 
-        componentWillUnmount()
-        {
-            if (this.observer)
-            {
+        componentWillUnmount() {
+            if (this.observer) {
                 const {navigation} = this.props;
                 const {key} = navigation.state;
                 this.observer.dispose();
@@ -104,8 +85,7 @@ function through(store, screenProps, ScreenComponent)
             }
         }
 
-        render()
-        {
+        render() {
             const {channel} = this.state;
             const {screenProps: dynamicScreenProps, ...others} = this.props;
             return <ScreenComponent
@@ -115,21 +95,18 @@ function through(store, screenProps, ScreenComponent)
         }
     }
 
-    if (ScreenComponent.router)
-    {
+    if (ScreenComponent.router) {
         ThroughComponent.router = ScreenComponent.router;
     }
 
-    if (ScreenComponent.navigationOptions)
-    {
+    if (ScreenComponent.navigationOptions) {
         ThroughComponent.navigationOptions = ScreenComponent.navigationOptions;
     }
 
     return ThroughComponent;
 }
 
-const map = function (route, navigator)
-{
+const map = function (route, navigator) {
     const {
         component,
         app,
@@ -145,38 +122,30 @@ const map = function (route, navigator)
 
     const prop = ["children", "all", "oneOf", "drawer"].find(j => !!route[j]);
 
-    if (app !== true && !name)
-    {
+    if (app !== true && !name) {
         name = `anonymous-${randomString(8)}-${Date.now()}`;
         route.name = name;
     }
 
-    if (!name && app !== true)
-    {
+    if (!name && app !== true) {
         throw new Error("navigation config missing name.");
     }
 
-    if (prop && Array.isArray(route[prop]) && route[prop].length)
-    {
+    if (prop && Array.isArray(route[prop]) && route[prop].length) {
         const routeConfigs = {};
-        for (const i of route[prop])
-        {
+        for (const i of route[prop]) {
             Object.assign(routeConfigs, map(i, navigator));
         }
 
         let containerCreator;
 
-        if (typeof use === "function")
-        {
+        if (typeof use === "function") {
             containerCreator = use;
-        }
-        else
-        {
+        } else {
             containerCreator = creator[prop];
         }
 
-        if (!containerCreator)
-        {
+        if (!containerCreator) {
             throw new Error("unidentified navigator provider");
         }
 
@@ -185,12 +154,9 @@ const map = function (route, navigator)
         const ScreenComponent = navigation;
         const screen = through(navigator ? navigator.getStore() : null, screenProps, ScreenComponent);
 
-        if (app === true)
-        {
+        if (app === true) {
             return creator["app"](inject(injectNavigationOptions, navigationOptions, screen));
-        }
-        else
-        {
+        } else {
             return {
                 [name]: removeEmpty({
                     screen: inject(injectNavigationOptions, navigationOptions, screen),
@@ -201,11 +167,8 @@ const map = function (route, navigator)
                 })
             };
         }
-    }
-    else
-    {
-        if (!component)
-        {
+    } else {
+        if (!component) {
             throw new Error("navigation config missing component.");
         }
 
@@ -223,10 +186,8 @@ const map = function (route, navigator)
     }
 };
 
-export default function (config, navigator = defaultNavigator)
-{
-    if (navigator)
-    {
+export default function (config, navigator = defaultNavigator) {
+    if (navigator) {
         navigator._setRoutes(config);
     }
     return map(config, navigator);

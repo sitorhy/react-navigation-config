@@ -52,6 +52,8 @@ class Navigator {
 
     _defineProperty(this, "_afterEachHandler", null);
 
+    _defineProperty(this, "_beforeBackwardHandler", null);
+
     _defineProperty(this, "_readyHandler", null);
 
     _defineProperty(this, "_preventDefaultActionFix", true);
@@ -61,6 +63,8 @@ class Navigator {
     _defineProperty(this, "_ignoreRouteActions", [..._common.DEFAULT_IGNORE_ACTIONS]);
 
     _defineProperty(this, "_ignoreURIActions", [..._common.DEFAULT_IGNORE_ACTIONS]);
+
+    _defineProperty(this, "_backwareActions", [..._common.BACKWARD_ACTIONS]);
   }
 
   _setRoutes(routes) {
@@ -77,7 +81,7 @@ class Navigator {
     var actionTo = (0, _common.getDeepestActionState)(action);
 
     if (this._preventDefaultURIResolveFix !== true) {
-      action.params = _extends({}, action.params, {}, actionTo.params);
+      action.params = _extends({}, action.params, actionTo.params);
     }
 
     var nextAction = null;
@@ -130,6 +134,14 @@ class Navigator {
     var {
       type
     } = action;
+    var to = (0, _common.getActiveRoute)(toState);
+    var from = (0, _common.getActiveRoute)(fromState);
+
+    if (this._backwareActions.includes(type)) {
+      if (typeof this._beforeBackwardHandler === "function") {
+        this._beforeBackwardHandler(action, to, from);
+      }
+    }
 
     if (this._ignoreRouteActions.includes(type)) {
       return null;
@@ -137,7 +149,6 @@ class Navigator {
 
     var fixed = false;
     var nextAction = null;
-    var to = (0, _common.getActiveRoute)(toState);
 
     if (this._preventDefaultActionFix !== true) {
       if (to.routeName && to.routeName !== action.routeName) {
@@ -147,7 +158,6 @@ class Navigator {
     }
 
     if (typeof this._beforeEachHandler === "function") {
-      var from = (0, _common.getActiveRoute)(fromState);
       var handler = this._beforeEachHandler;
 
       var _rewriteAction = function _rewriteAction() {
@@ -534,6 +544,12 @@ class Navigator {
     }
   }
 
+  beforeBackward(callback) {
+    if (typeof callback === "function") {
+      this._beforeBackwardHandler = callback;
+    }
+  }
+
   onReady(callback) {
     if (typeof callback === "function") {
       this._readyHandler = callback;
@@ -566,6 +582,14 @@ class Navigator {
     }
 
     this._ignoreURIActions = actions;
+  }
+
+  setBeforeBackwardActions(actions) {
+    if (actions === void 0) {
+      actions = [];
+    }
+
+    this._backwareActions = actions;
   }
 
   channelProvider(navigation) {

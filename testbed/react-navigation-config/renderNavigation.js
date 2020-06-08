@@ -4,7 +4,7 @@ exports.__esModule = true;
 exports.linkNavigatorProvider = linkNavigatorProvider;
 exports.default = _default;
 
-var _react = _interopRequireDefault(require("react"));
+var _react = _interopRequireWildcard(require("react"));
 
 var _reactNavigation = require("react-navigation");
 
@@ -22,9 +22,11 @@ var _reactNavigationDrawer = require("react-navigation-drawer");
 
 var _reactNavigationTabs = require("react-navigation-tabs");
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function _getRequireWildcardCache() { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
 
@@ -57,7 +59,7 @@ function inject(injectNavigationOptions, navigationOptions, component) {
 }
 
 function through(store, screenProps, ScreenComponent) {
-  var ThroughComponent = class extends _react.default.Component {
+  var ThroughComponent = class extends _react.Component {
     constructor(props) {
       super(props);
       var key = props.navigation.state.key;
@@ -121,8 +123,8 @@ function through(store, screenProps, ScreenComponent) {
       } = _this$props,
           others = _objectWithoutPropertiesLoose(_this$props, ["screenProps"]);
 
-      return _react.default.createElement(ScreenComponent, _extends({}, others, {
-        screenProps: _extends({}, screenProps, {}, dynamicScreenProps, {}, channel)
+      return /*#__PURE__*/_react.default.createElement(ScreenComponent, _extends({}, others, {
+        screenProps: _extends({}, screenProps, dynamicScreenProps, channel)
       }));
     }
 
