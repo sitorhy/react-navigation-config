@@ -375,12 +375,6 @@ router.beforeBackward((action, to, from) => {
 });
 ```
 
-##### **<Function> next** - action rewrite helper
-> - `next()` - nothing happen
-> - `next(false)` - stay at the screen specified by the router entrance
-> - `next(routeName:String,options:Object)`
-> - `next(options:Object)`
-
 <br>
 
 ### **onReady**
